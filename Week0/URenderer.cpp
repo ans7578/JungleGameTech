@@ -1,5 +1,8 @@
 #include "URenderer.h"
 
+
+
+
 void URenderer::Create(HWND hWindow)
 {
 	//Direct3D 장치 및 스왑 체인 생성
@@ -95,9 +98,76 @@ void URenderer::CreateRasterizerState()
 
 }
 
+void URenderer::CreateShader()
+{
+	ID3DBlob* vertexShaderBlob = nullptr;
+	ID3DBlob* pixelShaderBlob = nullptr;
+
+
+	//정점 쉐이더 컴파일
+	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexShaderBlob, nullptr);
+	Device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &SimpleVertexShader);
+
+
+	//픽셀 쉐이더 컴파일
+	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelShaderBlob, nullptr);
+	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &SimplePixelShader);
+
+
+
+	//D3D11_INPUT_ELEMENT_DESC 구조체를 사용하여 입력 레이아웃 생성
+	//정점 데이터의 형식을 정의하는 구조체 배열
+	//정점 데이터의 형식은 정점 쉐이더에서 정의한 구조체와 일치해야 함
+	D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,0,12, D3D11_INPUT_PER_VERTEX_DATA,0},
+	};
+
+	Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &SimpleInputLayout);
+
+	Stride = sizeof(FVertexSimple);
+
+
+	vertexShaderBlob->Release();
+	pixelShaderBlob->Release();
+
+}
+
 void URenderer::SwapBuffer()
 {
 	SwapChain->Present(1, 0); //스왑체인 프레젠트 호출, 1은 수직동기화, 0은 플래그 없음
+}
+
+//렌더링 준비 함수, 렌더링 전에 호출해야 함
+void URenderer::Prepare()
+{
+	DeviceContext->ClearRenderTargetView(FrameBufferRTV, ClearColor); //렌더 타겟 뷰를 초기화(clear)함
+
+	DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); //정점 데이터를 삼각형 리스트로 해석하도록 설정
+
+	DeviceContext->RSSetViewports(1, &ViewportInfo); //뷰포트 설정
+	DeviceContext->RSSetState(RasterizerState); //래스터라이저 상태 설정
+
+	DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr); //렌더 타겟 뷰 설정, 깊이 스텐실 뷰는 사용하지 않음
+	DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff); //블렌드 상태 설정, 블렌딩 사용하지 않음
+
+
+}
+
+void URenderer::PrepareShader()
+{
+	DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0); //정점 쉐이더 설정
+	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0); //픽셀 쉐이더 설정
+	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
+}
+
+void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT NumVertices)
+{
+	UINT offset = 0; //정점 버퍼의 시작 오프셋
+	DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset); //정점 버퍼 설정
+
+	DeviceContext->Draw(NumVertices, 0); //정점 버퍼를 사용하여 그리기 호출
 }
 
 //다렉 장치 및 스왑 체인을 해제하는 함수
@@ -148,6 +218,25 @@ void URenderer::ReleaseRasterizerState()
 		RasterizerState->Release();
 		RasterizerState = nullptr;
 	}
+}
+void URenderer::ReleaseShader()
+{
+	if (SimpleInputLayout)
+	{
+		SimpleInputLayout->Release();
+		SimpleInputLayout = nullptr;	
+	}
+	if (SimpleVertexShader)
+	{
+		SimpleVertexShader->Release();
+		SimpleVertexShader = nullptr;
+	}
+	if (SimplePixelShader)
+	{
+		SimplePixelShader->Release();
+		SimplePixelShader = nullptr;
+	}
+
 }
 //렌더러에 사용된 모든 리소스를 해제하는 함수
 void URenderer::Release()

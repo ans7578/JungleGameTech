@@ -133,6 +133,11 @@
   <ItemGroup>
     <ClInclude Include="URenderer.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ShaderW0.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
