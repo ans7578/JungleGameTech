@@ -38,5 +38,18 @@ public:
 	void CreateRasterizerState();
 
 
+	void SwapBuffer();
+
+
+
+
+	void ReleaseDeviceAndSwapChain();
+	void ReleaseFrameBuffer();
+	void ReleaseRasterizerState();
+
+	void Release();
+
+
+
 };
 

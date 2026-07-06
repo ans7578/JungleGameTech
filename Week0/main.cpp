@@ -9,6 +9,8 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
+#include "URenderer.h"
+
 int WINAPI WndProc(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	return 0;
@@ -52,6 +54,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		CW_USEDEFAULT, CW_USEDEFAULT, 1024, 1024,
 		nullptr, nullptr, hInstance, nullptr);
 
+
+	URenderer Renderer;
+
+	Renderer.Create(hwnd);
+
+
 	bool bIsExit = false;
 
 	//각종 생성하는 코드를 여기에 추가한다.
@@ -80,8 +88,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
 
-
-
+		Renderer.SwapBuffer();
 
 		/////////////////////////////////////
 	}
