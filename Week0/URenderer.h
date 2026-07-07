@@ -19,6 +19,15 @@ struct FVertexSimple
 {
 	float x, y, z;    // Position
 	float r, g, b, a; // Color
+
+	void SetColor(float _r, float _g, float _b, float _a)
+	{
+		r = _r;
+		g = _g;
+		b = _b;
+		a = _a;
+	}
+
 };
 
 struct FVector
@@ -51,6 +60,7 @@ public:
 	ID3D11RasterizerState* RasterizerState = nullptr; //래스터라이저 상태(컬링, 채우기 모드 등 정의)
 	ID3D11Buffer* ConstantBuffer = nullptr; // 쉐이더에 데이터를 전달하기 위한 상수 버퍼
 
+	
 	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear)할 때 사용할 색상 (RGBA)
 	D3D11_VIEWPORT ViewportInfo;  //렌더링 영역을 정의하는 뷰포트 정보
 
@@ -75,7 +85,10 @@ public:
 
 	void CreateShader();
 
-	ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
+	ID3D11Buffer*	CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
+
+	ID3D11Buffer* CreateIndexBuffer(UINT* indices, UINT byteWidth);
+
 
 	void CreateConstantBuffer();
 
@@ -90,6 +103,9 @@ public:
 
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT NumVertices);
 
+	void RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer , ID3D11Buffer* pIndexBuffer, UINT NumIndices);
+
+
 
 	void ReleaseDeviceAndSwapChain();
 	void ReleaseFrameBuffer();
@@ -97,6 +113,9 @@ public:
 	void ReleaseShader();
 
 	void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
+
+	void ReleaseIndexBuffer(ID3D11Buffer* indexBuffer);
+
 
 	void ReleaseConstantBuffer();
 

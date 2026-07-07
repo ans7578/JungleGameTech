@@ -11,6 +11,8 @@
 
 #include "URenderer.h"
 #include "Cube.h"
+#include "Circle.h"
+#include "Rect.h"
 #include "Sphere.h"
 
 enum ETypePrimitive
@@ -103,19 +105,52 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	UINT numVerticesTriangle = sizeof(triangle_vertices) / sizeof(FVertexSimple);
 	UINT numVerticesCube= sizeof(cube_vertices) / sizeof(FVertexSimple);
-	UINT numVerticesSphere= sizeof(sphere_vertices) / sizeof(FVertexSimple);
+	
+	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
+
+
+	UINT numVerticesRect = sizeof(rect_vertices) / sizeof(FVertexSimple);
+
+	CirclePrimitive circlePrimitive;
+	circlePrimitive.Create();
 
 	float scaleMod = 0.1f;
-	for (UINT i = 0; i < numVerticesSphere; ++i)
+	
+	for (UINT i = 0; i < numVerticesRect; i++)
+	{
+		rect_vertices[i].x *= scaleMod;
+		rect_vertices[i].y *= scaleMod;
+		rect_vertices[i].z *= scaleMod;
+	}
+	for (UINT i = 0; i < numVerticesSphere; i++)
 	{
 		sphere_vertices[i].x *= scaleMod;
 		sphere_vertices[i].y *= scaleMod;
 		sphere_vertices[i].z *= scaleMod;
+
 	}
+
+	circlePrimitive.SetSize(scaleMod);
+
 
 	ID3D11Buffer* vertexBufferTriangle = renderer.CreateVertexBuffer(triangle_vertices, sizeof(triangle_vertices));
 	ID3D11Buffer* vertexBufferCube= renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
-	ID3D11Buffer* vertexBufferSphere= renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
+	
+	ID3D11Buffer* vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
+
+
+
+	
+	ID3D11Buffer* vertexBufferCircle= renderer.CreateVertexBuffer(circlePrimitive.vertices, sizeof(circlePrimitive.vertices));
+	ID3D11Buffer* indexBufferCircle= renderer.CreateIndexBuffer(circlePrimitive.indices, sizeof(circlePrimitive.indices));
+
+
+	ID3D11Buffer* vertexBufferRect= renderer.CreateVertexBuffer(rect_vertices, sizeof(rect_vertices));
+	ID3D11Buffer* indexBufferRect = renderer.CreateIndexBuffer(rect_indices, sizeof(rect_indices));
+
+
+
+
 
 	ETypePrimitive typePrimitive = EPT_Triangle;
 	
@@ -189,25 +224,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//	PostMessage(hwnd, WM_QUIT, 0, 0);
 		//}
 
-		if (ImGui::Button("ChangePrimitive"))
-		{
-			switch (typePrimitive)
-			{
-			case EPT_Triangle:
-				typePrimitive = EPT_Cube;
-				break;
-			case EPT_Cube:
-				typePrimitive = EPT_Sphere;
-				break;
-			case EPT_Sphere:
-				typePrimitive = EPT_Triangle;
-				break;
-			default:
-				break;
-			}
-		}
-
-
+		
 
 		ImGui::End();
 
@@ -217,21 +234,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		renderer.UpdateConstantBuffer(offset);
 
-		switch (typePrimitive)
-		{
-		case EPT_Triangle:
-			renderer.RenderPrimitive(vertexBufferTriangle, numVerticesTriangle);
-			break;
-		case EPT_Cube:
-			renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
-			break;
-		case EPT_Sphere:
-			renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
-			break;
-		default:
-			break;
-		}
+		renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
 
+		//renderer.RenderPrimitiveIndexed(vertexBufferCircle, indexBufferCircle, circlePrimitive.indexCount);
 
 		//다 그렸으면 버퍼 교환
 		renderer.SwapBuffer();
@@ -246,6 +251,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseVertexBuffer(vertexBufferTriangle);
 	renderer.ReleaseVertexBuffer(vertexBufferCube);
 	renderer.ReleaseVertexBuffer(vertexBufferSphere);
+
+	
+	
+	renderer.ReleaseVertexBuffer(vertexBufferCircle);
+	renderer.ReleaseIndexBuffer(indexBufferCircle);
+
+
+	
+	renderer.ReleaseVertexBuffer(vertexBufferRect);
+	renderer.ReleaseIndexBuffer(indexBufferRect);
+
 
 	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();

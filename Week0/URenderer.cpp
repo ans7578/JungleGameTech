@@ -159,6 +159,24 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	return vertexBuffer;
 }
 
+ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth)
+{
+	D3D11_BUFFER_DESC indexBufferDesc = {};
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT; // 인덱스 버퍼는 변경되지 않으므로 IMMUTABLE로 설정
+	indexBufferDesc.ByteWidth = byteWidth;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER; // 인덱스 버퍼로 사용됨
+
+	D3D11_SUBRESOURCE_DATA indexBufferData;
+
+	indexBufferData.pSysMem = indices;
+
+	ID3D11Buffer* indexBuffer = nullptr;
+
+	Device->CreateBuffer(&indexBufferDesc, &indexBufferData, &indexBuffer);
+
+	return indexBuffer;
+}
+
 void URenderer::CreateConstantBuffer()
 {
 	D3D11_BUFFER_DESC constantBufferDesc = {};
@@ -229,6 +247,17 @@ void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT NumVertices)
 
 	DeviceContext->Draw(NumVertices, 0); //정점 버퍼를 사용하여 그리기 호출
 }
+
+void URenderer::RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer, ID3D11Buffer* pIndexBuffer, UINT NumIndices)
+{
+	UINT offset = 0; //정점 버퍼의 시작 오프셋
+	DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &Stride, &offset); //정점 버퍼 설정
+
+	DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼 설정
+
+	DeviceContext->DrawIndexed(NumIndices, 0, 0); //인덱스 버퍼를 사용하여 그리기 호출
+}
+
 
 //다렉 장치 및 스왑 체인을 해제하는 함수
 void URenderer::ReleaseDeviceAndSwapChain()
@@ -301,6 +330,10 @@ void URenderer::ReleaseShader()
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
 {
 	vertexBuffer->Release();
+}
+void URenderer::ReleaseIndexBuffer(ID3D11Buffer* indexBuffer)
+{
+	indexBuffer->Release();
 }
 void URenderer::ReleaseConstantBuffer()
 {
