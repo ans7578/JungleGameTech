@@ -2,8 +2,6 @@
 
 
 
-
-
 struct VS_INPUT
 {
     float4 Pos : POSITION; //버텍스 버퍼로부터 정점 위치를 받아온다

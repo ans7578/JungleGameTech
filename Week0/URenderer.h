@@ -8,6 +8,11 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
+//ImGui
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "ImGui/imgui_impl_win32.h"
 
 // 1. Define the triangle vertices
 struct FVertexSimple
@@ -15,8 +20,6 @@ struct FVertexSimple
 	float x, y, z;    // Position
 	float r, g, b, a; // Color
 };
-
-
 
 
 class URenderer
@@ -44,14 +47,9 @@ public:
 	ID3D11InputLayout* SimpleInputLayout = nullptr; // 정점 데이터의 형식을 정의하는 입력 레이아웃
 	unsigned int Stride; // 정점 데이터의 한 정점당 바이트 수 (3개의 float로 구성된 정점)
 
-
-
-
-
 public:
 	//렌더러 초기화 함수
 	void Create(HWND hWindow);
-
 
 	void CreateDeviceAndSwapChain(HWND hWindow);
 
@@ -61,7 +59,7 @@ public:
 
 	void CreateShader();
 
-
+	ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
 
 
 	void SwapBuffer();
@@ -79,6 +77,7 @@ public:
 	void ReleaseRasterizerState();
 	void ReleaseShader();
 
+	void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 
 	void Release();
 

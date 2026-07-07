@@ -10,6 +10,20 @@
 #include <d3dcompiler.h>
 
 #include "URenderer.h"
+#include "Cube.h"
+#include "Sphere.h"
+
+enum ETypePrimitive
+{
+	EPT_Triangle,
+	EPT_Cube,
+	EPT_Sphere,
+	EPT_Max,
+};
+
+
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 
 int WINAPI WndProc(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -20,6 +34,12 @@ int WINAPI WndProc(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 //각종 메시지를 처리할 함수
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wParam, lParam))
+	{
+		return true;
+	}
+
+
 	switch (message)
 	{
 	case WM_DESTROY:
@@ -60,6 +80,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.Create(hwnd);
 	renderer.CreateShader();
 
+
+	//ImGui 생성
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplWin32_Init((void*)hwnd);
+	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
+
+
+
 	//렌더러와 쉐이더 생성 이후 버텍스 버퍼를 생성한다.
 
 
@@ -71,38 +101,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{ -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // Bottom-left vertex (blue)
 	};
 
-	FVertexSimple* vertices = triangle_vertices;
-	UINT ByteWidth = sizeof(triangle_vertices);
-	UINT NumVertices = sizeof(triangle_vertices) / sizeof(FVertexSimple);
+	UINT numVerticesTriangle = sizeof(triangle_vertices) / sizeof(FVertexSimple);
+	UINT numVerticesCube= sizeof(cube_vertices) / sizeof(FVertexSimple);
+	UINT numVerticesSphere= sizeof(sphere_vertices) / sizeof(FVertexSimple);
 
-	//버텍스 버퍼 생성
+	float scaleMod = 0.1f;
+	for (UINT i = 0; i < numVerticesSphere; ++i)
+	{
+		sphere_vertices[i].x *= scaleMod;
+		sphere_vertices[i].y *= scaleMod;
+		sphere_vertices[i].z *= scaleMod;
+	}
 
+	ID3D11Buffer* vertexBufferTriangle = renderer.CreateVertexBuffer(triangle_vertices, sizeof(triangle_vertices));
+	ID3D11Buffer* vertexBufferCube= renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
+	ID3D11Buffer* vertexBufferSphere= renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
 
-	/* D3D11_USAGE
-		해당 리소스가 CPU와 GPU 중 어느 쪽에서 주로 사용될지를 나타내는 열거형입니다.
-
-		D3D11_USAGE_DEFAULT: GPU에서 주로 사용되며, CPU에서 직접 접근할 수 없습니다. 일반적인 렌더링에 적합합니다.(GPU에서만 접근 가능)
-		D3D11_USAGE_IMMUTABLE: 리소스가 생성된 후 변경되지 않음을 나타냅니다. CPU에서 데이터를 설정한 후에는 변경할 수 없습니다. 주로 정적 데이터에 사용됩니다.(GPU에서만 접근 가능)(가장 빠름)
-		D3D11_USAGE_DYNAMIC: CPU에서 자주 변경되는 리소스에 적합합니다. CPU에서 데이터를 업데이트할 수 있으며, GPU에서 읽을 수 있습니다.
-		D3D11_USAGE_STAGING: CPU와 GPU 간의 데이터 전송을 위해 사용됩니다. 주로 리소스를 읽거나 쓰기 위해 사용됩니다.(CPU에서만 접근 가능, GPU에선 복사만 가능)
+	ETypePrimitive typePrimitive = EPT_Triangle;
 	
-	*/
-
-
-	D3D11_BUFFER_DESC vertexBufferDesc = {};
-	vertexBufferDesc.ByteWidth = ByteWidth; // 정점 데이터의 전체 크기
-	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // 정점 버퍼로 사용됨
-
-	D3D11_SUBRESOURCE_DATA vertexBufferData = { vertices };
-
-	ID3D11Buffer* vertexBuffer = nullptr;
-	renderer.Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &vertexBuffer);
-
-
-
 	bool bIsExit = false;
-
 	//각종 생성하는 코드를 여기에 추가한다.
 
 
@@ -134,17 +151,82 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer.PrepareShader();
 
 		//생성한 버텍스버러를 넘겨 실제 렌더링 호출
-		renderer.RenderPrimitive(vertexBuffer, NumVertices);
+	
+
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+		
+		/////////////////////////////////////////////////////
+		//이후 ImGui  UI 컨트롤 추가는  ImGui::NewFrame()과  ImGui::Render()사이인 여기에 추가합니다.
+	
+		ImGui::Begin("Jungle Property Window");
+
+		ImGui::Text("Hello Jungle World!");
+
+		//if (ImGui::Button("Quit this app"))
+		//{
+		//	PostMessage(hwnd, WM_QUIT, 0, 0);
+		//}
+
+		if (ImGui::Button("ChangePrimitive"))
+		{
+			switch (typePrimitive)
+			{
+			case EPT_Triangle:
+				typePrimitive = EPT_Cube;
+				break;
+			case EPT_Cube:
+				typePrimitive = EPT_Sphere;
+				break;
+			case EPT_Sphere:
+				typePrimitive = EPT_Triangle;
+				break;
+			default:
+				break;
+			}
+		}
+
+
+
+		ImGui::End();
+
+		////////////////////////////////////////////////////
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+
+		switch (typePrimitive)
+		{
+		case EPT_Triangle:
+			renderer.RenderPrimitive(vertexBufferTriangle, numVerticesTriangle);
+			break;
+		case EPT_Cube:
+			renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
+			break;
+		case EPT_Sphere:
+			renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
+			break;
+		default:
+			break;
+		}
 
 
 		//다 그렸으면 버퍼 교환
 		renderer.SwapBuffer();
-
 		/////////////////////////////////////
 	}
-
 	//소멸하는 코드를 여기에 추가합니다.
-	vertexBuffer->Release();
+
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+
+	renderer.ReleaseVertexBuffer(vertexBufferTriangle);
+	renderer.ReleaseVertexBuffer(vertexBufferCube);
+	renderer.ReleaseVertexBuffer(vertexBufferSphere);
+
+
 	renderer.ReleaseShader();
 	renderer.Release();
 

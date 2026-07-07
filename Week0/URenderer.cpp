@@ -113,8 +113,6 @@ void URenderer::CreateShader()
 	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelShaderBlob, nullptr);
 	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &SimplePixelShader);
 
-
-
 	//D3D11_INPUT_ELEMENT_DESC 구조체를 사용하여 입력 레이아웃 생성
 	//정점 데이터의 형식을 정의하는 구조체 배열
 	//정점 데이터의 형식은 정점 쉐이더에서 정의한 구조체와 일치해야 함
@@ -134,6 +132,33 @@ void URenderer::CreateShader()
 
 }
 
+ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
+{
+
+	//버텍스 버퍼 생성
+	/* D3D11_USAGE
+		해당 리소스가 CPU와 GPU 중 어느 쪽에서 주로 사용될지를 나타내는 열거형입니다.
+		D3D11_USAGE_DEFAULT: GPU에서 주로 사용되며, CPU에서 직접 접근할 수 없습니다. 일반적인 렌더링에 적합합니다.(GPU에서만 접근 가능)
+		D3D11_USAGE_IMMUTABLE: 리소스가 생성된 후 변경되지 않음을 나타냅니다. CPU에서 데이터를 설정한 후에는 변경할 수 없습니다. 주로 정적 데이터에 사용됩니다.(GPU에서만 접근 가능)(가장 빠름)
+		D3D11_USAGE_DYNAMIC: CPU에서 자주 변경되는 리소스에 적합합니다. CPU에서 데이터를 업데이트할 수 있으며, GPU에서 읽을 수 있습니다.
+		D3D11_USAGE_STAGING: CPU와 GPU 간의 데이터 전송을 위해 사용됩니다. 주로 리소스를 읽거나 쓰기 위해 사용됩니다.(CPU에서만 접근 가능, GPU에선 복사만 가능)
+	*/
+
+
+	D3D11_BUFFER_DESC vertexBufferDesc = {};
+	vertexBufferDesc.ByteWidth = byteWidth; // 정점 데이터의 전체 크기
+	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // 정점 버퍼로 사용됨
+
+	D3D11_SUBRESOURCE_DATA vertexBufferData = { vertices };
+
+
+	ID3D11Buffer* vertexBuffer;
+	Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &vertexBuffer);
+
+	return vertexBuffer;
+}
+
 void URenderer::SwapBuffer()
 {
 	SwapChain->Present(1, 0); //스왑체인 프레젠트 호출, 1은 수직동기화, 0은 플래그 없음
@@ -151,8 +176,6 @@ void URenderer::Prepare()
 
 	DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr); //렌더 타겟 뷰 설정, 깊이 스텐실 뷰는 사용하지 않음
 	DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff); //블렌드 상태 설정, 블렌딩 사용하지 않음
-
-
 }
 
 void URenderer::PrepareShader()
@@ -237,6 +260,10 @@ void URenderer::ReleaseShader()
 		SimplePixelShader = nullptr;
 	}
 
+}
+void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
+{
+	vertexBuffer->Release();
 }
 //렌더러에 사용된 모든 리소스를 해제하는 함수
 void URenderer::Release()
