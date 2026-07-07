@@ -21,9 +21,22 @@ struct FVertexSimple
 	float r, g, b, a; // Color
 };
 
+struct FVector
+{
+	float x, y, z;
+	FVector(float _x = 0, float _y = 0, float _z = 0) : x(_x), y(_y), z(_z) {}
+};
+
 
 class URenderer
 {
+public:
+	struct FConstantBuffer
+	{
+		FVector Offset;
+		float	Pad;
+	};
+
 public:
 
 	//Direct3D 11장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인트
@@ -45,6 +58,9 @@ public:
 	ID3D11VertexShader* SimpleVertexShader = nullptr; // 정점 쉐이더
 	ID3D11PixelShader* SimplePixelShader = nullptr; // 픽셀 쉐이더
 	ID3D11InputLayout* SimpleInputLayout = nullptr; // 정점 데이터의 형식을 정의하는 입력 레이아웃
+
+
+
 	unsigned int Stride; // 정점 데이터의 한 정점당 바이트 수 (3개의 float로 구성된 정점)
 
 public:
@@ -61,13 +77,16 @@ public:
 
 	ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
 
+	void CreateConstantBuffer();
+
 
 	void SwapBuffer();
 
-
 	void Prepare();
-
+	
 	void PrepareShader();
+
+	void UpdateConstantBuffer(FVector offset);
 
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT NumVertices);
 
@@ -78,6 +97,8 @@ public:
 	void ReleaseShader();
 
 	void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
+
+	void ReleaseConstantBuffer();
 
 	void Release();
 

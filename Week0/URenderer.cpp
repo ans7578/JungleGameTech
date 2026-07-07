@@ -159,6 +159,18 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	return vertexBuffer;
 }
 
+void URenderer::CreateConstantBuffer()
+{
+	D3D11_BUFFER_DESC constantBufferDesc = {};
+
+	constantBufferDesc.ByteWidth = sizeof(FConstantBuffer) + 0xf & 0xfffffff0; // 상수 버퍼의 크기를 16바이트 단위로 맞춤
+	constantBufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 동적 버퍼로 설정, CPU에서 데이터를 업데이트할 수 있음
+	constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
+	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
+
+	Device->CreateBuffer(&constantBufferDesc, nullptr, &ConstantBuffer); // 상수 버퍼 생성
+}
+
 void URenderer::SwapBuffer()
 {
 	SwapChain->Present(1, 0); //스왑체인 프레젠트 호출, 1은 수직동기화, 0은 플래그 없음
@@ -183,6 +195,31 @@ void URenderer::PrepareShader()
 	DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0); //정점 쉐이더 설정
 	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0); //픽셀 쉐이더 설정
 	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
+
+	//버텍스 쉐이더에 상수 버퍼를 설정한다.
+
+
+	if (ConstantBuffer)
+	{
+		DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer); //상수 버퍼를 정점 쉐이더에 바인딩
+	}
+
+}
+
+void URenderer::UpdateConstantBuffer(FVector offset)
+{
+	if (ConstantBuffer)
+	{
+		D3D11_MAPPED_SUBRESOURCE constantBufferMSR;
+
+		DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantBufferMSR);
+
+		FConstantBuffer* constantBufferData = (FConstantBuffer*)constantBufferMSR.pData;
+		{
+			constantBufferData->Offset = offset;
+		}
+		DeviceContext->Unmap(ConstantBuffer, 0);
+	}
 }
 
 void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT NumVertices)
@@ -264,6 +301,14 @@ void URenderer::ReleaseShader()
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
 {
 	vertexBuffer->Release();
+}
+void URenderer::ReleaseConstantBuffer()
+{
+	if (ConstantBuffer)
+	{
+		ConstantBuffer->Release();
+		ConstantBuffer = nullptr;
+	}
 }
 //렌더러에 사용된 모든 리소스를 해제하는 함수
 void URenderer::Release()

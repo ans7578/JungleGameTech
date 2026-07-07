@@ -79,7 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	renderer.Create(hwnd);
 	renderer.CreateShader();
-
+	renderer.CreateConstantBuffer();
 
 	//ImGui 생성
 	IMGUI_CHECKVERSION();
@@ -122,6 +122,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	bool bIsExit = false;
 	//각종 생성하는 코드를 여기에 추가한다.
 
+	FVector offset = (0.0f);
 
 	//MainLoop(Quit Message가 들어오기 전까지 아래 루프를 무한히 실행한다)
 	while (bIsExit == false)
@@ -141,6 +142,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				bIsExit = true;
 				break;
+			}
+			else if (msg.message == WM_KEYDOWN)
+			{
+				if (msg.wParam == VK_LEFT)
+				{
+					offset.x -= 0.01f;
+				}
+				if (msg.wParam == VK_RIGHT)
+				{
+					offset.x += 0.01f;
+				}
+				if (msg.wParam == VK_UP)
+				{
+					offset.y += 0.01f;
+				}
+				if (msg.wParam == VK_DOWN)
+				{
+					offset.y -= 0.01f;
+				}
 			}
 		}
 		////////////////////////////////////
@@ -195,6 +215,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
+		renderer.UpdateConstantBuffer(offset);
 
 		switch (typePrimitive)
 		{
@@ -226,7 +247,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseVertexBuffer(vertexBufferCube);
 	renderer.ReleaseVertexBuffer(vertexBufferSphere);
 
-
+	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();
 	renderer.Release();
 
