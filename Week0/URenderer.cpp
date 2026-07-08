@@ -132,7 +132,7 @@ void URenderer::CreateShader()
 
 }
 
-ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
+ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth, D3D11_USAGE usage)
 {
 
 	//버텍스 버퍼 생성
@@ -147,7 +147,8 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 
 	D3D11_BUFFER_DESC vertexBufferDesc = {};
 	vertexBufferDesc.ByteWidth = byteWidth; // 정점 데이터의 전체 크기
-	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	vertexBufferDesc.Usage = usage;
+	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // 정점 버퍼로 사용됨
 
 	D3D11_SUBRESOURCE_DATA vertexBufferData = { vertices };
@@ -159,11 +160,12 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	return vertexBuffer;
 }
 
-ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth)
+ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage)
 {
 	D3D11_BUFFER_DESC indexBufferDesc = {};
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT; //기본으로
+	indexBufferDesc.Usage = usage; //기본으로
 	indexBufferDesc.ByteWidth = byteWidth;
+	indexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER; // 인덱스 버퍼로 사용됨
 
 	D3D11_SUBRESOURCE_DATA indexBufferData;

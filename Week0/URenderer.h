@@ -50,9 +50,9 @@ public:
 
 	void CreateShader();
 
-	ID3D11Buffer*	CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
+	ID3D11Buffer*	CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth, D3D11_USAGE usage);
 
-	ID3D11Buffer* CreateIndexBuffer(UINT* indices, UINT byteWidth);
+	ID3D11Buffer* CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage);
 
 
 	void CreateConstantBuffer();

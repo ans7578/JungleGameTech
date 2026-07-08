@@ -3,7 +3,11 @@
 
 AActor::AActor(URenderer* renderer, FVertexSimple* fVertices, UINT iVerticesData, UINT* iIndices, UINT iIndicesData)
 {
-	SetBuffer(renderer, fVertices, iVerticesData, iIndices, iIndicesData);
+	
+	m_pVertexBuffer = renderer->CreateVertexBuffer(fVertices, iVerticesData, D3D11_USAGE_DYNAMIC);
+	m_pIndexBuffer = renderer->CreateIndexBuffer(iIndices, iIndicesData, D3D11_USAGE_DYNAMIC);
+
+	m_iIndicesCount = iIndicesData / sizeof(UINT);
 
 	std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
@@ -13,6 +17,7 @@ AActor::AActor(URenderer* renderer, FVertexSimple* fVertices, UINT iVerticesData
 
 	m_vVelocity.x = ((float)(rand() % 100 - 50)) * 0.001f;
 	m_vVelocity.y = ((float)(rand() % 100 - 50)) * 0.001f;
+
 }
 
 AActor::~AActor()
@@ -34,22 +39,22 @@ void AActor::Update()
 	m_vPosition += m_vVelocity;
 }
 
-void AActor::SetBuffer(URenderer* Renderer, FVertexSimple* fVertices, UINT iVerticesData, UINT* iIndices, UINT iIndicesData)
+void AActor::SetBuffer(URenderer* renderer, FVertexSimple* fVertices, UINT iVerticesData, UINT* iIndices, UINT iIndicesData)
 {
-	if (Renderer == nullptr)
+	if (renderer == nullptr)
 		return;
 
-	if (m_pVertexBuffer)
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	renderer->DeviceContext->Map(m_pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	{
-		m_pVertexBuffer->Release();
+		memcpy(mappedResource.pData, fVertices, iVerticesData);
 	}
-	if (m_pIndexBuffer)
+	renderer->DeviceContext->Unmap(m_pVertexBuffer, 0);
+
+	renderer->DeviceContext->Map(m_pIndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	{
-		m_pIndexBuffer->Release();
+		memcpy(mappedResource.pData, iIndices, iIndicesData);
 	}
+	renderer->DeviceContext->Unmap(m_pIndexBuffer, 0);
 
-	m_pVertexBuffer = Renderer->CreateVertexBuffer(fVertices, iVerticesData);
-	m_pIndexBuffer = Renderer->CreateIndexBuffer(iIndices, iIndicesData);
-
-	m_iIndicesCount = iIndicesData / sizeof(UINT);
 }
