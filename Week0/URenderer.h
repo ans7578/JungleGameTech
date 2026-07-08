@@ -1,41 +1,6 @@
 #pragma once
 
-#pragma comment(lib, "user32")
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "d3dcompiler")
-
-
-#include <d3d11.h>
-#include <d3dcompiler.h>
-
-//ImGui
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
-#include "ImGui/imgui_impl_dx11.h"
-#include "ImGui/imgui_impl_win32.h"
-
-// 1. Define the triangle vertices
-struct FVertexSimple
-{
-	float x, y, z;    // Position
-	float r, g, b, a; // Color
-
-	void SetColor(float _r, float _g, float _b, float _a)
-	{
-		r = _r;
-		g = _g;
-		b = _b;
-		a = _a;
-	}
-
-};
-
-struct FVector
-{
-	float x, y, z;
-	FVector(float _x = 0, float _y = 0, float _z = 0) : x(_x), y(_y), z(_z) {}
-};
-
+#include "Headers.h"
 
 class URenderer
 {

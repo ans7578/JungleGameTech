@@ -162,7 +162,7 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth)
 {
 	D3D11_BUFFER_DESC indexBufferDesc = {};
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT; // 인덱스 버퍼는 변경되지 않으므로 IMMUTABLE로 설정
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT; //기본으로
 	indexBufferDesc.ByteWidth = byteWidth;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER; // 인덱스 버퍼로 사용됨
 
@@ -216,7 +216,7 @@ void URenderer::PrepareShader()
 
 	//버텍스 쉐이더에 상수 버퍼를 설정한다.
 
-
+	
 	if (ConstantBuffer)
 	{
 		DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer); //상수 버퍼를 정점 쉐이더에 바인딩

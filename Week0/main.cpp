@@ -1,30 +1,17 @@
-#include <Windows.h>
+#include "Headers.h"
 
-
-#pragma comment(lib, "user32")
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "d3dcompiler")
-
-
-#include <d3d11.h>
-#include <d3dcompiler.h>
-
-#include "URenderer.h"
-#include "Cube.h"
-#include "Circle.h"
-#include "Rect.h"
 #include "Sphere.h"
-
-enum ETypePrimitive
-{
-	EPT_Triangle,
-	EPT_Cube,
-	EPT_Sphere,
-	EPT_Max,
-};
+#include "Rect.h"
+#include "Circle.h"
+#include "Cube.h"
+#include "Actor.h"
+#include "URenderer.h"
 
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+
+std::vector<AActor*> vecActors;
 
 
 int WINAPI WndProc(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -52,6 +39,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
+
+void CreateCircle(URenderer* renderer, FVertexSimple* fVertices,
+	UINT iVerticesData,
+	UINT* iIndices,
+	UINT	iIndicesData)
+{
+
+	AActor* actor = new AActor(renderer,
+		fVertices, iVerticesData,
+		iIndices, iIndicesData);
+
+	vecActors.push_back(actor);
+}
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -90,78 +91,48 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplWin32_Init((void*)hwnd);
 	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
 
-
+	float scaleMod = 0.1f;
 
 	//렌더러와 쉐이더 생성 이후 버텍스 버퍼를 생성한다.
+	CirclePrimitive circlePrimitiveWhite;
+	circlePrimitiveWhite.Create(FVector(1,1,1));
+	circlePrimitiveWhite.SetSize(scaleMod);
+
+	CirclePrimitive circlePrimitiveRed;
+	circlePrimitiveRed.Create(FVector(1, 0, 0));
+	circlePrimitiveRed.SetSize(scaleMod);
 
 
-	// 삼각형을 하드 코딩(삼각형 정점 3개의 포지션과 색상값을 정의해준다)
-	FVertexSimple triangle_vertices[] =
-	{
-		{  0.0f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // Top vertex (red)
-		{  1.0f, -1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // Bottom-right vertex (green)
-		{ -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // Bottom-left vertex (blue)
-	};
-
-	UINT numVerticesTriangle = sizeof(triangle_vertices) / sizeof(FVertexSimple);
-	UINT numVerticesCube= sizeof(cube_vertices) / sizeof(FVertexSimple);
-	
-	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
-
-
-	UINT numVerticesRect = sizeof(rect_vertices) / sizeof(FVertexSimple);
-
-	CirclePrimitive circlePrimitive;
-	circlePrimitive.Create();
-
-	float scaleMod = 0.1f;
-	
-	for (UINT i = 0; i < numVerticesRect; i++)
-	{
-		rect_vertices[i].x *= scaleMod;
-		rect_vertices[i].y *= scaleMod;
-		rect_vertices[i].z *= scaleMod;
-	}
-	for (UINT i = 0; i < numVerticesSphere; i++)
-	{
-		sphere_vertices[i].x *= scaleMod;
-		sphere_vertices[i].y *= scaleMod;
-		sphere_vertices[i].z *= scaleMod;
-
-	}
-
-	circlePrimitive.SetSize(scaleMod);
-
-
-	ID3D11Buffer* vertexBufferTriangle = renderer.CreateVertexBuffer(triangle_vertices, sizeof(triangle_vertices));
-	ID3D11Buffer* vertexBufferCube= renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
-	
-	ID3D11Buffer* vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
-
-
-
-	
-	ID3D11Buffer* vertexBufferCircle= renderer.CreateVertexBuffer(circlePrimitive.vertices, sizeof(circlePrimitive.vertices));
-	ID3D11Buffer* indexBufferCircle= renderer.CreateIndexBuffer(circlePrimitive.indices, sizeof(circlePrimitive.indices));
-
-
-	ID3D11Buffer* vertexBufferRect= renderer.CreateVertexBuffer(rect_vertices, sizeof(rect_vertices));
-	ID3D11Buffer* indexBufferRect = renderer.CreateIndexBuffer(rect_indices, sizeof(rect_indices));
-
-
-
-
-
-	ETypePrimitive typePrimitive = EPT_Triangle;
-	
 	bool bIsExit = false;
 	//각종 생성하는 코드를 여기에 추가한다.
 
-	FVector offset = (0.0f);
 
+	const float leftBorder = -1.0f;
+	const float rightBorder = 1.0f;
+	const float topBorder = 1.0f;
+	const float bottomBorder = -1.0f;
+	const float sphereRadius = 1.0f;
+
+
+	bool bBoundsBallToScreen = true;
+	bool bPinballMovement = true;
+
+	
+	const int targetFPS = 60;
+	const double targetFrameTime = 1000.0f / targetFPS;
+
+	LARGE_INTEGER frequency;
+	QueryPerformanceFrequency(&frequency);
+
+	LARGE_INTEGER startTime, endTime;
+	double elapsedTime = 0.0f;
+
+
+	//키입력을 처리받는 루프
 	//MainLoop(Quit Message가 들어오기 전까지 아래 루프를 무한히 실행한다)
 	while (bIsExit == false)
 	{
+		QueryPerformanceCounter(&startTime);
 		MSG msg;
 
 		//처리할 메시지가 없을때까지수행
@@ -178,33 +149,94 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bIsExit = true;
 				break;
 			}
+			/*
 			else if (msg.message == WM_KEYDOWN)
 			{
 				if (msg.wParam == VK_LEFT)
 				{
-					offset.x -= 0.01f;
+					offset.x -= fSpeed;
 				}
 				if (msg.wParam == VK_RIGHT)
 				{
-					offset.x += 0.01f;
+					offset.x += fSpeed;
 				}
 				if (msg.wParam == VK_UP)
 				{
-					offset.y += 0.01f;
+					offset.y += fSpeed;
 				}
 				if (msg.wParam == VK_DOWN)
 				{
-					offset.y -= 0.01f;
+					offset.y -= fSpeed;
+				}
+
+				if (bBoundsBallToScreen)
+				{
+					float renderRadius = sphereRadius * scaleMod;
+					if (offset.x < leftBorder + renderRadius)
+					{
+						offset.x = leftBorder + renderRadius;
+					}
+					if (offset.x > rightBorder - renderRadius)
+					{
+						offset.x = rightBorder - renderRadius;
+					}
+					if (offset.y > topBorder - renderRadius)
+					{
+						offset.y = topBorder - renderRadius;
+					}
+					if (offset.y < bottomBorder + renderRadius)
+					{
+						offset.y = bottomBorder + renderRadius;
+					}
+				}
+			}
+			*/
+		}
+		/*
+		
+		*/
+		////////////////////////////////////
+		// 매번 실행되는 코드를 여기에 추가합니다.
+	
+
+		for (AActor* actor : vecActors)
+		{
+			actor->Update();
+
+			if (bPinballMovement)
+			{
+				float renderRadius = sphereRadius * scaleMod;
+
+				FVector veclotiy = actor->GetVelocity();
+
+				if (actor->GetPosition().x < leftBorder + renderRadius)
+				{
+					veclotiy.x = veclotiy.x * -1.f;
+					actor->SetVelocity(veclotiy);
+
+				}
+				if (actor->GetPosition().x > rightBorder - renderRadius)
+				{
+					veclotiy.x = veclotiy.x * -1.f;
+					actor->SetVelocity(veclotiy);
+
+				}
+				if (actor->GetPosition().y > topBorder - renderRadius)
+				{
+					veclotiy.y = veclotiy.y * -1.f;
+					actor->SetVelocity(veclotiy);
+
+				}
+				if (actor->GetPosition().y < bottomBorder + renderRadius)
+				{
+					veclotiy.y = veclotiy.y * -1.f;
+					actor->SetVelocity(veclotiy);
 				}
 			}
 		}
-		////////////////////////////////////
-		// 매번 실행되는 코드를 여기에 추가합니다.
-
-		//준비 작업
+		//렌더 준비 작업
 		renderer.Prepare();
 		renderer.PrepareShader();
-
 		//생성한 버텍스버러를 넘겨 실제 렌더링 호출
 	
 
@@ -216,30 +248,52 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//이후 ImGui  UI 컨트롤 추가는  ImGui::NewFrame()과  ImGui::Render()사이인 여기에 추가합니다.
 	
 		ImGui::Begin("Jungle Property Window");
+		{
+			ImGui::Text("Hello Jungle World!");
+			ImGui::Checkbox("Bound Ball To Screen", &bBoundsBallToScreen);
+			ImGui::Checkbox("Pinball Movement", &bPinballMovement);
+			if (ImGui::Button("CreateCircle"))
+			{
+				if (vecActors.size() > 0)
+				{
+					//새로운 버퍼로 덮어쓰기.
+					vecActors.back()->SetBuffer(&renderer,
+						circlePrimitiveWhite.vertices, circlePrimitiveWhite.GetVerticesSize(),
+						circlePrimitiveWhite.indices, circlePrimitiveWhite.GetIndicesSize());
 
-		ImGui::Text("Hello Jungle World!");
+				}
 
-		//if (ImGui::Button("Quit this app"))
-		//{
-		//	PostMessage(hwnd, WM_QUIT, 0, 0);
-		//}
-
-		
-
+				CreateCircle(&renderer, 
+					circlePrimitiveRed.vertices, circlePrimitiveRed.GetVerticesSize(),
+					circlePrimitiveRed.indices, circlePrimitiveRed.GetIndicesSize());
+			}
+		}
 		ImGui::End();
 
 		////////////////////////////////////////////////////
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		renderer.UpdateConstantBuffer(offset);
+		
+		for (AActor* actor : vecActors)
+		{
+			renderer.UpdateConstantBuffer(actor->GetPosition());
+			renderer.RenderPrimitiveIndexed(actor->GetVertexBuffer(), actor->GetIndexBuffer(), actor->GetIndicesCount());
+		}
 
-		renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
-
-		//renderer.RenderPrimitiveIndexed(vertexBufferCircle, indexBufferCircle, circlePrimitive.indexCount);
-
+		
 		//다 그렸으면 버퍼 교환
 		renderer.SwapBuffer();
+
+		do
+		{
+			Sleep(0);
+			//루프 종료시간 기록
+			QueryPerformanceCounter(&endTime);
+
+			//한프레임이 소요된 시간 계산
+			elapsedTime = (endTime.QuadPart - startTime.QuadPart) * 1000.0 / frequency.QuadPart;
+		} while (elapsedTime < targetFrameTime);
 		/////////////////////////////////////
 	}
 	//소멸하는 코드를 여기에 추가합니다.
@@ -248,24 +302,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-	renderer.ReleaseVertexBuffer(vertexBufferTriangle);
-	renderer.ReleaseVertexBuffer(vertexBufferCube);
-	renderer.ReleaseVertexBuffer(vertexBufferSphere);
-
-	
-	
-	renderer.ReleaseVertexBuffer(vertexBufferCircle);
-	renderer.ReleaseIndexBuffer(indexBufferCircle);
-
-
-	
-	renderer.ReleaseVertexBuffer(vertexBufferRect);
-	renderer.ReleaseIndexBuffer(indexBufferRect);
-
 
 	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();
 	renderer.Release();
+
+	for (int i = vecActors.size()-1; i >= 0; i--)
+	{
+		vecActors.erase(vecActors.begin() + i);
+	}
+
 
 	return 0;
 }

@@ -1,0 +1,7 @@
+﻿  main.cpp
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\Circle.h(52,24): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\Circle.h(53,27): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\Circle.h(65,23): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\Circle.h(66,26): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+MSVCRTD.lib(exe_main.obj) : error LNK2019: _main"int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\Debug\Week0.exe : fatal error LNK1120: 1개의 확인할 수 없는 외부 참조입니다.
