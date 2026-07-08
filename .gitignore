@@ -32,5 +32,12 @@
 *.app
 
 
+# 디버그 심볼 파일 차단
+*.pdb
+*.obj
+*.ilk
+*.iobj
+*.ipdb
+
 .vs/
 *.vsidx

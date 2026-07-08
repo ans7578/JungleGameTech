@@ -4,8 +4,8 @@
 AActor::AActor(URenderer* renderer, FVertexSimple* fVertices, UINT iVerticesData, UINT* iIndices, UINT iIndicesData)
 {
 	
-	m_pVertexBuffer = renderer->CreateVertexBuffer(fVertices, iVerticesData, D3D11_USAGE_DYNAMIC);
-	m_pIndexBuffer = renderer->CreateIndexBuffer(iIndices, iIndicesData, D3D11_USAGE_DYNAMIC);
+	m_pVertexBuffer = renderer->CreateVertexBuffer(fVertices, iVerticesData, D3D11_USAGE_DYNAMIC , "ActorVertexBuffer");
+	m_pIndexBuffer = renderer->CreateIndexBuffer(iIndices, iIndicesData, D3D11_USAGE_DYNAMIC,"ActorIndexBuffer");
 
 	m_iIndicesCount = iIndicesData / sizeof(UINT);
 

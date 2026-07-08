@@ -56,6 +56,12 @@ void CreateCircle(URenderer* renderer, FVertexSimple* fVertices,
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+	#if defined(_DEBUG)
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	#endif
+
+
+
 	//윈도우 클래스 이름
 	WCHAR WindowClass[] = L"JungleWindowClass";
 
@@ -267,6 +273,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					circlePrimitiveRed.vertices, circlePrimitiveRed.GetVerticesSize(),
 					circlePrimitiveRed.indices, circlePrimitiveRed.GetIndicesSize());
 			}
+			if (ImGui::Button("ClearActors"))
+			{
+				//vecActors.clear();
+			}
 		}
 		ImGui::End();
 
@@ -302,15 +312,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
+	for (int i = vecActors.size() - 1; i >= 0; i--)
+	{
+		vecActors.erase(vecActors.begin() + i);
+	}
+
 
 	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();
 	renderer.Release();
 
-	for (int i = vecActors.size()-1; i >= 0; i--)
-	{
-		vecActors.erase(vecActors.begin() + i);
-	}
+	
 
 
 	return 0;

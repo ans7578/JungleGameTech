@@ -1,6 +1,11 @@
 #include "URenderer.h"
 
 
+#if defined(_DEBUG)
+#include <d3dcommon.h>
+#pragma comment(lib, "dxguid.lib") // 링커에게 DX GUID 라이브러리를 결합하라고 지시한다.
+#endif
+
 
 
 void URenderer::Create(HWND hWindow)
@@ -41,7 +46,14 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
 		nullptr, //기본 어댑터 사용
 		D3D_DRIVER_TYPE_HARDWARE, //하드웨어 가속 사용
 		nullptr, //소프트웨어 드라이버 사용하지 않음
-		D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG, //장치 생성 플래그, BGRA 지원 및 디버그 모드
+
+		D3D11_CREATE_DEVICE_BGRA_SUPPORT 
+		
+		#if defined(_DEBUG)
+		| D3D11_CREATE_DEVICE_DEBUG  //장치 생성 플래그, BGRA 지원 및 디버그 모드
+		#endif
+		,
+
 		featurelevels, //지원할 기능 레벨 배열
 		ARRAYSIZE(featurelevels), //기능 레벨 배열 크기
 		D3D11_SDK_VERSION, //Direct3D SDK 버전
@@ -160,6 +172,37 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	return vertexBuffer;
 }
 
+ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth, D3D11_USAGE usage, const char* bufferName)
+{
+	//버텍스 버퍼 생성
+	/* D3D11_USAGE
+		해당 리소스가 CPU와 GPU 중 어느 쪽에서 주로 사용될지를 나타내는 열거형입니다.
+		D3D11_USAGE_DEFAULT: GPU에서 주로 사용되며, CPU에서 직접 접근할 수 없습니다. 일반적인 렌더링에 적합합니다.(GPU에서만 접근 가능)
+		D3D11_USAGE_IMMUTABLE: 리소스가 생성된 후 변경되지 않음을 나타냅니다. CPU에서 데이터를 설정한 후에는 변경할 수 없습니다. 주로 정적 데이터에 사용됩니다.(GPU에서만 접근 가능)(가장 빠름)
+		D3D11_USAGE_DYNAMIC: CPU에서 자주 변경되는 리소스에 적합합니다. CPU에서 데이터를 업데이트할 수 있으며, GPU에서 읽을 수 있습니다.
+		D3D11_USAGE_STAGING: CPU와 GPU 간의 데이터 전송을 위해 사용됩니다. 주로 리소스를 읽거나 쓰기 위해 사용됩니다.(CPU에서만 접근 가능, GPU에선 복사만 가능)
+	*/
+
+
+	D3D11_BUFFER_DESC vertexBufferDesc = {};
+	vertexBufferDesc.ByteWidth = byteWidth; // 정점 데이터의 전체 크기
+	vertexBufferDesc.Usage = usage;
+	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // 정점 버퍼로 사용됨
+
+	D3D11_SUBRESOURCE_DATA vertexBufferData = { vertices };
+
+
+	ID3D11Buffer* vertexBuffer;
+	Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &vertexBuffer);
+
+#if defined(_DEBUG)
+	vertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(bufferName), bufferName);
+#endif
+
+	return vertexBuffer;
+}
+
 ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage)
 {
 	D3D11_BUFFER_DESC indexBufferDesc = {};
@@ -179,6 +222,29 @@ ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_
 	return indexBuffer;
 }
 
+ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage, const char* bufferName)
+{
+	D3D11_BUFFER_DESC indexBufferDesc = {};
+	indexBufferDesc.Usage = usage; //기본으로
+	indexBufferDesc.ByteWidth = byteWidth;
+	indexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER; // 인덱스 버퍼로 사용됨
+
+	D3D11_SUBRESOURCE_DATA indexBufferData;
+
+	indexBufferData.pSysMem = indices;
+
+	ID3D11Buffer* indexBuffer = nullptr;
+
+	Device->CreateBuffer(&indexBufferDesc, &indexBufferData, &indexBuffer);
+
+#if defined(_DEBUG)
+	indexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(bufferName), bufferName);
+#endif
+
+	return indexBuffer;
+}
+
 void URenderer::CreateConstantBuffer()
 {
 	D3D11_BUFFER_DESC constantBufferDesc = {};
@@ -188,7 +254,15 @@ void URenderer::CreateConstantBuffer()
 	constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
 	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
 
+
+
 	Device->CreateBuffer(&constantBufferDesc, nullptr, &ConstantBuffer); // 상수 버퍼 생성
+
+#if defined(_DEBUG)
+	const char* bufferName = "ConstantBuffer";
+	ConstantBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(bufferName), bufferName);
+#endif
+
 }
 
 void URenderer::SwapBuffer()
@@ -275,16 +349,29 @@ void URenderer::ReleaseDeviceAndSwapChain()
 		SwapChain = nullptr;
 	}
 
-	if (Device)
-	{
-		Device->Release();
-		Device = nullptr;
-	}
 	if (DeviceContext)
 	{
 		DeviceContext->Release();
 		DeviceContext = nullptr;
 	}
+
+	#if defined(_DEBUG)
+		ID3D11Debug* pDebug = nullptr;
+		HRESULT hr = Device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&pDebug));
+		if (SUCCEEDED(hr) && pDebug != nullptr)
+		{
+			// 출력창에 해제되지 않은 DX11 객체들의 상세 정보를 기록한다.
+			pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			pDebug->Release();
+		}
+	#endif
+
+	if (Device)
+	{
+		Device->Release();
+		Device = nullptr;
+	}
+	
 
 }
 
@@ -354,5 +441,10 @@ void URenderer::Release()
 	DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);	
 
 	ReleaseFrameBuffer();
+
 	ReleaseDeviceAndSwapChain();
+
+
+
+
 }
