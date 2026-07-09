@@ -1,2 +1,8 @@
-﻿  URenderer.cpp
+﻿  Actor.cpp
+  main.cpp
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\main.cpp(201,44): warning C4305: '초기화 중': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\main.cpp(262,5): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\main.cpp(270,5): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\main.cpp(310,2): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
   Week0.vcxproj -> C:\Users\ruaeo\OneDrive\Desktop\ParasiteMoon\JungleGameTech\Week0\x64\Debug\Week0.exe

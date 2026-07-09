@@ -3,32 +3,25 @@
 #include "URenderer.h"
 
 
+class CMesh;
+
 class AActor
 {
 public:
-	AActor(URenderer* Renderer, FVertexSimple* fVertices, 
-		UINT iVerticesData,
-		UINT*	 iIndices, 
-		UINT	iIndicesData);
+	AActor();
 	~AActor();
-
 
 public:
 	void Update();
 
-	void			SetBuffer(URenderer* Renderer, FVertexSimple* fVertices,
-		UINT iVerticesData,
-		UINT* iIndices,
-		UINT	iIndicesData);
-
-
-	ID3D11Buffer*	GetVertexBuffer() { return m_pVertexBuffer; }
-	ID3D11Buffer*	GetIndexBuffer() { return m_pIndexBuffer; }
-	UINT			GetIndicesCount() { return m_iIndicesCount; }
-
+	
+	CMesh*			GetMesh() { return m_pMesh; }
 	FVector			GetPosition() { return m_vPosition; }
-
 	FVector			GetVelocity() { return m_vVelocity; }
+	
+
+
+	void			SetMesh(EMeshType eMeshType);
 	void			SetVelocity(FVector fVelocity) { m_vVelocity = fVelocity; }
 
 private:
@@ -37,8 +30,7 @@ private:
 
 	UINT m_iIndicesCount = 0;
 
-	ID3D11Buffer* m_pVertexBuffer = nullptr;
-	ID3D11Buffer* m_pIndexBuffer = nullptr;
+	CMesh* m_pMesh;
 
 };
 

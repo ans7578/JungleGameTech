@@ -2,9 +2,9 @@
 
 #include "Sphere.h"
 #include "Rect.h"
-#include "Circle.h"
 #include "Cube.h"
 #include "Actor.h"
+#include "Mesh.h"
 #include "URenderer.h"
 
 
@@ -40,18 +40,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void CreateCircle(URenderer* renderer, FVertexSimple* fVertices,
-	UINT iVerticesData,
-	UINT* iIndices,
-	UINT	iIndicesData)
-{
-
-	AActor* actor = new AActor(renderer,
-		fVertices, iVerticesData,
-		iIndices, iIndicesData);
-
-	vecActors.push_back(actor);
-}
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -59,8 +47,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	#if defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	#endif
-
-
 
 	//윈도우 클래스 이름
 	WCHAR WindowClass[] = L"JungleWindowClass";
@@ -90,23 +76,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateShader();
 	renderer.CreateConstantBuffer();
 
+	//매니저 세팅
+	CResourceManager::GetInstance().SetupResource(&renderer);
+
+
+
 	//ImGui 생성
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplWin32_Init((void*)hwnd);
 	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
-
-	float scaleMod = 0.1f;
-
-	//렌더러와 쉐이더 생성 이후 버텍스 버퍼를 생성한다.
-	CirclePrimitive circlePrimitiveWhite;
-	circlePrimitiveWhite.Create(FVector(1,1,1));
-	circlePrimitiveWhite.SetSize(scaleMod);
-
-	CirclePrimitive circlePrimitiveRed;
-	circlePrimitiveRed.Create(FVector(1, 0, 0));
-	circlePrimitiveRed.SetSize(scaleMod);
 
 
 	bool bIsExit = false;
@@ -133,7 +113,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0f;
 
-
 	//키입력을 처리받는 루프
 	//MainLoop(Quit Message가 들어오기 전까지 아래 루프를 무한히 실행한다)
 	while (bIsExit == false)
@@ -155,9 +134,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bIsExit = true;
 				break;
 			}
-			/*
+			
 			else if (msg.message == WM_KEYDOWN)
 			{
+				/*
 				if (msg.wParam == VK_LEFT)
 				{
 					offset.x -= fSpeed;
@@ -195,8 +175,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						offset.y = bottomBorder + renderRadius;
 					}
 				}
+				*/
 			}
-			*/
+
+			else if (msg.message == WM_LBUTTONDOWN)
+			{
+				int mouseX = LOWORD(msg.lParam);
+				int mouseY = HIWORD(msg.lParam);
+			}
+			
 		}
 		/*
 		
@@ -211,7 +198,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			if (bPinballMovement)
 			{
-				float renderRadius = sphereRadius * scaleMod;
+				float renderRadius = sphereRadius * 0.1;
 
 				FVector veclotiy = actor->GetVelocity();
 
@@ -262,20 +249,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				if (vecActors.size() > 0)
 				{
-					//새로운 버퍼로 덮어쓰기.
-					vecActors.back()->SetBuffer(&renderer,
-						circlePrimitiveWhite.vertices, circlePrimitiveWhite.GetVerticesSize(),
-						circlePrimitiveWhite.indices, circlePrimitiveWhite.GetIndicesSize());
+					//하얀색 공 생성
+					vecActors.back()->SetMesh(EMeshType::CIRCLE_WHITE);
 
 				}
-
-				CreateCircle(&renderer, 
-					circlePrimitiveRed.vertices, circlePrimitiveRed.GetVerticesSize(),
-					circlePrimitiveRed.indices, circlePrimitiveRed.GetIndicesSize());
+				AActor* actor = new AActor();
+				actor->SetMesh(EMeshType::CIRCLE_RED);
+				vecActors.push_back(actor);
 			}
-			if (ImGui::Button("ClearActors"))
+			if (ImGui::Button("ClearAndDelete"))
 			{
-				//vecActors.clear();
+				for (int i = vecActors.size() - 1; i >= 0; i--)
+				{
+					delete vecActors[i];
+					vecActors.erase(vecActors.begin() + i);
+				}
+			}
+			if (ImGui::Button("ClearOnly"))
+			{
+				for (int i = vecActors.size() - 1; i >= 0; i--)
+					vecActors.erase(vecActors.begin() + i);
+				{
+				}
 			}
 		}
 		ImGui::End();
@@ -288,7 +283,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (AActor* actor : vecActors)
 		{
 			renderer.UpdateConstantBuffer(actor->GetPosition());
-			renderer.RenderPrimitiveIndexed(actor->GetVertexBuffer(), actor->GetIndexBuffer(), actor->GetIndicesCount());
+			renderer.RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetIndexCount());
 		}
 
 		
@@ -314,17 +309,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	for (int i = vecActors.size() - 1; i >= 0; i--)
 	{
+		delete vecActors[i];
 		vecActors.erase(vecActors.begin() + i);
 	}
 
+	//매니저 해제
+	CResourceManager::GetInstance().ReleaseSingleton();
 
 	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();
 	renderer.Release();
 
 	
-
-
 	return 0;
 }
 

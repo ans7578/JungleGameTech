@@ -3,7 +3,7 @@
 
 #if defined(_DEBUG)
 #include <d3dcommon.h>
-#pragma comment(lib, "dxguid.lib") // 링커에게 DX GUID 라이브러리를 결합하라고 지시한다.
+	#pragma comment(lib, "dxguid.lib") // 링커에게 DX GUID 라이브러리를 결합하라고 지시한다.
 #endif
 
 
@@ -53,7 +53,6 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
 		| D3D11_CREATE_DEVICE_DEBUG  //장치 생성 플래그, BGRA 지원 및 디버그 모드
 		#endif
 		,
-
 		featurelevels, //지원할 기능 레벨 배열
 		ARRAYSIZE(featurelevels), //기능 레벨 배열 크기
 		D3D11_SDK_VERSION, //Direct3D SDK 버전
@@ -160,7 +159,6 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	D3D11_BUFFER_DESC vertexBufferDesc = {};
 	vertexBufferDesc.ByteWidth = byteWidth; // 정점 데이터의 전체 크기
 	vertexBufferDesc.Usage = usage;
-	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // 정점 버퍼로 사용됨
 
 	D3D11_SUBRESOURCE_DATA vertexBufferData = { vertices };
@@ -208,7 +206,6 @@ ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_
 	D3D11_BUFFER_DESC indexBufferDesc = {};
 	indexBufferDesc.Usage = usage; //기본으로
 	indexBufferDesc.ByteWidth = byteWidth;
-	indexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER; // 인덱스 버퍼로 사용됨
 
 	D3D11_SUBRESOURCE_DATA indexBufferData;
