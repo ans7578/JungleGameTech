@@ -7,6 +7,9 @@
 #include "Mesh.h"
 #include "URenderer.h"
 
+//Managers
+#include "./Managers/LevelManager.h"
+#include "./Managers/ResourceManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

@@ -1,8 +1,7 @@
 #include "ResourceManager.h"
-#include "URenderer.h"
-#include "Circle.h"
-#include "Mesh.h"
-
+#include "../URenderer.h"
+#include "../Mesh.h"
+#include "../Circle.h"
 
 // 1. static 멤버 변수는 반드시 .cpp 파일에서 실체화 및 초기화를 해줘야 한다.
 CResourceManager* CResourceManager::instance = nullptr;
@@ -31,7 +30,7 @@ CMesh* CResourceManager::GetMesh(EMeshType eResourceType)
 
 void CResourceManager::ReleaseSingleton()
 {
-	for (std::pair< EMeshType, CMesh*> elem : m_mapResources)
+	for (std::pair<EMeshType, CMesh*> elem : m_mapResources)
 	{
 		delete	elem.second;
 	}

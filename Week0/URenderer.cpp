@@ -1,6 +1,5 @@
 #include "URenderer.h"
 
-
 #if defined(_DEBUG)
 #include <d3dcommon.h>
 	#pragma comment(lib, "dxguid.lib") // 링커에게 DX GUID 라이브러리를 결합하라고 지시한다.

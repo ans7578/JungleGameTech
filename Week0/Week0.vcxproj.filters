@@ -19,6 +19,12 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{be3255db-443a-4a8b-85ef-ae5c47319c1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Levels">
+      <UniqueIdentifier>{d196ae61-72ed-4f36-86fb-ebf3aa3cf6d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Levels">
+      <UniqueIdentifier>{c171f517-da63-479a-9c9c-e2d2461611dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,10 +57,16 @@
     <ClCompile Include="Actor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
+    <ClCompile Include="Managers\ResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\LevelBase.cpp">
+      <Filter>소스 파일\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\LevelManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,10 +119,16 @@
     <ClInclude Include="Headers.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
+    <ClInclude Include="Managers\ResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\LevelBase.h">
+      <Filter>헤더 파일\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\LevelManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
