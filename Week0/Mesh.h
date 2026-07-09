@@ -31,6 +31,8 @@ protected:
 	ID3D11Buffer*	m_pVertexBuffer;
 	ID3D11Buffer*	m_pIndexBuffer;
 
+	ID3D11Buffer*	m_constantBuffer;
+
 	UINT			m_iVertexStride; // 객체 하나의 사이즈
 
 	UINT			m_iVerticesSize;

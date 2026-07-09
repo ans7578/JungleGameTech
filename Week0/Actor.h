@@ -3,6 +3,7 @@
 #include "URenderer.h"
 
 
+enum EMeshType;
 class CMesh;
 
 class AActor

@@ -1,5 +1,5 @@
 #include "Actor.h"
-#include "ResourceManager.h"
+#include "./Managers/ResourceManager.h"
 #include "Mesh.h"
 
 AActor::AActor()

@@ -23,6 +23,24 @@ struct FVector
 	}
 };
 
+struct FColor
+{
+	float r, g, b, a; // Color
+
+	void SetColor(float _r, float _g, float _b, float _a)
+	{
+		r = _r;
+		g = _g;
+		b = _b;
+		a = _a;
+	}
+	void SetColor(FColor color)
+	{
+		this->SetColor(color.r, color.g, color.b, color.a);
+	}
+};
+
+
 // 1. Define the triangle vertices
 struct FVertexSimple
 {
