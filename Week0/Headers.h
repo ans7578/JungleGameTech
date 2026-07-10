@@ -8,6 +8,13 @@
 #include <ctime>   // time 함수 사용
 #include <map>
 
+//dx
+#pragma comment(lib, "user32")
+#pragma comment(lib, "d3d11")
+#pragma comment(lib, "d3dcompiler")
+#include <d3d11.h>
+#include <d3dcompiler.h>
+
 
 //ImGui
 #include "ImGui/imgui.h"

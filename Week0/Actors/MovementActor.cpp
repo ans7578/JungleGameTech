@@ -16,22 +16,22 @@ AMovementActor::~AMovementActor()
 void AMovementActor::Update()
 {
 
-	if (CInputManager::GetInstance().GetKeyDown() == VK_UP)
+	if (CInputManager::GetInstance().GetKeyDown(VK_UP))
 	{
 		m_fPosition.y += m_moveAmount;
 	}
 
-	if (CInputManager::GetInstance().GetKeyDown() == VK_DOWN)
+	if (CInputManager::GetInstance().GetKeyDown(VK_DOWN))
 	{
 		m_fPosition.y -= m_moveAmount;
 	}
 
-	if (CInputManager::GetInstance().GetKeyDown() == VK_RIGHT)
+	if (CInputManager::GetInstance().GetKeyDown(VK_RIGHT))
 	{
 		m_fPosition.x += m_moveAmount;
 	}
 
-	if (CInputManager::GetInstance().GetKeyDown() == VK_LEFT)
+	if (CInputManager::GetInstance().GetKeyDown(VK_LEFT))
 	{
 		m_fPosition.x -= m_moveAmount;
 	}

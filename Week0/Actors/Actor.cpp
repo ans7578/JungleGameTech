@@ -37,6 +37,11 @@ void AActor::SetMesh(EMeshType eMeshType)
 	m_pMesh = CResourceManager::GetInstance().GetMesh(eMeshType);
 }
 
+void AActor::SetVelocity(float fVelocity)
+{
+	m_fVelocity.SetVector(fVelocity);
+}
+
 void AActor::SetSize(float scala)
 {
 	m_fSize.SetVector(scala);
@@ -50,5 +55,10 @@ void AActor::SetColor(float color)
 void AActor::SetColor(const FColor& color)
 {
 	m_fColor = color;
+}
+
+URenderer::FConstantBuffer& const AActor::GetConstantBuffer()
+{
+	return m_fCBuffer;
 }
 

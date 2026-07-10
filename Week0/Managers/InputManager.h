@@ -1,6 +1,8 @@
 #pragma once
 #include "../Headers.h"
 
+#define KEYSIZE 256
+
 class CInputManager
 {
 
@@ -18,7 +20,8 @@ public:
 
 	void	UpdateInput(MSG& msg);
 
-	WPARAM	GetKeyDown();
+	bool	GetKeyDown(WPARAM wParam);
+
 
 	void	SetupInput();
 
@@ -26,7 +29,7 @@ public:
 private:
 	static CInputManager* instance;
 
-	WPARAM		m_iKey;
+	bool	m_iKeys[KEYSIZE];
 
 };
 

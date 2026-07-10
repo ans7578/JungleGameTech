@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actors\Actor.cpp" />
+    <ClCompile Include="Actors\APlatformerActor.cpp" />
     <ClCompile Include="Actors\BoundActor.cpp" />
     <ClCompile Include="Actors\MovementActor.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="Levels\LevelBase.cpp" />
     <ClCompile Include="Levels\Level_BoundBall.cpp" />
     <ClCompile Include="Levels\Level_MovementActor.cpp" />
+    <ClCompile Include="Levels\Level_Platformer.cpp" />
     <ClCompile Include="Managers\InputManager.cpp" />
     <ClCompile Include="Managers\LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -149,11 +151,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors\Actor.h" />
+    <ClInclude Include="Actors\APlatformerActor.h" />
     <ClInclude Include="Actors\BoundActor.h" />
     <ClInclude Include="Actors\MovementActor.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Levels\Level_BoundBall.h" />
     <ClInclude Include="Levels\Level_MovementActor.h" />
+    <ClInclude Include="Levels\Level_Platformer.h" />
     <ClInclude Include="Managers\InputManager.h" />
     <ClInclude Include="Meshs\Primitive\Cube.h" />
     <ClInclude Include="Headers.h" />
@@ -174,6 +178,7 @@
     <ClInclude Include="Meshs\Primitive\Sphere.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="Render\URenderer.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\ShaderW0.hlsl">

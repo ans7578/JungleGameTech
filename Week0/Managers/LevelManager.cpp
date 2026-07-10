@@ -3,6 +3,7 @@
 #include "../Levels/LevelBase.h"
 #include "../Levels/Level_BoundBall.h"
 #include "../Levels/Level_MovementActor.h"
+#include "../Levels/Level_Platformer.h"
 
 CLevelManager* CLevelManager::instance = nullptr;
 
@@ -41,6 +42,8 @@ void CLevelManager::SetupLevels()
 {
 	CreateLevel(LEVEL_0, "BoundBall_0", new CLevel_BoundBall());
 	CreateLevel(LEVEL_1, "MovementActor_0", new CLevel_MovementActor());
+	CreateLevel(LEVEL_2, "Platformer_0", new CLevel_Platformer());
+
 }
 
 void CLevelManager::Init_Level()

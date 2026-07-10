@@ -7,7 +7,6 @@
 void CLevel_MovementActor::Init_Level()
 {
 	AActor* actor = new AMovementActor();
-
 	actor->SetMesh(EMeshType::CIRCLE);
 
 	m_vecActors.push_back(actor);
@@ -48,10 +47,7 @@ void CLevel_MovementActor::Update_Level()
 
 void CLevel_MovementActor::Render_Level(URenderer* renderer)
 {
-	for (AActor* actor : m_vecActors)
-	{
-		renderer->RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetVertexStride(), actor->GetMesh()->GetIndexCount());
-	}
+	__super::Render_Level(renderer);
 }
 
 void CLevel_MovementActor::Render_Debug()

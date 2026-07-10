@@ -1,4 +1,5 @@
 #include "LevelBase.h"
+#include "../Meshs/Mesh.h"
 
 CLevelBase::CLevelBase()
 {
@@ -12,9 +13,20 @@ CLevelBase::~CLevelBase()
 
 void CLevelBase::LateUpdate_Level()
 {
-	for (auto elem : m_vecActors)
+	for (auto actor : m_vecActors)
 	{
-		elem->LateUpdate();
+		actor->LateUpdate();
+	}
+}
+
+void CLevelBase::Render_Level(URenderer* renderer)
+{
+	for (auto actor : m_vecActors)
+	{
+		actor->Render(renderer);
+	
+		renderer->RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetVertexStride(), actor->GetMesh()->GetIndexCount());
+
 	}
 }
 

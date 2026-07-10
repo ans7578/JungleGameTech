@@ -16,7 +16,7 @@ public:
 
 	virtual void LateUpdate_Level();
 
-	virtual void Render_Level(URenderer* renderer) = 0;
+	virtual void Render_Level(URenderer* renderer);
 
 	virtual void Render_Debug();
 

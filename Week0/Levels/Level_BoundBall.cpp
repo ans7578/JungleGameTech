@@ -51,11 +51,7 @@ void CLevel_BoundBall::Update_Level()
 
 void CLevel_BoundBall::Render_Level(URenderer* renderer)
 {
-	for (AActor* actor : m_vecActors)
-	{
-		actor->Render(renderer);
-		renderer->RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetVertexStride(), actor->GetMesh()->GetIndexCount());
-	}
+	__super::Render_Level(renderer);
 }
 
 void CLevel_BoundBall::Release_Level()

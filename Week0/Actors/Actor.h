@@ -31,19 +31,25 @@ public:
 	FVector			GetSize() { return m_fSize; }
 	FColor			GetColor() { return m_fColor; }
 
-
+	
 
 	void			SetMesh(EMeshType eMeshType);
 
 	void			SetPosition(FVector fPosition) { m_fPosition = fPosition; }
 
 	void			SetVelocity(FVector fVelocity) { m_fVelocity = fVelocity; }
+	void			SetVelocity(float fVelocity);
+
 
 	void			SetSize(float scala);
 	void			SetSize(FVector fSize) { m_fSize = fSize; }
 	
 	void			SetColor(float color);
 	void			SetColor(const FColor& color);
+
+
+	//
+	URenderer::FConstantBuffer& const GetConstantBuffer();
 
 
 protected:

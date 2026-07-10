@@ -4,7 +4,7 @@ CInputManager* CInputManager::instance = nullptr;
 
 CInputManager::CInputManager()
 {
-
+	memset(m_iKeys, 0, KEYSIZE);
 }
 
 CInputManager& CInputManager::GetInstance()
@@ -24,17 +24,20 @@ void CInputManager::ReleaseSingleton()
 
 void CInputManager::UpdateInput(MSG& msg)
 {
-	m_iKey = 0;
 
 	if (msg.message == WM_KEYDOWN)
 	{
-		m_iKey = msg.wParam;
+		m_iKeys[msg.wParam] = true;
+	}
+	if (msg.message == WM_KEYUP)
+	{
+		m_iKeys[msg.wParam] = false;
 	}
 }
 
-WPARAM CInputManager::GetKeyDown()
+bool CInputManager::GetKeyDown(WPARAM wParam)
 {
-	return m_iKey;
+	return m_iKeys[wParam];
 }
 
 void CInputManager::SetupInput()
