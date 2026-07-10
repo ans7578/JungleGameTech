@@ -1,5 +1,15 @@
-﻿  Level_Platformer.cpp
+﻿  APlatformerActor.cpp
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Actors\Actor.h(52,28): warning C4227: 오래된 구문을 사용했습니다. 참조의 한정자가 무시됩니다.
-  (소스 파일 'Levels/Level_Platformer.cpp'을(를) 컴파일하는 중)
+  (소스 파일 'Actors/APlatformerActor.cpp'을(를) 컴파일하는 중)
   
+  MovementActor.cpp
+C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Actors\Actor.h(52,28): warning C4227: 오래된 구문을 사용했습니다. 참조의 한정자가 무시됩니다.
+  (소스 파일 'Actors/MovementActor.cpp'을(를) 컴파일하는 중)
+  
+  InputManager.cpp
+  main.cpp
+C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Actors\Actor.h(52,28): warning C4227: 오래된 구문을 사용했습니다. 참조의 한정자가 무시됩니다.
+  (소스 파일 'main.cpp'을(를) 컴파일하는 중)
+  
+  코드를 생성하고 있습니다...
   Week0.vcxproj -> C:\Users\korea_2511\Desktop\JungleGameTech\Week0\x64\Debug\Week0.exe

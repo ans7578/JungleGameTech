@@ -7,6 +7,7 @@
 #include <cstdlib> // rand, srand 함수 사용
 #include <ctime>   // time 함수 사용
 #include <map>
+#include <set>
 
 //dx
 #pragma comment(lib, "user32")

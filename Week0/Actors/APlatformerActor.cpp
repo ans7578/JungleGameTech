@@ -1,7 +1,6 @@
 #include "APlatformerActor.h"
 #include "../Managers/InputManager.h"
 
-
 APlatformerActor::APlatformerActor()
 {
     m_gravity = -0.98f;
@@ -28,16 +27,16 @@ void APlatformerActor::Update()
         m_fVelocity.y += m_gravity;
     }
 
-    if (CInputManager::GetInstance().GetKeyDown(VK_UP))
+    if (CInputManager::GetInstance().GetKeyUp(VK_UP))
     {
-        m_fPosition.y += 50.f;
+        m_fPosition.y += 500.f;
 
     }
-    if (CInputManager::GetInstance().GetKeyDown(VK_LEFT))
+    if (CInputManager::GetInstance().GetKey(VK_LEFT))
     {
         m_fPosition.x -= 50.f;
     }
-    if (CInputManager::GetInstance().GetKeyDown(VK_RIGHT))
+    if (CInputManager::GetInstance().GetKey(VK_RIGHT))
     {
         m_fPosition.x += 50.f;
     }

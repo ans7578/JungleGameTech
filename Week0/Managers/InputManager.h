@@ -3,6 +3,9 @@
 
 #define KEYSIZE 256
 
+
+
+
 class CInputManager
 {
 
@@ -21,6 +24,9 @@ public:
 	void	UpdateInput(MSG& msg);
 
 	bool	GetKeyDown(WPARAM wParam);
+	bool	GetKey(WPARAM wParam);
+
+	bool	GetKeyUp(WPARAM wParam);
 
 
 	void	SetupInput();
@@ -29,7 +35,9 @@ public:
 private:
 	static CInputManager* instance;
 
-	bool	m_iKeys[KEYSIZE];
+	bool	m_bCurrentFrame[KEYSIZE];
+
+	bool	m_bPrevFrame[KEYSIZE];
 
 };
 
