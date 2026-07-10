@@ -1,5 +1,5 @@
 #include "Mesh.h"
-#include "URenderer.h"
+#include "../Render/URenderer.h"
 
 
 CMesh::CMesh(URenderer* renderer, FVertexSimple* vertices, UINT verticesSize, UINT* indices, UINT indexCount)

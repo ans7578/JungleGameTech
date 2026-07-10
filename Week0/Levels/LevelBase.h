@@ -1,7 +1,7 @@
 #pragma once
 #include "../Headers.h"
-
-class AActor;
+#include  "../Actors/Actor.h"
+#include "../Render/URenderer.h"
 
 class CLevelBase 
 {
@@ -14,9 +14,11 @@ public:
 
 	virtual void Update_Level() = 0;
 
-	virtual void Render_Level() = 0;
+	virtual void Render_Level(URenderer* renderer) = 0;
 
-	virtual void Release_Level() = 0;
+	virtual void Render_Debug();
+
+	virtual void Release_Level();
 
 protected:
 	std::vector<AActor*>	m_vecActors;

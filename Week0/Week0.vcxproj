@@ -127,7 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Actors\Actor.cpp" />
+    <ClCompile Include="Actors\BoundActor.cpp" />
+    <ClCompile Include="Actors\MovementActor.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -136,15 +138,24 @@
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Levels\LevelBase.cpp" />
+    <ClCompile Include="Levels\Level_BoundBall.cpp" />
+    <ClCompile Include="Levels\Level_MovementActor.cpp" />
+    <ClCompile Include="Managers\InputManager.cpp" />
     <ClCompile Include="Managers\LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Meshs\Mesh.cpp" />
     <ClCompile Include="Managers\ResourceManager.cpp" />
-    <ClCompile Include="URenderer.cpp" />
+    <ClCompile Include="Render\URenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Actor.h" />
-    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Actors\Actor.h" />
+    <ClInclude Include="Actors\BoundActor.h" />
+    <ClInclude Include="Actors\MovementActor.h" />
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="Levels\Level_BoundBall.h" />
+    <ClInclude Include="Levels\Level_MovementActor.h" />
+    <ClInclude Include="Managers\InputManager.h" />
+    <ClInclude Include="Meshs\Primitive\Cube.h" />
     <ClInclude Include="Headers.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -156,16 +167,16 @@
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="Levels\LevelBase.h" />
     <ClInclude Include="Managers\LevelManager.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Rect.h" />
-    <ClInclude Include="Circle.h" />
+    <ClInclude Include="Meshs\Mesh.h" />
+    <ClInclude Include="Meshs\Primitive\Rect.h" />
+    <ClInclude Include="Meshs\Primitive\Circle.h" />
     <ClInclude Include="Managers\ResourceManager.h" />
-    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="Meshs\Primitive\Sphere.h" />
     <ClInclude Include="Structs.h" />
-    <ClInclude Include="URenderer.h" />
+    <ClInclude Include="Render\URenderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ShaderW0.hlsl">
+    <None Include="Shaders\ShaderW0.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>

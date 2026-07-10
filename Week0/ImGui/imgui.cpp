@@ -11224,7 +11224,7 @@ void    ImGui::ErrorRecoveryTryToRecoverWindowState(const ImGuiErrorRecoveryStat
     }
     while (window->DC.TreeDepth > state_in->SizeOfTreeStack) //-V1044
     {
-        IM_ASSERT_USER_ERROR(0, "Missing TreePop()");
+            IM_ASSERT_USER_ERROR(0, "Missing TreePop()");
         TreePop();
     }
     while (g.GroupStack.Size > state_in->SizeOfGroupStack) //-V1044

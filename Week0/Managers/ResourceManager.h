@@ -1,20 +1,12 @@
 #pragma once
 #include "../Headers.h"
-
+#include "../Enums.h"
 
 class URenderer;
 class CMesh;
 
 
 using namespace std;
-
-
-enum EMeshType
-{
-	CIRCLE_WHITE,
-	CIRCLE_RED
-};
-
 
 class CResourceManager
 {

@@ -7,7 +7,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
-#include "Structs.h"
+#include "../Structs.h"
 
 
 class URenderer

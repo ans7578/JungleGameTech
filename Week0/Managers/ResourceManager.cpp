@@ -1,7 +1,7 @@
 #include "ResourceManager.h"
-#include "../URenderer.h"
-#include "../Mesh.h"
-#include "../Circle.h"
+#include "../Render/URenderer.h"
+#include "../Meshs/Mesh.h"
+#include "../Meshs/Primitive/Circle.h"
 
 // 1. static 멤버 변수는 반드시 .cpp 파일에서 실체화 및 초기화를 해줘야 한다.
 CResourceManager* CResourceManager::instance = nullptr;

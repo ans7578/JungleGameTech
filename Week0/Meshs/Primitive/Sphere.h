@@ -1,6 +1,6 @@
 ﻿// © 2024 KRAFTON, Inc. ALL RIGHTS RESERVED.
 #pragma once
-#include "Headers.h"
+#include "../../Headers.h"
 
 
 FVertexSimple sphere_vertices[] = {

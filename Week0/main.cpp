@@ -1,20 +1,17 @@
 #include "Headers.h"
 
-#include "Sphere.h"
-#include "Rect.h"
-#include "Cube.h"
-#include "Actor.h"
-#include "Mesh.h"
-#include "URenderer.h"
+#include "./Actors/Actor.h"
+#include "./Meshs/Mesh.h"
+#include "Render/URenderer.h"
 
 //Managers
 #include "./Managers/LevelManager.h"
 #include "./Managers/ResourceManager.h"
+#include "./Managers/InputManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
-std::vector<AActor*> vecActors;
 
 
 int WINAPI WndProc(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -81,8 +78,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//매니저 세팅
 	CResourceManager::GetInstance().SetupResource(&renderer);
-
-
+	CLevelManager::GetInstance().SetupLevels();
+	CInputManager::GetInstance().SetupInput();
 
 	//ImGui 생성
 	IMGUI_CHECKVERSION();
@@ -96,17 +93,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//각종 생성하는 코드를 여기에 추가한다.
 
 
-	const float leftBorder = -1.0f;
-	const float rightBorder = 1.0f;
-	const float topBorder = 1.0f;
-	const float bottomBorder = -1.0f;
-	const float sphereRadius = 1.0f;
-
 
 	bool bBoundsBallToScreen = true;
 	bool bPinballMovement = true;
 
 	
+
 	const int targetFPS = 60;
 	const double targetFrameTime = 1000.0f / targetFPS;
 
@@ -116,6 +108,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0f;
 
+	
+	CLevelManager::GetInstance().Init_Level();
+	
 	//키입력을 처리받는 루프
 	//MainLoop(Quit Message가 들어오기 전까지 아래 루프를 무한히 실행한다)
 	while (bIsExit == false)
@@ -137,56 +132,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bIsExit = true;
 				break;
 			}
-			
-			else if (msg.message == WM_KEYDOWN)
-			{
-				/*
-				if (msg.wParam == VK_LEFT)
-				{
-					offset.x -= fSpeed;
-				}
-				if (msg.wParam == VK_RIGHT)
-				{
-					offset.x += fSpeed;
-				}
-				if (msg.wParam == VK_UP)
-				{
-					offset.y += fSpeed;
-				}
-				if (msg.wParam == VK_DOWN)
-				{
-					offset.y -= fSpeed;
-				}
+	
+			CInputManager::GetInstance().UpdateInput(msg);
 
-				if (bBoundsBallToScreen)
-				{
-					float renderRadius = sphereRadius * scaleMod;
-					if (offset.x < leftBorder + renderRadius)
-					{
-						offset.x = leftBorder + renderRadius;
-					}
-					if (offset.x > rightBorder - renderRadius)
-					{
-						offset.x = rightBorder - renderRadius;
-					}
-					if (offset.y > topBorder - renderRadius)
-					{
-						offset.y = topBorder - renderRadius;
-					}
-					if (offset.y < bottomBorder + renderRadius)
-					{
-						offset.y = bottomBorder + renderRadius;
-					}
-				}
-				*/
-			}
 
-			else if (msg.message == WM_LBUTTONDOWN)
+
+			if (msg.message == WM_LBUTTONDOWN)
 			{
+
 				int mouseX = LOWORD(msg.lParam);
 				int mouseY = HIWORD(msg.lParam);
 			}
-			
 		}
 		/*
 		
@@ -194,102 +150,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
 	
+		CLevelManager::GetInstance().Update_Level();
 
-		for (AActor* actor : vecActors)
-		{
-			actor->Update();
 
-			if (bPinballMovement)
-			{
-				float renderRadius = sphereRadius * 0.1;
-
-				FVector veclotiy = actor->GetVelocity();
-
-				if (actor->GetPosition().x < leftBorder + renderRadius)
-				{
-					veclotiy.x = veclotiy.x * -1.f;
-					actor->SetVelocity(veclotiy);
-
-				}
-				if (actor->GetPosition().x > rightBorder - renderRadius)
-				{
-					veclotiy.x = veclotiy.x * -1.f;
-					actor->SetVelocity(veclotiy);
-
-				}
-				if (actor->GetPosition().y > topBorder - renderRadius)
-				{
-					veclotiy.y = veclotiy.y * -1.f;
-					actor->SetVelocity(veclotiy);
-
-				}
-				if (actor->GetPosition().y < bottomBorder + renderRadius)
-				{
-					veclotiy.y = veclotiy.y * -1.f;
-					actor->SetVelocity(veclotiy);
-				}
-			}
-		}
 		//렌더 준비 작업
 		renderer.Prepare();
 		renderer.PrepareShader();
+		
 		//생성한 버텍스버러를 넘겨 실제 렌더링 호출
-	
-
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
 		
-		/////////////////////////////////////////////////////
-		//이후 ImGui  UI 컨트롤 추가는  ImGui::NewFrame()과  ImGui::Render()사이인 여기에 추가합니다.
-	
-		ImGui::Begin("Jungle Property Window");
-		{
-			ImGui::Text("Hello Jungle World!");
-			ImGui::Checkbox("Bound Ball To Screen", &bBoundsBallToScreen);
-			ImGui::Checkbox("Pinball Movement", &bPinballMovement);
-			if (ImGui::Button("CreateCircle"))
-			{
-				if (vecActors.size() > 0)
-				{
-					//하얀색 공 생성
-					vecActors.back()->SetMesh(EMeshType::CIRCLE_WHITE);
+		CLevelManager::GetInstance().Render_Level(&renderer);
 
-				}
-				AActor* actor = new AActor();
-				actor->SetMesh(EMeshType::CIRCLE_RED);
-				vecActors.push_back(actor);
-			}
-			if (ImGui::Button("ClearAndDelete"))
-			{
-				for (int i = vecActors.size() - 1; i >= 0; i--)
-				{
-					delete vecActors[i];
-					vecActors.erase(vecActors.begin() + i);
-				}
-			}
-			if (ImGui::Button("ClearOnly"))
-			{
-				for (int i = vecActors.size() - 1; i >= 0; i--)
-					vecActors.erase(vecActors.begin() + i);
-				{
-				}
-			}
-		}
-		ImGui::End();
+#pragma region ImGuiRender
+		#if defined(_DEBUG)
 
-		////////////////////////////////////////////////////
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+			ImGui_ImplDX11_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+			
+			CLevelManager::GetInstance().Render_Debug();
+
+
+			ImGui::Render();
+			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		#endif
+#pragma endregion
 
 		
-		for (AActor* actor : vecActors)
-		{
-			renderer.UpdateConstantBuffer(actor->GetPosition());
-			renderer.RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetIndexCount());
-		}
 
-		
 		//다 그렸으면 버퍼 교환
 		renderer.SwapBuffer();
 
@@ -306,18 +195,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	//소멸하는 코드를 여기에 추가합니다.
 
+	
+
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-	for (int i = vecActors.size() - 1; i >= 0; i--)
-	{
-		delete vecActors[i];
-		vecActors.erase(vecActors.begin() + i);
-	}
+	
 
 	//매니저 해제
 	CResourceManager::GetInstance().ReleaseSingleton();
+	CLevelManager::GetInstance().ReleaseSingleton();
+	CInputManager::GetInstance().ReleaseSingleton();
+
 
 	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();

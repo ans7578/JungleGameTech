@@ -30,7 +30,7 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="URenderer.cpp">
+    <ClCompile Include="Render\URenderer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui.cpp">
@@ -54,13 +54,13 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Actor.cpp">
+    <ClCompile Include="Actors\Actor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Managers\ResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="Meshs\Mesh.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Levels\LevelBase.cpp">
@@ -69,9 +69,24 @@
     <ClCompile Include="Managers\LevelManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Levels\Level_BoundBall.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\Level_MovementActor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\InputManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors\BoundActor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors\MovementActor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="URenderer.h">
+    <ClInclude Include="Render\URenderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imconfig.h">
@@ -98,19 +113,19 @@
     <ClInclude Include="ImGui\imstb_truetype.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Cube.h">
+    <ClInclude Include="Meshs\Primitive\Cube.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Circle.h">
+    <ClInclude Include="Meshs\Primitive\Circle.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Rect.h">
+    <ClInclude Include="Meshs\Primitive\Rect.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
+    <ClInclude Include="Meshs\Primitive\Sphere.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Actor.h">
+    <ClInclude Include="Actors\Actor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Structs.h">
@@ -122,7 +137,7 @@
     <ClInclude Include="Managers\ResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="Meshs\Mesh.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Levels\LevelBase.h">
@@ -131,9 +146,27 @@
     <ClInclude Include="Managers\LevelManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Levels\Level_BoundBall.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\Level_MovementActor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\InputManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\BoundActor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\MovementActor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ShaderW0.hlsl">
+    <None Include="Shaders\ShaderW0.hlsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
