@@ -17,6 +17,11 @@ public:
 	{
 		FVector Offset;
 		float	Pad;
+		
+		FVector Size;
+		float	Pad2;
+
+		FColor	Color;
 	};
 
 public:
@@ -44,7 +49,7 @@ public:
 
 
 
-	unsigned int Stride; // 정점 데이터의 한 정점당 바이트 수 (3개의 float로 구성된 정점)
+	//unsigned int Stride; // 정점 데이터의 한 정점당 바이트 수 (3개의 float로 구성된 정점)
 
 public:
 	//렌더러 초기화 함수
@@ -58,8 +63,8 @@ public:
 
 	void CreateShader();
 
-	ID3D11Buffer*	CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth, D3D11_USAGE usage);
-	ID3D11Buffer*	CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth, D3D11_USAGE usage, const char* bufferName);
+	ID3D11Buffer*	CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage);
+	ID3D11Buffer*	CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage, const char* bufferName);
 
 
 	ID3D11Buffer* CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage);
@@ -75,11 +80,11 @@ public:
 	
 	void PrepareShader();
 
-	void UpdateConstantBuffer(FVector offset);
+	void UpdateConstantBuffer(const FConstantBuffer* pCBuffer );
 
-	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT NumVertices);
+	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT iVertexStride, UINT NumVertices);
 
-	void RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer , ID3D11Buffer* pIndexBuffer, UINT NumIndices);
+	void RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer , ID3D11Buffer* pIndexBuffer, UINT iVertexStride, UINT NumIndices);
 
 
 

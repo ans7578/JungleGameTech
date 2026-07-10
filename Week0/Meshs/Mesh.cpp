@@ -2,13 +2,12 @@
 #include "../Render/URenderer.h"
 
 
-CMesh::CMesh(URenderer* renderer, FVertexSimple* vertices, UINT verticesSize, UINT* indices, UINT indexCount)
+CMesh::CMesh(URenderer* renderer, void* pVertexData, UINT iVertexStride, UINT iVertexCount, UINT* pIndexData, UINT indexCount)
 {
-	m_pVertexBuffer = renderer->CreateVertexBuffer(vertices, verticesSize, D3D11_USAGE_IMMUTABLE);
-	m_pIndexBuffer = renderer->CreateIndexBuffer(indices, sizeof(UINT) * indexCount, D3D11_USAGE_IMMUTABLE);
+	m_pVertexBuffer = renderer->CreateVertexBuffer(pVertexData, iVertexStride * iVertexCount, D3D11_USAGE_IMMUTABLE);
+	m_pIndexBuffer = renderer->CreateIndexBuffer(pIndexData, sizeof(UINT) * indexCount, D3D11_USAGE_IMMUTABLE);
 
-	m_iVertexStride = verticesSize / sizeof(FVertexSimple);
-	m_iVerticesSize = verticesSize;
+	m_iVertexStride = iVertexStride;
 	m_iIndexCount = indexCount;
 
 }

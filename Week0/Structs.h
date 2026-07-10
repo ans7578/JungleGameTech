@@ -7,6 +7,13 @@ struct FVector
 	float x, y, z;
 	FVector(float _x = 0, float _y = 0, float _z = 0) : x(_x), y(_y), z(_z) {}
 
+	void SetVector(float scala)
+	{
+		x = scala;
+		y = scala;
+		z = scala;
+	}
+
 	void operator+(FVector& fVector)
 	{
 		x += fVector.x;
@@ -27,6 +34,8 @@ struct FColor
 {
 	float r, g, b, a; // Color
 
+	FColor(float _r = 1, float _g = 1, float _b = 1, float _a = 1) : r(_r), g(_g), b(_b), a(_a) {}
+
 	void SetColor(float _r, float _g, float _b, float _a)
 	{
 		r = _r;
@@ -45,17 +54,4 @@ struct FColor
 struct FVertexSimple
 {
 	float x, y, z;    // Position
-	float r, g, b, a; // Color
-
-	void SetColor(float _r, float _g, float _b, float _a)
-	{
-		r = _r;
-		g = _g;
-		b = _b;
-		a = _a;
-	}
-	void SetColor(FVector color)
-	{
-		this->SetColor(color.x, color.y, color.z, 1.f);
-	}
 };

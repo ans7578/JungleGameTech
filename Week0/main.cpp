@@ -152,6 +152,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 		CLevelManager::GetInstance().Update_Level();
 
+		CLevelManager::GetInstance().LateUpdate_Level();
+
 
 		//렌더 준비 작업
 		renderer.Prepare();

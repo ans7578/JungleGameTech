@@ -13,8 +13,6 @@ void CLevel_BoundBall::Init_Level()
 void CLevel_BoundBall::Update_Level()
 {
 
-
-
 	for (AActor* actor : m_vecActors)
 	{
 		actor->Update();
@@ -55,8 +53,8 @@ void CLevel_BoundBall::Render_Level(URenderer* renderer)
 {
 	for (AActor* actor : m_vecActors)
 	{
-		renderer->UpdateConstantBuffer(actor->GetPosition());
-		renderer->RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetIndexCount());
+		actor->Render(renderer);
+		renderer->RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetVertexStride(), actor->GetMesh()->GetIndexCount());
 	}
 }
 
@@ -77,11 +75,15 @@ void CLevel_BoundBall::Render_Debug()
 			if (m_vecActors.size() > 0)
 			{
 				//하얀색 공 생성
-				m_vecActors.back()->SetMesh(EMeshType::CIRCLE_WHITE);
-		
+				m_vecActors.back()->SetMesh(EMeshType::CIRCLE);
+				m_vecActors.back()->SetColor(FColor(1.f, 1.f, 1.f, 1.f));
 			}
 			AActor* actor = new ABoundActor();
-			actor->SetMesh(EMeshType::CIRCLE_RED);
+			actor->SetMesh(EMeshType::CIRCLE);
+
+			actor->SetColor(FColor(1.f, 0.f, 0.f, 1.f));
+			actor->SetSize(0.1f);
+			
 			m_vecActors.push_back(actor);
 		}
 	}

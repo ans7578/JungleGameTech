@@ -134,15 +134,13 @@ void URenderer::CreateShader()
 
 	Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &SimpleInputLayout);
 
-	Stride = sizeof(FVertexSimple);
-
 
 	vertexShaderBlob->Release();
 	pixelShaderBlob->Release();
 
 }
 
-ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth, D3D11_USAGE usage)
+ID3D11Buffer* URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage)
 {
 
 	//버텍스 버퍼 생성
@@ -160,7 +158,7 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	vertexBufferDesc.Usage = usage;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // 정점 버퍼로 사용됨
 
-	D3D11_SUBRESOURCE_DATA vertexBufferData = { vertices };
+	D3D11_SUBRESOURCE_DATA vertexBufferData = { pVertexData };
 
 
 	ID3D11Buffer* vertexBuffer;
@@ -169,7 +167,7 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	return vertexBuffer;
 }
 
-ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth, D3D11_USAGE usage, const char* bufferName)
+ID3D11Buffer* URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage, const char* bufferName)
 {
 	//버텍스 버퍼 생성
 	/* D3D11_USAGE
@@ -187,7 +185,7 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // 정점 버퍼로 사용됨
 
-	D3D11_SUBRESOURCE_DATA vertexBufferData = { vertices };
+	D3D11_SUBRESOURCE_DATA vertexBufferData = { pVertexData };
 
 
 	ID3D11Buffer* vertexBuffer;
@@ -296,7 +294,7 @@ void URenderer::PrepareShader()
 
 }
 
-void URenderer::UpdateConstantBuffer(FVector offset)
+void URenderer::UpdateConstantBuffer(const FConstantBuffer* pCBuffer)
 {
 	if (ConstantBuffer)
 	{
@@ -304,26 +302,26 @@ void URenderer::UpdateConstantBuffer(FVector offset)
 
 		DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantBufferMSR);
 
-		FConstantBuffer* constantBufferData = (FConstantBuffer*)constantBufferMSR.pData;
-		{
-			constantBufferData->Offset = offset;
-		}
+		memcpy(constantBufferMSR.pData, pCBuffer, sizeof(FConstantBuffer));
+
+		//FConstantBuffer* constantBufferData = (FConstantBuffer*)constantBufferMSR.pData;
+	
 		DeviceContext->Unmap(ConstantBuffer, 0);
 	}
 }
 
-void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT NumVertices)
+void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT iVertexStride, UINT NumVertices)
 {
 	UINT offset = 0; //정점 버퍼의 시작 오프셋
-	DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset); //정점 버퍼 설정
+	DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &iVertexStride, &offset); //정점 버퍼 설정
 
 	DeviceContext->Draw(NumVertices, 0); //정점 버퍼를 사용하여 그리기 호출
 }
 
-void URenderer::RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer, ID3D11Buffer* pIndexBuffer, UINT NumIndices)
+void URenderer::RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer, ID3D11Buffer* pIndexBuffer, UINT iVertexStride, UINT NumIndices)
 {
 	UINT offset = 0; //정점 버퍼의 시작 오프셋
-	DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &Stride, &offset); //정점 버퍼 설정
+	DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &iVertexStride, &offset); //정점 버퍼 설정
 
 	DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼 설정
 

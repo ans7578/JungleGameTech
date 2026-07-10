@@ -65,6 +65,11 @@ void CLevelManager::Update_Level()
 	m_pairCurrentLevel.second->Update_Level();
 }
 
+void CLevelManager::LateUpdate_Level()
+{
+	m_pairCurrentLevel.second->LateUpdate_Level();
+}
+
 void CLevelManager::Render_Level(URenderer* renderer)
 {
 	m_pairCurrentLevel.second->Render_Level(renderer);

@@ -14,6 +14,14 @@ struct CirclePrimitive
 	FVertexSimple vertices[VERTEX_COUNT + 1];
 	UINT indices[VERTEX_COUNT * 3];
 
+	UINT GetVertexStride()
+	{
+		return sizeof(FVertexSimple);
+	}
+	UINT GetVertexCount()
+	{
+		return vertexCount + 1;
+	}
 	
 	UINT GetVerticesSize()
 	{
@@ -42,7 +50,7 @@ struct CirclePrimitive
 		vertices[0].x = 0.0f;
 		vertices[0].y = 0.0f;
 		vertices[0].z = 0.0f;
-		vertices[0].SetColor(color);
+
 
 		UINT i = 0;
 
@@ -52,7 +60,7 @@ struct CirclePrimitive
 			vertices[i + 1].x = -cos(angle);
 			vertices[i + 1].y = sin(angle);
 			vertices[i + 1].z = 0.0f;
-			vertices[i + 1].SetColor(color);
+	
 			
 
 			indices[i * 3] = 0;
@@ -65,7 +73,7 @@ struct CirclePrimitive
 		vertices[i + 1].x = -cos(angle);
 		vertices[i + 1].y = sin(angle);
 		vertices[i + 1].z = 0.0f;
-		vertices[i + 1].SetColor(color);
+	
 
 		indices[i * 3] = 0;
 		indices[i * 3 + 1] = i + 1;

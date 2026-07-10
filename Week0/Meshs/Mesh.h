@@ -9,7 +9,7 @@ class CMesh
 private:
 	friend class CResourceManager;
 
-	CMesh(URenderer* renderer, FVertexSimple* vertices, UINT verticesSize, UINT* indices,  UINT indexCount);
+	CMesh(URenderer* renderer, void* pVertexData, UINT iVertexStride, UINT iVertexCount , UINT* pIndexData,  UINT indexCount);
 	~CMesh();
 
 	CMesh(const CMesh& ref) = default;
@@ -30,8 +30,6 @@ public:
 protected:
 	ID3D11Buffer*	m_pVertexBuffer;
 	ID3D11Buffer*	m_pIndexBuffer;
-
-	ID3D11Buffer*	m_constantBuffer;
 
 	UINT			m_iVertexStride; // 객체 하나의 사이즈
 

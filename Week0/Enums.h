@@ -3,8 +3,7 @@
 
 enum EMeshType
 {
-	CIRCLE_WHITE,
-	CIRCLE_RED
+	CIRCLE,
 };
 
 

@@ -25,6 +25,8 @@ public:
 
 	void	Update_Level();
 
+	void	LateUpdate_Level();
+
 	void	Render_Level(URenderer* renderer);
 
 	void	Render_Debug();
