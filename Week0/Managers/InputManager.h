@@ -21,6 +21,8 @@ public:
 
 	void	ReleaseSingleton();
 
+	void	Update();
+
 	void	UpdateInput(MSG& msg);
 
 	bool	GetKeyDown(WPARAM wParam);

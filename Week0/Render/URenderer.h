@@ -25,7 +25,6 @@ public:
 	};
 
 public:
-
 	//Direct3D 11장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인트
 	ID3D11Device* Device = nullptr; // GPU와 통신하기 위한 Direct3D장치
 	ID3D11DeviceContext* DeviceContext = nullptr; // GPU명령 실행을 담당하는 컨텍스트

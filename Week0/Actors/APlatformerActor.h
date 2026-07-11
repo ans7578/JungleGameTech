@@ -5,11 +5,10 @@ class APlatformerActor : public AActor
 
 public:
 	APlatformerActor();
-	~APlatformerActor();
+	virtual ~APlatformerActor();
 public:
 	// AActor을(를) 통해 상속됨
-	const char* GetName() override;
-
+	virtual const char* GetName() override;
 
 	virtual void Update() override;
 

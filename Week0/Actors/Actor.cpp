@@ -27,6 +27,10 @@ void AActor::LateUpdate()
 	m_fCBuffer.Size = m_fSize;
 }
 
+void AActor::RenderDebug()
+{
+}
+
 void AActor::Render(URenderer* renderer)
 {
 	renderer->UpdateConstantBuffer(&m_fCBuffer);

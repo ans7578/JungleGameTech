@@ -27,10 +27,9 @@ void APlatformerActor::Update()
         m_fVelocity.y += m_gravity;
     }
 
-    if (CInputManager::GetInstance().GetKeyUp(VK_UP))
+    if (CInputManager::GetInstance().GetKeyUp(VK_SPACE))
     {
-        m_fPosition.y += 500.f;
-
+        m_fPosition.y += 350.f;
     }
     if (CInputManager::GetInstance().GetKey(VK_LEFT))
     {
@@ -41,5 +40,4 @@ void APlatformerActor::Update()
         m_fPosition.x += 50.f;
     }
     m_fPosition += m_fVelocity;
-    
 }

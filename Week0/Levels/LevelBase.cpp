@@ -26,7 +26,6 @@ void CLevelBase::Render_Level(URenderer* renderer)
 		actor->Render(renderer);
 	
 		renderer->RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetVertexStride(), actor->GetMesh()->GetIndexCount());
-
 	}
 }
 
@@ -50,6 +49,7 @@ void CLevelBase::Render_Debug()
 					{
 						actor->SetColor(FColor(colorArray[0], colorArray[1], colorArray[2]));
 					}
+					actor->RenderDebug();
 				}
 			}
 			ImGui::PopID();

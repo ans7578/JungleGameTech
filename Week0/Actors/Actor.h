@@ -22,6 +22,8 @@ public:
 
 	virtual void LateUpdate();
 
+	virtual void RenderDebug();
+
 	virtual void Render(URenderer* renderer);
 
 	
@@ -52,6 +54,7 @@ public:
 	URenderer::FConstantBuffer& const GetConstantBuffer();
 
 
+	
 protected:
 	static UINT		m_iRefCount;
 

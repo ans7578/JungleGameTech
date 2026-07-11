@@ -77,7 +77,6 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
     } 	D3D11_VIEWPORT;
 	*/
 	ViewportInfo = { 0.f, 0.f, (float)swapChainDesc.BufferDesc.Width, (float)swapChainDesc.BufferDesc.Height, 0.f, 1.f };
-
 }
 
 void URenderer::CreateFrameBuffer()
@@ -93,8 +92,6 @@ void URenderer::CreateFrameBuffer()
 	frameBufferRTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D; //렌더 타겟 뷰의 차원을 설정함
 
 	Device->CreateRenderTargetView(FrameBuffer, &frameBufferRTVDesc, &FrameBufferRTV); //렌더 타겟 뷰 생성
-
-
 }
 
 void URenderer::CreateRasterizerState()
@@ -128,16 +125,15 @@ void URenderer::CreateShader()
 	//정점 데이터의 형식은 정점 쉐이더에서 정의한 구조체와 일치해야 함
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,0,12, D3D11_INPUT_PER_VERTEX_DATA,0},
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &SimpleInputLayout);
 
 
+
 	vertexShaderBlob->Release();
 	pixelShaderBlob->Release();
-
 }
 
 ID3D11Buffer* URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage)
@@ -285,8 +281,6 @@ void URenderer::PrepareShader()
 	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
 
 	//버텍스 쉐이더에 상수 버퍼를 설정한다.
-
-	
 	if (ConstantBuffer)
 	{
 		DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer); //상수 버퍼를 정점 쉐이더에 바인딩

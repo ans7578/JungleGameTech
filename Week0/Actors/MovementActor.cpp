@@ -16,25 +16,31 @@ AMovementActor::~AMovementActor()
 void AMovementActor::Update()
 {
 
-	if (CInputManager::GetInstance().GetKeyDown(VK_UP))
+	if (CInputManager::GetInstance().GetKeyUp(VK_UP))
 	{
 		m_fPosition.y += m_moveAmount;
+		m_iCallCount++;
 	}
 
-	if (CInputManager::GetInstance().GetKeyDown(VK_DOWN))
+	if (CInputManager::GetInstance().GetKey(VK_DOWN))
 	{
 		m_fPosition.y -= m_moveAmount;
 	}
 
-	if (CInputManager::GetInstance().GetKeyDown(VK_RIGHT))
+	if (CInputManager::GetInstance().GetKey(VK_RIGHT))
 	{
 		m_fPosition.x += m_moveAmount;
 	}
 
-	if (CInputManager::GetInstance().GetKeyDown(VK_LEFT))
+	if (CInputManager::GetInstance().GetKey(VK_LEFT))
 	{
 		m_fPosition.x -= m_moveAmount;
 	}
+}
+
+void AMovementActor::RenderDebug()
+{
+	ImGui::Text("Call Count : %d", m_iCallCount);
 }
 
 const char* AMovementActor::GetName()

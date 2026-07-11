@@ -32,7 +32,7 @@ void CLevel_Platformer::Update_Level()
 		{
 			FVector pos = actor->GetPosition();
 
-			pos.y = 100;
+			pos.y = 100.f;
 			
 			actor->SetPosition(pos);
 

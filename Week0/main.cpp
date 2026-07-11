@@ -11,9 +11,6 @@
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-
-
-
 int WINAPI WndProc(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	return 0;
@@ -27,7 +24,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		return true;
 	}
-
 
 	switch (message)
 	{
@@ -118,6 +114,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		QueryPerformanceCounter(&startTime);
 		MSG msg;
 
+		CInputManager::GetInstance().Update();
+
 		//처리할 메시지가 없을때까지수행
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
@@ -132,11 +130,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bIsExit = true;
 				break;
 			}
-	
 			CInputManager::GetInstance().UpdateInput(msg);
-
-
-
 			if (msg.message == WM_LBUTTONDOWN)
 			{
 
@@ -151,9 +145,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 매번 실행되는 코드를 여기에 추가합니다.
 	
 		CLevelManager::GetInstance().Update_Level();
-
 		CLevelManager::GetInstance().LateUpdate_Level();
-
 
 		//렌더 준비 작업
 		renderer.Prepare();
