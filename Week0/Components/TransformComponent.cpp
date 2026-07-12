@@ -26,26 +26,17 @@ void UTransformComponent::Init_Component()
 
 void UTransformComponent::Update_Component()
 {
+	
 }
 
 void UTransformComponent::LateUpdate_Component()
 {
-	m_matScale = XMMatrixScaling(m_fScale.x, m_fScale.y, m_fScale.z);
-	m_matTranslation = XMMatrixTranslation(m_fPosition.x, m_fPosition.y, m_fPosition.z);
+	if (m_bChangedData)
+	{
+		UpdateMatrix();
+		m_bChangedData = false;
 
-	
-	XMFLOAT3 angleToRadians = XMFLOAT3
-	(
-		XMConvertToRadians(m_fRotation.x),
-		XMConvertToRadians(m_fRotation.y),
-		XMConvertToRadians(m_fRotation.z)
-	);
-
-	XMVECTOR quaternion	= XMQuaternionRotationRollPitchYaw(angleToRadians.x, angleToRadians.y, angleToRadians.z);
-
-	m_matRoation = XMMatrixRotationQuaternion(quaternion);
-
-	m_matSRT = m_matScale * m_matRoation * m_matTranslation;
+	}
 }
 
 void UTransformComponent::RenderDebug_Component()
@@ -61,14 +52,20 @@ void UTransformComponent::RenderDebug_Component()
 	if (ImGui::InputFloat3("Position", position))
 	{
 		memcpy(&m_fPosition, position, sizeof(float) * 3);
+		m_bChangedData = true;
+
 	}
 	if (ImGui::InputFloat3("Rotation", rotation))
 	{
 		memcpy(&m_fRotation, rotation, sizeof(float) * 3);
+		m_bChangedData = true;
+
 	}
 	if (ImGui::InputFloat3("Scale", scale))
 	{
 		memcpy(&m_fScale, scale, sizeof(float) * 3);
+		m_bChangedData = true;
+
 	}
 }
 
@@ -79,6 +76,26 @@ void UTransformComponent::Render_Component(URenderer* renderer)
 
 void UTransformComponent::Release_Component()
 {
+
+}
+
+void UTransformComponent::SetPosition(const XMFLOAT3& position)
+{
+	memcpy(&m_fPosition, &position, sizeof(float) * 3);
+	m_bChangedData = true;
+}
+
+void UTransformComponent::SetRotation(const XMFLOAT3& rotation)
+{
+	memcpy(&m_fRotation, &rotation, sizeof(float) * 3);
+	m_bChangedData = true;
+
+}
+
+void UTransformComponent::SetScale(const XMFLOAT3& scale)
+{
+	memcpy(&m_fScale, &scale, sizeof(float) * 3);
+	m_bChangedData = true;
 }
 
 void UTransformComponent::Translation(const XMFLOAT3& position)
@@ -86,6 +103,26 @@ void UTransformComponent::Translation(const XMFLOAT3& position)
 	m_fPosition.x += position.x;
 	m_fPosition.y += position.y;
 	m_fPosition.z += position.z;
+}
+
+void UTransformComponent::UpdateMatrix()
+{
+	m_matScale = XMMatrixScaling(m_fScale.x, m_fScale.y, m_fScale.z);
+	m_matTranslation = XMMatrixTranslation(m_fPosition.x, m_fPosition.y, m_fPosition.z);
+
+
+	XMFLOAT3 angleToRadians = XMFLOAT3
+	(
+		XMConvertToRadians(m_fRotation.x),
+		XMConvertToRadians(m_fRotation.y),
+		XMConvertToRadians(m_fRotation.z)
+	);
+
+	XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(angleToRadians.x, angleToRadians.y, angleToRadians.z);
+
+	m_matRoation = XMMatrixRotationQuaternion(quaternion);
+
+	m_matSRT = m_matScale * m_matRoation * m_matTranslation;
 }
 
 const char* UTransformComponent::GetComponentName()
