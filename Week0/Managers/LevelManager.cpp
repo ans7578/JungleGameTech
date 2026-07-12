@@ -42,8 +42,8 @@ void CLevelManager::ReleaseSingleton()
 void CLevelManager::SetupLevels()
 {
 	CreateLevel(LEVEL_0, "Level_Empty", new CLevel_Empty());
-	CreateLevel(LEVEL_1, "BoundBall_0", new CLevel_MovementActor());
-	CreateLevel(LEVEL_2, "MovementActor_0", new CLevel_Platformer());
+	CreateLevel(LEVEL_1, "BoundBall_0", new CLevel_BoundBall());
+	CreateLevel(LEVEL_2, "MovementActor_0", new CLevel_MovementActor());
 	CreateLevel(LEVEL_3, "Platformer_0", new CLevel_Platformer());
 
 

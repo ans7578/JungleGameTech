@@ -117,6 +117,4 @@ public:
 private:
 	ID3D11Buffer* ConstantBuffers[CBUFFER_NONE];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
 
-
 };
-
