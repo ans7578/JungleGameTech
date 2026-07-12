@@ -7,7 +7,10 @@
 
 void CLevel_BoundBall::Init_Level()
 {
-	
+	for (const auto& actor : m_vecActors)
+	{
+		actor->Init();
+	}
 }
 
 void CLevel_BoundBall::Update_Level()

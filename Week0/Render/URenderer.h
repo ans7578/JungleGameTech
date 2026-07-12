@@ -16,12 +16,26 @@ using namespace DirectX;
 class URenderer
 {
 public:
-	struct FConstantBuffer
+	enum ECBufferType
+	{
+		CBUFFER_CAMERA = 0,
+		CBUFFER_WORLD = 1,
+		CBUFFER_NONE
+	};
+
+	struct FConstantBufferData
 	{
 		XMMATRIX World;
 
 		FColor	Color;
 	};
+
+	struct FCameraBufferData
+	{
+		XMMATRIX World;
+		XMMATRIX Projection;
+	};
+
 
 public:
 	//Direct3D 11장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인트
@@ -34,9 +48,8 @@ public:
 	ID3D11Texture2D* FrameBuffer = nullptr; // 화면출력용텍스처
 	ID3D11RenderTargetView* FrameBufferRTV = nullptr; // 텍스처를 렌더타겟으로 사용하는 뷰
 	ID3D11RasterizerState* RasterizerState = nullptr; //래스터라이저 상태(컬링, 채우기 모드 등 정의)
-	ID3D11Buffer* ConstantBuffer = nullptr; // 쉐이더에 데이터를 전달하기 위한 상수 버퍼
 
-	
+
 	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear)할 때 사용할 색상 (RGBA)
 	D3D11_VIEWPORT ViewportInfo;  //렌더링 영역을 정의하는 뷰포트 정보
 
@@ -71,14 +84,14 @@ public:
 
 	void CreateConstantBuffer();
 
-
 	void SwapBuffer();
 
 	void Prepare();
 	
 	void PrepareShader();
 
-	void UpdateConstantBuffer(const FConstantBuffer* pCBuffer );
+	//주의! 카메라는 액터보다 항상 먼저 업데이트 되어야한다.(카메라의 영향을 받는 객체들보다 늦게 갱신되면X)
+	void UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize, ECBufferType eCBufferType);
 
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT iVertexStride, UINT NumVertices);
 
@@ -100,6 +113,9 @@ public:
 
 	void Release();
 
+
+private:
+	ID3D11Buffer* ConstantBuffers[CBUFFER_NONE];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
 
 
 };

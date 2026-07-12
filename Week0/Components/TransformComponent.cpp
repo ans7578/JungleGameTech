@@ -65,7 +65,6 @@ void UTransformComponent::RenderDebug_Component()
 	{
 		memcpy(&m_fScale, scale, sizeof(float) * 3);
 		m_bChangedData = true;
-
 	}
 }
 
@@ -103,6 +102,7 @@ void UTransformComponent::Translation(const XMFLOAT3& position)
 	m_fPosition.x += position.x;
 	m_fPosition.y += position.y;
 	m_fPosition.z += position.z;
+	m_bChangedData = true;
 }
 
 void UTransformComponent::UpdateMatrix()

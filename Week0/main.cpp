@@ -205,6 +205,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();
+
 	renderer.Release();
 
 	

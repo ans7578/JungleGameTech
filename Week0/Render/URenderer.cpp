@@ -77,6 +77,7 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
     } 	D3D11_VIEWPORT;
 	*/
 	ViewportInfo = { 0.f, 0.f, (float)swapChainDesc.BufferDesc.Width, (float)swapChainDesc.BufferDesc.Height, 0.f, 1.f };
+
 }
 
 void URenderer::CreateFrameBuffer()
@@ -92,6 +93,16 @@ void URenderer::CreateFrameBuffer()
 	frameBufferRTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D; //렌더 타겟 뷰의 차원을 설정함
 
 	Device->CreateRenderTargetView(FrameBuffer, &frameBufferRTVDesc, &FrameBufferRTV); //렌더 타겟 뷰 생성
+
+#if defined(_DEBUG)
+	const char* frameBufferName = "FrameBuffer";
+	FrameBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(frameBufferName), frameBufferName);
+
+	const char* frameBufferRTVName = "FrameBufferRTV";
+	FrameBufferRTV->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(frameBufferRTVName), frameBufferRTVName);
+
+#endif
+
 }
 
 void URenderer::CreateRasterizerState()
@@ -239,19 +250,32 @@ void URenderer::CreateConstantBuffer()
 {
 	D3D11_BUFFER_DESC constantBufferDesc = {};
 
-	constantBufferDesc.ByteWidth = sizeof(FConstantBuffer) + 0xf & 0xfffffff0; // 상수 버퍼의 크기를 16바이트 단위로 맞춤
+	constantBufferDesc.ByteWidth = sizeof(FConstantBufferData) + 0xf & 0xfffffff0; // 상수 버퍼의 크기를 16바이트 단위로 맞춤
 	constantBufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 동적 버퍼로 설정, CPU에서 데이터를 업데이트할 수 있음
 	constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
 	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
 
-
-
-	Device->CreateBuffer(&constantBufferDesc, nullptr, &ConstantBuffer); // 상수 버퍼 생성
+	Device->CreateBuffer(&constantBufferDesc, nullptr, &ConstantBuffers[CBUFFER_WORLD]); // 상수 버퍼 생성
 
 #if defined(_DEBUG)
-	const char* bufferName = "ConstantBuffer";
-	ConstantBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(bufferName), bufferName);
+	const char* worldBufferName = "CBWorld";
+	ConstantBuffers[CBUFFER_WORLD]->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(worldBufferName), worldBufferName);
 #endif
+	
+	D3D11_BUFFER_DESC cameraBufferDesc = {};
+
+	cameraBufferDesc.ByteWidth = sizeof(FCameraBufferData) + 0xf & 0xfffffff0; // 상수 버퍼의 크기를 16바이트 단위로 맞춤
+	cameraBufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 동적 버퍼로 설정, CPU에서 데이터를 업데이트할 수 있음
+	cameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
+	cameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
+
+	Device->CreateBuffer(&cameraBufferDesc, nullptr, &ConstantBuffers[CBUFFER_CAMERA]); // 상수 버퍼 생성
+
+#if defined(_DEBUG)
+	const char* cameraBufferName = "CbCamera";
+	ConstantBuffers[CBUFFER_CAMERA]->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(cameraBufferName), cameraBufferName);
+#endif
+
 
 }
 
@@ -281,26 +305,31 @@ void URenderer::PrepareShader()
 	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
 
 	//버텍스 쉐이더에 상수 버퍼를 설정한다.
-	if (ConstantBuffer)
+	for (int i = 0; i < ECBufferType::CBUFFER_NONE; i++)
 	{
-		DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer); //상수 버퍼를 정점 쉐이더에 바인딩
+		if (ConstantBuffers[i])
+		{
+			//상수 버퍼를 정점 쉐이더에 바인딩
+			DeviceContext->VSSetConstantBuffers(i, 1, &ConstantBuffers[i]);
+		}
 	}
+
 
 }
 
-void URenderer::UpdateConstantBuffer(const FConstantBuffer* pCBuffer)
+void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize, ECBufferType eCBufferType)
 {
-	if (ConstantBuffer)
+	if (ConstantBuffers[eCBufferType])
 	{
 		D3D11_MAPPED_SUBRESOURCE constantBufferMSR;
 
-		DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantBufferMSR);
+		DeviceContext->Map(ConstantBuffers[eCBufferType], 0, D3D11_MAP_WRITE_DISCARD, 0, &constantBufferMSR);
 
-		memcpy(constantBufferMSR.pData, pCBuffer, sizeof(FConstantBuffer));
+		memcpy(constantBufferMSR.pData, pCBuffer, iBufferDataSize);
 
 		//FConstantBuffer* constantBufferData = (FConstantBuffer*)constantBufferMSR.pData;
 	
-		DeviceContext->Unmap(ConstantBuffer, 0);
+		DeviceContext->Unmap(ConstantBuffers[eCBufferType], 0);
 	}
 }
 
@@ -387,11 +416,7 @@ void URenderer::ReleaseRasterizerState()
 }
 void URenderer::ReleaseShader()
 {
-	if (SimpleInputLayout)
-	{
-		SimpleInputLayout->Release();
-		SimpleInputLayout = nullptr;	
-	}
+	
 	if (SimpleVertexShader)
 	{
 		SimpleVertexShader->Release();
@@ -402,7 +427,11 @@ void URenderer::ReleaseShader()
 		SimplePixelShader->Release();
 		SimplePixelShader = nullptr;
 	}
-
+	if (SimpleInputLayout)
+	{
+		SimpleInputLayout->Release();
+		SimpleInputLayout = nullptr;
+	}
 }
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
 {
@@ -414,11 +443,16 @@ void URenderer::ReleaseIndexBuffer(ID3D11Buffer* indexBuffer)
 }
 void URenderer::ReleaseConstantBuffer()
 {
-	if (ConstantBuffer)
+	//버텍스 쉐이더에 상수 버퍼를 설정한다.
+	for (int i = 0; i < ECBufferType::CBUFFER_NONE; i++)
 	{
-		ConstantBuffer->Release();
-		ConstantBuffer = nullptr;
+		if (ConstantBuffers[i])
+		{
+			ConstantBuffers[i]->Release();
+			ConstantBuffers[i] = nullptr;
+		}
 	}
+
 }
 //렌더러에 사용된 모든 리소스를 해제하는 함수
 void URenderer::Release()

@@ -52,10 +52,6 @@ public:
 
 	UTransformComponent* const	GetTransform();
 
-	//
-	URenderer::FConstantBuffer& const GetConstantBuffer();
-
-
 	template<typename T>
 	T* GetComponent();
 
@@ -74,7 +70,7 @@ protected:
 
 	std::string m_strName;
 
-	URenderer::FConstantBuffer m_fCBuffer;
+	URenderer::FConstantBufferData m_fCBufferData;
 
 private:
 	 std::list<UComponentBase*> m_Components;

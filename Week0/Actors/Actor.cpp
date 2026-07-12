@@ -68,12 +68,10 @@ void AActor::Render(URenderer* renderer)
 
 	XMMATRIX matSRT = GetTransform()->GetSRTMatrix();
 
-	m_fCBuffer.World = XMMatrixTranspose(matSRT);
-	m_fCBuffer.Color = GetColor();
+	m_fCBufferData.World = XMMatrixTranspose(matSRT);
+	m_fCBufferData.Color = GetColor();
 
-
-
-	renderer->UpdateConstantBuffer(&m_fCBuffer);
+	renderer->UpdateConstantBuffer(&m_fCBufferData,sizeof(m_fCBufferData),URenderer::ECBufferType::CBUFFER_WORLD);
 }
 
 void AActor::SetMesh(EMeshType eMeshType)
@@ -94,11 +92,6 @@ void AActor::SetColor(const FColor& color)
 UTransformComponent* const AActor::GetTransform()
 {
 	return GetComponent<UTransformComponent>();
-}
-
-URenderer::FConstantBuffer& const AActor::GetConstantBuffer()
-{
-	return m_fCBuffer;
 }
 
 template<typename T>

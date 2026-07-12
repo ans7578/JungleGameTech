@@ -142,6 +142,7 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Levels\LevelBase.cpp" />
     <ClCompile Include="Levels\Level_BoundBall.cpp" />
+    <ClCompile Include="Levels\Level_Empty.cpp" />
     <ClCompile Include="Levels\Level_MovementActor.cpp" />
     <ClCompile Include="Levels\Level_Platformer.cpp" />
     <ClCompile Include="Managers\InputManager.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Levels\Level_BoundBall.h" />
+    <ClInclude Include="Levels\Level_Empty.h" />
     <ClInclude Include="Levels\Level_MovementActor.h" />
     <ClInclude Include="Levels\Level_Platformer.h" />
     <ClInclude Include="Managers\InputManager.h" />

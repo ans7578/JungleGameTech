@@ -10,7 +10,7 @@ public:
 	virtual ~CLevelBase();
 
 public:
-	virtual void Init_Level() = 0;
+	virtual void Init_Level();
 
 	virtual void Update_Level() = 0;
 
