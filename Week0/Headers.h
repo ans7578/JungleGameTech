@@ -7,7 +7,10 @@
 #include <cstdlib> // rand, srand 함수 사용
 #include <ctime>   // time 함수 사용
 #include <map>
+#include <unordered_map>
 #include <set>
+#include <list>
+
 
 //dx
 #pragma comment(lib, "user32")
@@ -15,7 +18,9 @@
 #pragma comment(lib, "d3dcompiler")
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
 
+using namespace DirectX;
 
 //ImGui
 #include "ImGui/imgui.h"

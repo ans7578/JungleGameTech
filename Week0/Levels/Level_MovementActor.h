@@ -11,7 +11,7 @@ class CLevel_MovementActor :
     virtual void Init_Level() override;
     virtual void Update_Level() override;
     virtual void Render_Level(URenderer* renderer) override;
-    virtual void Render_Debug() override;
+    virtual void RenderDebug_Level() override;
     virtual void Release_Level() override;
 
 

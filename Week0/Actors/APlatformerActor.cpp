@@ -5,7 +5,9 @@ APlatformerActor::APlatformerActor()
 {
     m_gravity = -0.98f;
 
-    SetSize(0.1f);
+    m_fVelocity = XMFLOAT3(0.f, 0.f, 0.f);
+
+    GetTransform()->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
 }
 
 APlatformerActor::~APlatformerActor()
@@ -22,22 +24,22 @@ void APlatformerActor::Update()
 {
     __super::Update();
 
-    if (m_fPosition.y > 100.f)
+    if (GetTransform()->GetPosition().y > 100.f)
     {
         m_fVelocity.y += m_gravity;
     }
 
     if (CInputManager::GetInstance().GetKeyUp(VK_SPACE))
     {
-        m_fPosition.y += 350.f;
+        GetTransform()->Translation(XMFLOAT3(0, 350.f, 0.f));
     }
     if (CInputManager::GetInstance().GetKey(VK_LEFT))
     {
-        m_fPosition.x -= 50.f;
+        GetTransform()->Translation(XMFLOAT3(-50.f, 0.f, 0.f));
     }
     if (CInputManager::GetInstance().GetKey(VK_RIGHT))
     {
-        m_fPosition.x += 50.f;
+        GetTransform()->Translation(XMFLOAT3(50.f, 0.f, 0.f));
     }
-    m_fPosition += m_fVelocity;
+    GetTransform()->Translation(m_fVelocity);
 }

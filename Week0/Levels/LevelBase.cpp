@@ -29,7 +29,7 @@ void CLevelBase::Render_Level(URenderer* renderer)
 	}
 }
 
-void CLevelBase::Render_Debug()
+void CLevelBase::RenderDebug_Level()
 {
 	ImGui::Begin("Inspector");
 	{
@@ -39,7 +39,7 @@ void CLevelBase::Render_Debug()
 			{
 				if (ImGui::CollapsingHeader(actor->GetName()))
 				{
-					ImGui::Text("X : %f, Y : %f", actor->GetPosition().x, actor->GetPosition().y);
+					actor->RenderDebug();
 
 					FColor color = actor->GetColor();
 
@@ -49,7 +49,6 @@ void CLevelBase::Render_Debug()
 					{
 						actor->SetColor(FColor(colorArray[0], colorArray[1], colorArray[2]));
 					}
-					actor->RenderDebug();
 				}
 			}
 			ImGui::PopID();

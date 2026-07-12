@@ -18,7 +18,7 @@ public:
 
 
 	// CLevelBase을(를) 통해 상속됨
-	virtual void Render_Debug() override;
+	virtual void RenderDebug_Level() override;
 
 
 private:

@@ -1,7 +1,7 @@
 #pragma once
 
 
-
+/*
 struct FVector
 {
 	float x, y, z;
@@ -29,7 +29,7 @@ struct FVector
 		return *this;
 	}
 };
-
+*/
 struct FColor
 {
 	float r, g, b, a; // Color

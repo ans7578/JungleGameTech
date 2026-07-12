@@ -96,7 +96,7 @@ void CLevelManager::Render_Debug()
 	}
 	ImGui::End();
 
-	m_pairCurrentLevel.second->Render_Debug();
+	m_pairCurrentLevel.second->RenderDebug_Level();
 }
 
 void CLevelManager::CreateLevel(ELevel eLevel, const char* strLevelName, CLevelBase* pLevel)

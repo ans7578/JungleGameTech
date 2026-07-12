@@ -18,7 +18,7 @@ public:
 
 	virtual void Render_Level(URenderer* renderer);
 
-	virtual void Render_Debug();
+	virtual void RenderDebug_Level();
 
 	virtual void Release_Level();
 

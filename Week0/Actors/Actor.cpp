@@ -8,47 +8,77 @@ UINT AActor::m_iRefCount = 0;
 AActor::AActor()
 {	
 	m_iRefCount++;
+
+	AddComponent<UTransformComponent>(new UTransformComponent());
 }
 
 AActor::~AActor()
 {
 	m_iRefCount--;
+
+	for (const auto& component : m_Components)
+	{
+		component->Release_Component();
+
+		delete component;
+	}
+	m_Components.clear();
+}
+
+void AActor::Init()
+{
+	for (const auto& component : m_Components)
+	{
+		component->Init_Component();
+	}
 }
 
 void AActor::Update()
 {
-	
+	for (const auto& component : m_Components)
+	{
+		component->Update_Component();
+	}
 }
 
 void AActor::LateUpdate()
 {
-	m_fCBuffer.Color = m_fColor;
-	m_fCBuffer.Offset = m_fPosition;
-	m_fCBuffer.Size = m_fSize;
+	for (const auto& component : m_Components)
+	{
+		component->LateUpdate_Component();
+	}
 }
 
 void AActor::RenderDebug()
 {
+	for (const auto& component : m_Components)
+	{
+		component->RenderDebug_Component();
+	}
+}
+
+void AActor::Release()
+{
+	
 }
 
 void AActor::Render(URenderer* renderer)
 {
+	//DX행렬로 있던걸 수학적 행렬식으로 전치함.
+
+	XMMATRIX matSRT = GetTransform()->GetSRTMatrix();
+
+	m_fCBuffer.World = XMMatrixTranspose(matSRT);
+	m_fCBuffer.Color = GetColor();
+
+
+
 	renderer->UpdateConstantBuffer(&m_fCBuffer);
 }
 
 void AActor::SetMesh(EMeshType eMeshType)
 {
 	m_pMesh = CResourceManager::GetInstance().GetMesh(eMeshType);
-}
-
-void AActor::SetVelocity(float fVelocity)
-{
-	m_fVelocity.SetVector(fVelocity);
-}
-
-void AActor::SetSize(float scala)
-{
-	m_fSize.SetVector(scala);
 }
 
 void AActor::SetColor(float color)
@@ -61,8 +91,36 @@ void AActor::SetColor(const FColor& color)
 	m_fColor = color;
 }
 
+UTransformComponent* const AActor::GetTransform()
+{
+	return GetComponent<UTransformComponent>();
+}
+
 URenderer::FConstantBuffer& const AActor::GetConstantBuffer()
 {
 	return m_fCBuffer;
 }
+
+template<typename T>
+T* AActor::GetComponent()
+{
+	for (UComponentBase* component : m_Components)
+	{
+		T* targetComponent = dynamic_cast<T*>(component);
+
+		if (targetComponent != nullptr)
+		{
+			return targetComponent;
+		}
+	}
+
+	return nullptr;
+}
+
+template<typename T>
+void AActor::AddComponent(T* pComponent)
+{
+	m_Components.push_back(pComponent);
+}
+
 

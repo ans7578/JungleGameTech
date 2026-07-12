@@ -6,6 +6,9 @@
 #pragma comment(lib, "d3dcompiler")
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
+
+using namespace DirectX;
 
 #include "../Structs.h"
 
@@ -15,11 +18,7 @@ class URenderer
 public:
 	struct FConstantBuffer
 	{
-		FVector Offset;
-		float	Pad;
-		
-		FVector Size;
-		float	Pad2;
+		XMMATRIX World;
 
 		FColor	Color;
 	};

@@ -1,10 +1,6 @@
 #pragma once
 
 #include "Headers.h"
-#include <DirectXMath.h>
-
-
-using namespace DirectX;
 
 namespace Utils
 {

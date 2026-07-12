@@ -6,7 +6,7 @@ AMovementActor::AMovementActor()
 {
 	m_moveAmount = 0.1f;
 
-	SetSize(0.1f);
+	GetTransform()->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
 }
 
 AMovementActor::~AMovementActor()
@@ -18,28 +18,29 @@ void AMovementActor::Update()
 
 	if (CInputManager::GetInstance().GetKeyUp(VK_UP))
 	{
-		m_fPosition.y += m_moveAmount;
+		GetTransform()->Translation(XMFLOAT3(0.f, m_moveAmount, 0.f));
 		m_iCallCount++;
 	}
 
 	if (CInputManager::GetInstance().GetKey(VK_DOWN))
 	{
-		m_fPosition.y -= m_moveAmount;
+		GetTransform()->Translation(XMFLOAT3(0.f, -m_moveAmount, 0.f));
 	}
 
 	if (CInputManager::GetInstance().GetKey(VK_RIGHT))
 	{
-		m_fPosition.x += m_moveAmount;
+		GetTransform()->Translation(XMFLOAT3(m_moveAmount,0.f, 0.f));
 	}
 
 	if (CInputManager::GetInstance().GetKey(VK_LEFT))
 	{
-		m_fPosition.x -= m_moveAmount;
+		GetTransform()->Translation(XMFLOAT3(-m_moveAmount, 0.f, 0.f));
 	}
 }
 
 void AMovementActor::RenderDebug()
 {
+	__super::RenderDebug();
 	ImGui::Text("Call Count : %d", m_iCallCount);
 }
 

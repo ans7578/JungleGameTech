@@ -3,7 +3,9 @@
 
 enum EMeshType
 {
-	CIRCLE,
+	PRIMITIVE_NONE,
+	PRIMITIVE_CIRCLE,
+	PRIMITIVE_RECT
 };
 
 

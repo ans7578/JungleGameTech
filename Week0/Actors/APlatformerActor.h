@@ -14,6 +14,6 @@ public:
 
 private:
 	float m_gravity;
-
+	XMFLOAT3 m_fVelocity;
 };
 
