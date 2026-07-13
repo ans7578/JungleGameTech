@@ -131,6 +131,7 @@
     <ClCompile Include="Actors\APlatformerActor.cpp" />
     <ClCompile Include="Actors\BoundActor.cpp" />
     <ClCompile Include="Actors\MovementActor.cpp" />
+    <ClCompile Include="Actors\Camera\CameraActor.cpp" />
     <ClCompile Include="Components\ComponentBase.cpp" />
     <ClCompile Include="Components\TransformComponent.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Actors\Actor.h" />
     <ClInclude Include="Actors\APlatformerActor.h" />
     <ClInclude Include="Actors\BoundActor.h" />
+    <ClInclude Include="Actors\Camera\CameraActor.h" />
     <ClInclude Include="Actors\MovementActor.h" />
     <ClInclude Include="Components\ComponentBase.h" />
     <ClInclude Include="Components\TransformComponent.h" />

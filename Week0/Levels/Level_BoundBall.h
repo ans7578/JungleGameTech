@@ -6,6 +6,10 @@ class URenderer;
 
 class CLevel_BoundBall : public CLevelBase
 {
+public:
+	CLevel_BoundBall();
+	virtual ~CLevel_BoundBall();
+
 	// CLevelBase을(를) 통해 상속됨
 public:
 	virtual void Init_Level() override;

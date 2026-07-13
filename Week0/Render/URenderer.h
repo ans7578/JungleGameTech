@@ -20,10 +20,10 @@ public:
 	{
 		CBUFFER_CAMERA = 0,
 		CBUFFER_WORLD = 1,
-		CBUFFER_NONE
+		CBUFFER_END
 	};
 
-	struct FConstantBufferData
+	struct FWorldBufferData
 	{
 		XMMATRIX World;
 
@@ -33,7 +33,7 @@ public:
 	struct FCameraBufferData
 	{
 		XMMATRIX World;
-		XMMATRIX Projection;
+		//XMMATRIX Projection;
 	};
 
 
@@ -98,7 +98,6 @@ public:
 	void RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer , ID3D11Buffer* pIndexBuffer, UINT iVertexStride, UINT NumIndices);
 
 
-
 	void ReleaseDeviceAndSwapChain();
 	void ReleaseFrameBuffer();
 	void ReleaseRasterizerState();
@@ -115,6 +114,6 @@ public:
 
 
 private:
-	ID3D11Buffer* ConstantBuffers[CBUFFER_NONE];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
+	ID3D11Buffer* ConstantBuffers[CBUFFER_END];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
 
 };

@@ -2,8 +2,17 @@
 #include "../Meshs/Mesh.h"
 #include "../Managers/ResourceManager.h"
 #include "../Actors/BoundActor.h"
+#include "../Actors/Camera/CameraActor.h"
 
 
+CLevel_BoundBall::CLevel_BoundBall()
+{
+
+}
+
+CLevel_BoundBall::~CLevel_BoundBall()
+{
+}
 
 void CLevel_BoundBall::Init_Level()
 {

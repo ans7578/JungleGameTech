@@ -72,6 +72,10 @@ void AActor::Render(URenderer* renderer)
 	m_fCBufferData.Color = GetColor();
 
 	renderer->UpdateConstantBuffer(&m_fCBufferData,sizeof(m_fCBufferData),URenderer::ECBufferType::CBUFFER_WORLD);
+
+	renderer->RenderPrimitiveIndexed(GetMesh()->GetVertexBuffer(), GetMesh()->GetIndexBuffer(), GetMesh()->GetVertexStride(), GetMesh()->GetIndexCount());
+
+
 }
 
 void AActor::SetMesh(EMeshType eMeshType)

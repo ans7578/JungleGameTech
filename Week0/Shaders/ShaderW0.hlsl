@@ -12,6 +12,10 @@ cbuffer constBuffer : register(b0)
     float4  Color;
 };
 */
+cbuffer cameraBuffer : register(b0) 
+{
+    matrix View; //카메라 행렬(뷰 행렬)
+}
 
 cbuffer constBuffer : register(b1)
 {
@@ -39,6 +43,8 @@ PS_INPUT mainVS(VS_INPUT input)
     PS_INPUT output;
     
     output.position = mul(input.position, World);
+    output.position = mul(output.position, View);
+
     output.color = Color; //정점 색상을 그대로 전달
     
     return output;

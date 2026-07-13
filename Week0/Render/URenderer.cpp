@@ -248,14 +248,14 @@ ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_
 
 void URenderer::CreateConstantBuffer()
 {
-	D3D11_BUFFER_DESC constantBufferDesc = {};
+	D3D11_BUFFER_DESC worldBufferDesc = {};
 
-	constantBufferDesc.ByteWidth = sizeof(FConstantBufferData) + 0xf & 0xfffffff0; // 상수 버퍼의 크기를 16바이트 단위로 맞춤
-	constantBufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 동적 버퍼로 설정, CPU에서 데이터를 업데이트할 수 있음
-	constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
-	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
+	worldBufferDesc.ByteWidth = sizeof(FWorldBufferData) + 0xf & 0xfffffff0; // 상수 버퍼의 크기를 16바이트 단위로 맞춤
+	worldBufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 동적 버퍼로 설정, CPU에서 데이터를 업데이트할 수 있음
+	worldBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
+	worldBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
 
-	Device->CreateBuffer(&constantBufferDesc, nullptr, &ConstantBuffers[CBUFFER_WORLD]); // 상수 버퍼 생성
+	Device->CreateBuffer(&worldBufferDesc, nullptr, &ConstantBuffers[CBUFFER_WORLD]); // 상수 버퍼 생성
 
 #if defined(_DEBUG)
 	const char* worldBufferName = "CBWorld";
@@ -305,7 +305,7 @@ void URenderer::PrepareShader()
 	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
 
 	//버텍스 쉐이더에 상수 버퍼를 설정한다.
-	for (int i = 0; i < ECBufferType::CBUFFER_NONE; i++)
+	for (int i = 0; i < ECBufferType::CBUFFER_END; i++)
 	{
 		if (ConstantBuffers[i])
 		{
@@ -326,8 +326,6 @@ void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize,
 		DeviceContext->Map(ConstantBuffers[eCBufferType], 0, D3D11_MAP_WRITE_DISCARD, 0, &constantBufferMSR);
 
 		memcpy(constantBufferMSR.pData, pCBuffer, iBufferDataSize);
-
-		//FConstantBuffer* constantBufferData = (FConstantBuffer*)constantBufferMSR.pData;
 	
 		DeviceContext->Unmap(ConstantBuffers[eCBufferType], 0);
 	}
@@ -443,8 +441,7 @@ void URenderer::ReleaseIndexBuffer(ID3D11Buffer* indexBuffer)
 }
 void URenderer::ReleaseConstantBuffer()
 {
-	//버텍스 쉐이더에 상수 버퍼를 설정한다.
-	for (int i = 0; i < ECBufferType::CBUFFER_NONE; i++)
+	for (int i = 0; i < ECBufferType::CBUFFER_END; i++)
 	{
 		if (ConstantBuffers[i])
 		{

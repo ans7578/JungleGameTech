@@ -1,9 +1,11 @@
 #include "LevelBase.h"
 #include "../Meshs/Mesh.h"
+#include "../Actors/Camera/CameraActor.h"
+
 
 CLevelBase::CLevelBase()
 {
-
+	m_vecActors.push_back(new ACameraActor());
 }
 
 CLevelBase::~CLevelBase()
@@ -30,7 +32,6 @@ void CLevelBase::Render_Level(URenderer* renderer)
 	{
 		actor->Render(renderer);
 	
-		renderer->RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetVertexStride(), actor->GetMesh()->GetIndexCount());
 	}
 }
 

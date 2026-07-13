@@ -110,7 +110,6 @@ void UTransformComponent::UpdateMatrix()
 	m_matScale = XMMatrixScaling(m_fScale.x, m_fScale.y, m_fScale.z);
 	m_matTranslation = XMMatrixTranslation(m_fPosition.x, m_fPosition.y, m_fPosition.z);
 
-
 	XMFLOAT3 angleToRadians = XMFLOAT3
 	(
 		XMConvertToRadians(m_fRotation.x),
@@ -118,9 +117,16 @@ void UTransformComponent::UpdateMatrix()
 		XMConvertToRadians(m_fRotation.z)
 	);
 
-	XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(angleToRadians.x, angleToRadians.y, angleToRadians.z);
+	XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw
+	(
+		angleToRadians.x,
+		angleToRadians.y,
+		angleToRadians.z
+	);
+
 
 	m_matRoation = XMMatrixRotationQuaternion(quaternion);
+
 
 	m_matSRT = m_matScale * m_matRoation * m_matTranslation;
 }

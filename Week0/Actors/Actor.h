@@ -69,10 +69,8 @@ protected:
 	CMesh* m_pMesh;
 
 	std::string m_strName;
-
-	URenderer::FConstantBufferData m_fCBufferData;
-
 private:
-	 std::list<UComponentBase*> m_Components;
+	URenderer::FWorldBufferData m_fCBufferData;
+	std::list<UComponentBase*> m_Components;
 };
 
