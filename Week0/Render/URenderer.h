@@ -32,8 +32,8 @@ public:
 
 	struct FCameraBufferData
 	{
-		XMMATRIX World;
-		//XMMATRIX Projection;
+		XMMATRIX View;
+		XMMATRIX Projection;
 	};
 
 

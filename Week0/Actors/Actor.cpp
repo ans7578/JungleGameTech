@@ -9,6 +9,8 @@ AActor::AActor()
 {	
 	m_iRefCount++;
 
+	m_eActorType = ACTOR_NONE;
+
 	AddComponent<UTransformComponent>(new UTransformComponent());
 }
 

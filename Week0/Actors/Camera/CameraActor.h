@@ -20,5 +20,8 @@ private:
     URenderer::FCameraBufferData m_fCameraBufferData;
 
     float m_moveSpeed;
+
+    float m_nearZ = 1.f;
+    float m_farZ = 1000.f;
 };
 

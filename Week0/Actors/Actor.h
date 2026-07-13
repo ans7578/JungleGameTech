@@ -36,7 +36,8 @@ public:
 
 	FColor			GetColor() { return m_fColor; }
 
-	
+	EActorType		GetActorType() { return m_eActorType; }
+
 
 	void			SetMesh(EMeshType eMeshType);
 
@@ -69,8 +70,13 @@ protected:
 	CMesh* m_pMesh;
 
 	std::string m_strName;
+
+	EActorType	m_eActorType;
 private:
 	URenderer::FWorldBufferData m_fCBufferData;
 	std::list<UComponentBase*> m_Components;
+
+
+
 };
 

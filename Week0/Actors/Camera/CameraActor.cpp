@@ -5,6 +5,9 @@
 ACameraActor::ACameraActor()
 {
     m_moveSpeed = 0.05f;
+
+    m_eActorType = ACTOR_CAMERA;
+
 }
 
 ACameraActor::~ACameraActor()
@@ -52,7 +55,17 @@ void ACameraActor::Render(URenderer* renderer)
 
     XMMATRIX invView = XMMatrixInverse(&determinant, world);
 
-    m_fCameraBufferData.World = XMMatrixTranspose(invView);
+    m_fCameraBufferData.View = XMMatrixTranspose(invView);
+    
+    XMMATRIX projectionMatrix = XMMatrixOrthographicLH
+    (
+        (float)renderer->ViewportInfo.Width,
+        (float)renderer->ViewportInfo.Height,
+        m_nearZ,
+        m_farZ
+        );
+
+    m_fCameraBufferData.Projection = XMMatrixTranspose(projectionMatrix);
 
     renderer->UpdateConstantBuffer(&m_fCameraBufferData, sizeof(m_fCameraBufferData), URenderer::CBUFFER_CAMERA);
 

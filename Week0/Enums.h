@@ -18,3 +18,14 @@ enum ELevel
 	LEVEL_3,
 	LEVEL_END
 };
+
+
+enum EActorType
+{
+	ACTOR_NONE,
+	ACTOR_PLAYER,
+	ACTOR_ENEMY,
+	ACTOR_NPC,
+	ACTOR_CAMERA,
+	ACTOR_END
+};

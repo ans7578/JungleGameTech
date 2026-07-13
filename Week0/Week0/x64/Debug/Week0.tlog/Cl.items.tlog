@@ -2,6 +2,7 @@ C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Actors\Actor.cpp;C:\Users\korea
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Actors\APlatformerActor.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\APlatformerActor.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Actors\BoundActor.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\BoundActor.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Actors\MovementActor.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\MovementActor.obj
+C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Actors\Camera\CameraActor.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\CameraActor.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Components\ComponentBase.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\ComponentBase.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Components\TransformComponent.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\TransformComponent.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\ImGui\imgui.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\imgui.obj
@@ -16,6 +17,7 @@ C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Levels\Level_BoundBall.cpp;C:\U
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Levels\Level_Empty.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\Level_Empty.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Levels\Level_MovementActor.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\Level_MovementActor.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Levels\Level_Platformer.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\Level_Platformer.obj
+C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Managers\GameManager.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\GameManager.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Managers\InputManager.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\InputManager.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Managers\LevelManager.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\LevelManager.obj
 C:\Users\korea_2511\Desktop\JungleGameTech\Week0\main.cpp;C:\Users\korea_2511\Desktop\JungleGameTech\Week0\Week0\x64\Debug\main.obj

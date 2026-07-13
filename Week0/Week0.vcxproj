@@ -146,6 +146,7 @@
     <ClCompile Include="Levels\Level_Empty.cpp" />
     <ClCompile Include="Levels\Level_MovementActor.cpp" />
     <ClCompile Include="Levels\Level_Platformer.cpp" />
+    <ClCompile Include="Managers\GameManager.cpp" />
     <ClCompile Include="Managers\InputManager.cpp" />
     <ClCompile Include="Managers\LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Levels\Level_Empty.h" />
     <ClInclude Include="Levels\Level_MovementActor.h" />
     <ClInclude Include="Levels\Level_Platformer.h" />
+    <ClInclude Include="Managers\GameManager.h" />
     <ClInclude Include="Managers\InputManager.h" />
     <ClInclude Include="Meshs\Primitive\Cube.h" />
     <ClInclude Include="Headers.h" />

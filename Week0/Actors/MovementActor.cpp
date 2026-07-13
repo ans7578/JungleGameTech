@@ -6,7 +6,7 @@ AMovementActor::AMovementActor()
 {
 	m_moveAmount = 0.1f;
 
-	GetTransform()->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
+	m_eActorType = ACTOR_PLAYER;
 }
 
 AMovementActor::~AMovementActor()
@@ -16,7 +16,7 @@ AMovementActor::~AMovementActor()
 void AMovementActor::Update()
 {
 
-	if (CInputManager::GetInstance().GetKeyUp(VK_UP))
+	if (CInputManager::GetInstance().GetKey(VK_UP))
 	{
 		GetTransform()->Translation(XMFLOAT3(0.f, m_moveAmount, 0.f));
 		m_iCallCount++;
