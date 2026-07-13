@@ -131,6 +131,7 @@
     <ClCompile Include="Actors\APlatformerActor.cpp" />
     <ClCompile Include="Actors\BoundActor.cpp" />
     <ClCompile Include="Actors\MovementActor.cpp" />
+    <ClCompile Include="Components\ComponentBase.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -148,12 +149,15 @@
     <ClCompile Include="Meshs\Mesh.cpp" />
     <ClCompile Include="Managers\ResourceManager.cpp" />
     <ClCompile Include="Render\URenderer.cpp" />
+    <ClCompile Include="Components\TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors\Actor.h" />
     <ClInclude Include="Actors\APlatformerActor.h" />
     <ClInclude Include="Actors\BoundActor.h" />
     <ClInclude Include="Actors\MovementActor.h" />
+    <ClInclude Include="Components\ComponentBase.h" />
+    <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Levels\Level_BoundBall.h" />
     <ClInclude Include="Levels\Level_MovementActor.h" />

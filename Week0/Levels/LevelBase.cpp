@@ -11,6 +11,14 @@ CLevelBase::~CLevelBase()
 	
 }
 
+void CLevelBase::Init_Level()
+{
+	for (auto actor : m_vecActors)
+	{
+		actor->Init();
+	}
+}
+
 void CLevelBase::LateUpdate_Level()
 {
 	for (auto actor : m_vecActors)
@@ -25,7 +33,6 @@ void CLevelBase::Render_Level(URenderer* renderer)
 	{
 		actor->Render(renderer);
 	
-		renderer->RenderPrimitiveIndexed(actor->GetMesh()->GetVertexBuffer(), actor->GetMesh()->GetIndexBuffer(), actor->GetMesh()->GetVertexStride(), actor->GetMesh()->GetIndexCount());
 	}
 }
 
@@ -39,7 +46,7 @@ void CLevelBase::Render_Debug()
 			{
 				if (ImGui::CollapsingHeader(actor->GetName()))
 				{
-					ImGui::Text("X : %f, Y : %f", actor->GetPosition().x, actor->GetPosition().y);
+				
 
 					FColor color = actor->GetColor();
 

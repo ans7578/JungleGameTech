@@ -47,7 +47,6 @@ void CResourceManager::SetupResource(URenderer* renderer)
 
 	//렌더러와 쉐이더 생성 이후 버텍스 버퍼를 생성한다.
 	CirclePrimitive circlePrimitiveWhite;
-	circlePrimitiveWhite.Create(FVector(1, 1, 1));
 	
 
 	m_mapResources.insert(make_pair(CIRCLE, new CMesh(renderer, 

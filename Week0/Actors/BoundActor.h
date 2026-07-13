@@ -12,9 +12,16 @@ public:
 public:
     virtual void Update() override;
 
+public:
+    const XMFLOAT3& GetVelocity() { return m_fVelocity; }
+
+    void            SetVelocity(const XMFLOAT3& velocity) { m_fVelocity = velocity; }
 
     // AActor을(를) 통해 상속됨
     virtual const char* GetName() override;
+
+private:
+    XMFLOAT3    m_fVelocity;
 
 };
 

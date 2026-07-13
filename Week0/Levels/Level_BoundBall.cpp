@@ -7,44 +7,51 @@
 
 void CLevel_BoundBall::Init_Level()
 {
-	
+	__super::Init_Level();
 }
 
 void CLevel_BoundBall::Update_Level()
 {
 
+	XMFLOAT3 position;
+
 	for (AActor* actor : m_vecActors)
 	{
 		actor->Update();
 
-		
-
 		float renderRadius = sphereRadius * 0.1;
 
-		FVector veclotiy = actor->GetVelocity();
+		ABoundActor* boundActor = dynamic_cast<ABoundActor*>(actor);
 
-		if (actor->GetPosition().x < leftBorder + renderRadius)
+		if (boundActor == nullptr)
+			continue;
+
+		position = boundActor->GetTransform()->GetPosition();
+
+		XMFLOAT3 veclotiy = boundActor->GetVelocity();
+
+		if (position.x < leftBorder + renderRadius)
 		{
 			veclotiy.x = veclotiy.x * -1.f;
-			actor->SetVelocity(veclotiy);
+			boundActor->SetVelocity(veclotiy);
 
 		}
-		if (actor->GetPosition().x > rightBorder - renderRadius)
+		if (position.x > rightBorder - renderRadius)
 		{
 			veclotiy.x = veclotiy.x * -1.f;
-			actor->SetVelocity(veclotiy);
+			boundActor->SetVelocity(veclotiy);
 
 		}
-		if (actor->GetPosition().y > topBorder - renderRadius)
+		if (position.y > topBorder - renderRadius)
 		{
 			veclotiy.y = veclotiy.y * -1.f;
-			actor->SetVelocity(veclotiy);
+			boundActor->SetVelocity(veclotiy);
 
 		}
-		if (actor->GetPosition().y < bottomBorder + renderRadius)
+		if (position.y < bottomBorder + renderRadius)
 		{
 			veclotiy.y = veclotiy.y * -1.f;
-			actor->SetVelocity(veclotiy);
+			boundActor->SetVelocity(veclotiy);
 		}
 	}
 }
@@ -78,7 +85,7 @@ void CLevel_BoundBall::Render_Debug()
 			actor->SetMesh(EMeshType::CIRCLE);
 
 			actor->SetColor(FColor(1.f, 0.f, 0.f, 1.f));
-			actor->SetSize(0.1f);
+			
 			
 			m_vecActors.push_back(actor);
 		}

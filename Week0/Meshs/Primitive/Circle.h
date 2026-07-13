@@ -22,7 +22,7 @@ struct CirclePrimitive
 	{
 		return vertexCount + 1;
 	}
-	
+
 	UINT GetVerticesSize()
 	{
 		return sizeof(vertices);
@@ -33,17 +33,7 @@ struct CirclePrimitive
 
 	}
 
-	void SetSize(float size)
-	{
-		for (UINT i = 0; i < vertexCount + 1; i++)
-		{
-			vertices[i].x *= size;
-			vertices[i].y *= size;
-			vertices[i].z *= size;
-		}
-	}
-
-	void Create(FVector color)
+	CirclePrimitive()
 	{
 		float angle = 0.f;
 
@@ -60,8 +50,8 @@ struct CirclePrimitive
 			vertices[i + 1].x = -cos(angle);
 			vertices[i + 1].y = sin(angle);
 			vertices[i + 1].z = 0.0f;
-	
-			
+
+
 
 			indices[i * 3] = 0;
 			indices[i * 3 + 1] = i + 1;
@@ -73,7 +63,7 @@ struct CirclePrimitive
 		vertices[i + 1].x = -cos(angle);
 		vertices[i + 1].y = sin(angle);
 		vertices[i + 1].z = 0.0f;
-	
+
 
 		indices[i * 3] = 0;
 		indices[i * 3 + 1] = i + 1;

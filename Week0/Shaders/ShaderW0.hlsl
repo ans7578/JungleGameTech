@@ -3,12 +3,7 @@
 
 cbuffer constBuffer : register(b0)
 {
-    float3  Offset; //정점 위치를 이동시키기 위한 오프셋 값
-    float   Pad;
-    
-    float3  Size;
-    float   Pad2;
-    
+    matrix  World;
     float4  Color;
 };
 
@@ -29,7 +24,7 @@ PS_INPUT mainVS(VS_INPUT input)
 {
     PS_INPUT output;
     
-    output.position = input.Pos * float4(Size, 1) + float4(Offset, 0); //정점 위치를 그대로 전달
+    output.position = mul(input.pos, World);
     output.color = Color; //정점 색상을 그대로 전달
     
     return output;

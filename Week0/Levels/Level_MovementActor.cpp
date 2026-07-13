@@ -6,6 +6,8 @@
 
 void CLevel_MovementActor::Init_Level()
 {
+	__super::Init_Level();
+
 	AActor* actor = new AMovementActor();
 	actor->SetMesh(EMeshType::CIRCLE);
 
@@ -19,29 +21,29 @@ void CLevel_MovementActor::Update_Level()
 		actor->Update();
 	}
 
-	FVector pos;
+	XMFLOAT3 position;
 	for (auto actor : m_vecActors)
 	{
-		pos = actor->GetPosition();
-		float radius = actor->GetSize().x;
+		position = actor->GetTransform()->GetPosition();
+		float radius = actor->GetTransform()->GetScale().x;
 
-		if (pos.x < m_LeftBorder + radius)
+		if (position.x < m_LeftBorder + radius)
 		{
-			pos.x = m_LeftBorder + radius;
+			position.x = m_LeftBorder + radius;
 		}
-		if (pos.x > m_RightBorder - radius)
+		if (position.x > m_RightBorder - radius)
 		{
-			pos.x = m_RightBorder - radius;
+			position.x = m_RightBorder - radius;
 		}
-		if (pos.y > m_TopBorder - radius)
+		if (position.y > m_TopBorder - radius)
 		{
-			pos.y = m_TopBorder - radius;
+			position.y = m_TopBorder - radius;
 		}
-		if (pos.y < m_BottomBorder + radius)
+		if (position.y < m_BottomBorder + radius)
 		{
-			pos.y = m_BottomBorder + radius;
+			position.y = m_BottomBorder + radius;
 		}
-		actor->SetPosition(pos);
+		actor->GetTransform()->SetPosition(position);
 	}
 }
 

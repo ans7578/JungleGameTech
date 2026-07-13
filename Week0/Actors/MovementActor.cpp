@@ -6,7 +6,7 @@ AMovementActor::AMovementActor()
 {
 	m_moveAmount = 0.1f;
 
-	SetSize(0.1f);
+	GetTransform()->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
 }
 
 AMovementActor::~AMovementActor()
@@ -15,32 +15,46 @@ AMovementActor::~AMovementActor()
 
 void AMovementActor::Update()
 {
-
+	
 	if (CInputManager::GetInstance().GetKeyUp(VK_UP))
 	{
-		m_fPosition.y += m_moveAmount;
-		m_iCallCount++;
+		XMFLOAT3 position = GetTransform()->GetPosition();
+
+		position.y += m_moveAmount;
+
+
+		GetTransform()->SetPosition(position);
 	}
 
 	if (CInputManager::GetInstance().GetKey(VK_DOWN))
 	{
-		m_fPosition.y -= m_moveAmount;
+		XMFLOAT3 position = GetTransform()->GetPosition();
+
+
+		position.y -= m_moveAmount;
+		GetTransform()->SetPosition(position);
 	}
 
 	if (CInputManager::GetInstance().GetKey(VK_RIGHT))
 	{
-		m_fPosition.x += m_moveAmount;
+		XMFLOAT3 position = GetTransform()->GetPosition();
+
+		position.x += m_moveAmount;
+		GetTransform()->SetPosition(position);
 	}
 
 	if (CInputManager::GetInstance().GetKey(VK_LEFT))
 	{
-		m_fPosition.x -= m_moveAmount;
+		XMFLOAT3 position = GetTransform()->GetPosition();
+
+		position.x -= m_moveAmount;
+		GetTransform()->SetPosition(position);
 	}
 }
 
 void AMovementActor::RenderDebug()
 {
-	ImGui::Text("Call Count : %d", m_iCallCount);
+	
 }
 
 const char* AMovementActor::GetName()

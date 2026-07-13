@@ -90,6 +90,12 @@
     <ClCompile Include="Actors\APlatformerActor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Components\ComponentBase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\TransformComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render\URenderer.h">
@@ -177,6 +183,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Actors\APlatformerActor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ComponentBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\TransformComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

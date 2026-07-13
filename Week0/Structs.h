@@ -1,35 +1,6 @@
 #pragma once
 
 
-
-struct FVector
-{
-	float x, y, z;
-	FVector(float _x = 0, float _y = 0, float _z = 0) : x(_x), y(_y), z(_z) {}
-
-	void SetVector(float scala)
-	{
-		x = scala;
-		y = scala;
-		z = scala;
-	}
-
-	void operator+(FVector& fVector)
-	{
-		x += fVector.x;
-		y += fVector.y;
-		z += fVector.z;
-
-	}
-
-	FVector& operator+=(FVector& fVector)
-	{
-		*this + fVector;
-
-		return *this;
-	}
-};
-
 struct FColor
 {
 	float r, g, b, a; // Color

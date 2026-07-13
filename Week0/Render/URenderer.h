@@ -9,18 +9,16 @@
 
 #include "../Structs.h"
 
+#include <DirectXMath.h>
+using namespace DirectX;
+
 
 class URenderer
 {
 public:
 	struct FConstantBuffer
 	{
-		FVector Offset;
-		float	Pad;
-		
-		FVector Size;
-		float	Pad2;
-
+		XMMATRIX World;
 		FColor	Color;
 	};
 

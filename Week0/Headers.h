@@ -8,6 +8,8 @@
 #include <ctime>   // time 함수 사용
 #include <map>
 #include <set>
+#include <list>
+
 
 //dx
 #pragma comment(lib, "user32")
@@ -16,9 +18,15 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
+#include <DirectXMath.h>
+
+using namespace DirectX;
 
 //ImGui
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "ImGui/imgui_impl_dx11.h"
 #include "ImGui/imgui_impl_win32.h"
+
+
+//use
