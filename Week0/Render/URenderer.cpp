@@ -5,7 +5,7 @@
 	#pragma comment(lib, "dxguid.lib") // 링커에게 DX GUID 라이브러리를 결합하라고 지시한다.
 #endif
 
-
+#include<WICTextureLoader.h>
 
 void URenderer::Create(HWND hWindow)
 {
@@ -18,6 +18,10 @@ void URenderer::Create(HWND hWindow)
 
 	//래스터라이저 상태 생성
 	CreateRasterizerState();
+
+
+	CreateShaderResourceView(L"Doro.png", &doroSRV, &doroSamplerState);
+
 }
 
 void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
@@ -136,15 +140,16 @@ void URenderer::CreateShader()
 	//정점 데이터의 형식은 정점 쉐이더에서 정의한 구조체와 일치해야 함
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &SimpleInputLayout);
 
 
 
-	vertexShaderBlob->Release();
-	pixelShaderBlob->Release();
+	//vertexShaderBlob->Release();
+	//pixelShaderBlob->Release();
 }
 
 ID3D11Buffer* URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage)
@@ -279,6 +284,56 @@ void URenderer::CreateConstantBuffer()
 
 }
 
+bool URenderer::CreateShaderResourceView(const wchar_t* szFilePath, ID3D11ShaderResourceView** ppOutSRV, ID3D11SamplerState** ppOutSamplerState)
+{
+
+	ID3D11Resource* texture;
+
+	HRESULT hr = DirectX::CreateWICTextureFromFile(
+		Device,
+		DeviceContext,
+		szFilePath,
+		&texture,
+		ppOutSRV
+	);
+
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	D3D11_SAMPLER_DESC samplerDesc = {};
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+
+	// UV좌표가 0~1을 벗어날 경우 텍스처를 타일처럼 반복함.
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	hr = Device->CreateSamplerState(&samplerDesc, ppOutSamplerState);
+	if (FAILED(hr))
+	{
+		//SRV는 생성되었으나 샘플러만 생성이 안된경우, 메모리 누수를 방지하기 위해 해제
+		if (*ppOutSRV != nullptr)
+		{
+			(*ppOutSRV)->Release();
+			*ppOutSRV = nullptr;
+		}
+		return false;
+	}
+
+
+	return true;
+
+}
+
+
+
 void URenderer::SwapBuffer()
 {
 	SwapChain->Present(1, 0); //스왑체인 프레젠트 호출, 1은 수직동기화, 0은 플래그 없음
@@ -304,6 +359,11 @@ void URenderer::PrepareShader()
 	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0); //픽셀 쉐이더 설정
 	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
 
+	DeviceContext->PSSetShaderResources(0, 1, &doroSRV);
+	DeviceContext->PSSetSamplers(0, 1, &doroSamplerState);
+
+
+
 	//버텍스 쉐이더에 상수 버퍼를 설정한다.
 	for (int i = 0; i < ECBufferType::CBUFFER_END; i++)
 	{
@@ -327,6 +387,7 @@ void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize,
 
 		memcpy(constantBufferMSR.pData, pCBuffer, iBufferDataSize);
 	
+
 		DeviceContext->Unmap(ConstantBuffers[eCBufferType], 0);
 	}
 }

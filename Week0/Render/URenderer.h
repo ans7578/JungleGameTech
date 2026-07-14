@@ -58,8 +58,6 @@ public:
 	ID3D11PixelShader* SimplePixelShader = nullptr; // 픽셀 쉐이더
 	ID3D11InputLayout* SimpleInputLayout = nullptr; // 정점 데이터의 형식을 정의하는 입력 레이아웃
 
-
-
 	//unsigned int Stride; // 정점 데이터의 한 정점당 바이트 수 (3개의 float로 구성된 정점)
 
 public:
@@ -83,6 +81,9 @@ public:
 
 
 	void CreateConstantBuffer();
+
+	bool CreateShaderResourceView(const wchar_t* szFilePath, ID3D11ShaderResourceView** ppOutSRV, ID3D11SamplerState** ppOutSamplerState);
+
 
 	void SwapBuffer();
 
@@ -115,5 +116,6 @@ public:
 
 private:
 	ID3D11Buffer* ConstantBuffers[CBUFFER_END];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
-
+	ID3D11ShaderResourceView* doroSRV = nullptr;
+	ID3D11SamplerState* doroSamplerState = nullptr;
 };

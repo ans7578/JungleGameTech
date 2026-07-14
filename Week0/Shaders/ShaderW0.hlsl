@@ -24,18 +24,22 @@ cbuffer constBuffer : register(b1)
     float4 Color;
 };
 
+Texture2D   texture0 : register(t0);
 
+SamplerState sampler0 : register(s0);
 
 struct VS_INPUT
 {
-    float4 position : POSITION; //버텍스 버퍼로부터 정점 위치를 받아온다
+    float3 position : POSITION; //버텍스 버퍼로부터 정점 위치를 받아온다
+    float2 uv : TEXCOORD0;
 };
 
 // 정점 셰이더에서 픽셀 셰이더로 전달할 구조체
 struct PS_INPUT
 {
     float4 position : SV_POSITION; //픽셀 셰이더에 전달하기 위해 변환된 위치값
-    float4 color : COLOR; //픽셀 셰이더에 전달하기 위해 변환된 색상값
+    float2 uv: TEXCOORD; //픽셀 셰이더에 전달하기 위해 변환된 색상값
+    //float4 color : COLOR;
 };
 
 
@@ -43,18 +47,29 @@ PS_INPUT mainVS(VS_INPUT input)
 {
     PS_INPUT output;
     
-    output.position = mul(input.position, World);
+    float4 position = float4(input.position, 1.f);
+
+    output.position = mul(position, World);
     output.position = mul(output.position, View);
     output.position = mul(output.position, Projection);
     
+    //output.color = float4(input.uv, 0, 1.f);
 
-    output.color = Color; //정점 색상을 그대로 전달
-    
+    output.uv = input.uv;
+
     return output;
     
 }
 
 float4 mainPS(PS_INPUT input) : SV_TARGET
 {
-    return input.color; //픽셀 셰이더에서 색상을 그대로 출력
+    // 샘플링 전에 UV가 0~1 범위를 벗어나는지 디버깅용으로 체크할 수 있네.
+    // float4 texColor = texture0.Sample(sampler0, input.uv);
+
+    // 만약 텍스처 출력이 안 된다면, 아래와 같이 UV를 출력해서 좌표가 넘어오는지 확인하게.
+  
+
+    return texture0.Sample(sampler0, input.uv);
+    //return input.color;
+     
 }

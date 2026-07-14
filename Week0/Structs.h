@@ -55,3 +55,10 @@ struct FVertexSimple
 {
 	float x, y, z;    // Position
 };
+
+// 1. Define the triangle vertices
+struct FVertexUV
+{
+	float x, y, z;    // Position
+	float u,v;
+};

@@ -51,13 +51,18 @@ void CResourceManager::SetupResource(URenderer* renderer)
 	
 	RectPrimitive rectPrimitive;
 
-	m_mapResources.insert(make_pair(PRIMITIVE_CIRCLE, new CMesh(renderer, 
-		circlePrimitive.vertices, circlePrimitive.GetVertexStride(), circlePrimitive.GetVertexCount(),
-		circlePrimitive.indices, circlePrimitive.indexCount)));
+	//m_mapResources.insert(make_pair(PRIMITIVE_CIRCLE, new CMesh(renderer, 
+	//	circlePrimitive.vertices, circlePrimitive.GetVertexStride(), circlePrimitive.GetVertexCount(),
+	//	circlePrimitive.indices, circlePrimitive.indexCount)));
+
 
 
 	m_mapResources.insert(make_pair(EMeshType::PRIMITIVE_RECT, new CMesh(renderer,
 		rectPrimitive.vertices, rectPrimitive.GetVertexStride(), rectPrimitive.GetVertexCount(),
 		rectPrimitive.indices, rectPrimitive.indexCount)));
+
+
+	int a = rectPrimitive.GetVertexStride();
+
 
 }

@@ -6,12 +6,12 @@
 // 삼각형을 하드 코딩(삼각형 정점 3개의 포지션과 색상값을 정의해준다)
 struct RectPrimitive
 {
-	FVertexSimple vertices[VETEX_COUNT] =
+	FVertexUV vertices[VETEX_COUNT] =
 	{
-		{  -1.0f,  1.0f, 0.0f }, // LeftTop vertex (red)
-		{  1.0f, 1.0f, 0.0f }, //  RightTOpvertex (green)
-		{ 1.0f, -1.0f, 0.0f },  // RightBottom vertex (blue)
-		{ -1.0f, -1.0f, 0.0f }  // LeftBottom vertex (black)
+		{  -1.0f,  1.0f, 0.0f, 0.f, 0.f }, // LeftTop vertex (red)
+		{  1.0f, 1.0f, 0.0f, 1.f, 0.f	}, //  RightTOpvertex (green)
+		{ 1.0f, -1.0f, 0.0f, 1.f, 1.f 	 },  // RightBottom vertex (blue)
+		{ -1.0f, -1.0f, 0.0f, 0.f, 1.f 	 }  // LeftBottom vertex (black)
 	};
 
 	UINT indices[INDEX_COUNT] =
@@ -25,7 +25,7 @@ struct RectPrimitive
 
 	UINT GetVertexStride()
 	{
-		return sizeof(FVertexSimple);
+		return sizeof(vertices[0]);
 	}
 	UINT GetVertexCount()
 	{
