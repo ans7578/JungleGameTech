@@ -19,7 +19,7 @@ ABoundActor::ABoundActor()
 	m_fVelocity.y = ((float)(rand() % 100 - 50)) * 0.001f;
 
 
-	GetTransform()->SetScale(XMFLOAT3(0.1f, 0.1f,0.1f));
+	GetTransform()->SetScale(XMFLOAT3(50.f, 50.f,50.f));
 }
 
 ABoundActor::~ABoundActor()
