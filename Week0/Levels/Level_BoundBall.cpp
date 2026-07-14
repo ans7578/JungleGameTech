@@ -29,7 +29,7 @@ void CLevel_BoundBall::Update_Level()
 	{
 		actor->Update();
 
-		float renderRadius = sphereRadius * 0.1;
+		float renderRadius = actor->GetTransform()->GetScale().x;
 
 		boundActor = dynamic_cast<ABoundActor*>(actor);
 

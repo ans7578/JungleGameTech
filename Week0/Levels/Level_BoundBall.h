@@ -26,9 +26,8 @@ public:
 
 
 private:
-	const float leftBorder = -1.0f;
-	const float rightBorder = 1.0f;
-	const float topBorder = 1.0f;
-	const float bottomBorder = -1.0f;
-	const float sphereRadius = 1.0f;
+	const float leftBorder = 0.f;
+	const float rightBorder = 1000.f;
+	const float topBorder = 1000.f;
+	const float bottomBorder = 0.f;
 };

@@ -15,8 +15,8 @@ ABoundActor::ABoundActor()
 
 	GetTransform()->SetPosition(randPos);
 
-	m_fVelocity.x = ((float)(rand() % 100 - 50)) * 0.001f;
-	m_fVelocity.y = ((float)(rand() % 100 - 50)) * 0.001f;
+	m_fVelocity.x = ((float)(rand() % 100 - 50)) * 0.1f;
+	m_fVelocity.y = ((float)(rand() % 100 - 50)) * 0.1f;
 
 
 	GetTransform()->SetScale(XMFLOAT3(50.f, 50.f,50.f));
