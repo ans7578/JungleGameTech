@@ -39,7 +39,7 @@ struct PS_INPUT
 {
     float4 position : SV_POSITION; //픽셀 셰이더에 전달하기 위해 변환된 위치값
     float2 uv: TEXCOORD; //픽셀 셰이더에 전달하기 위해 변환된 색상값
-    //float4 color : COLOR;
+    float4 color : COLOR;
 };
 
 
@@ -53,9 +53,10 @@ PS_INPUT mainVS(VS_INPUT input)
     output.position = mul(output.position, View);
     output.position = mul(output.position, Projection);
     
-    //output.color = float4(input.uv, 0, 1.f);
 
     output.uv = input.uv;
+
+    output.color = Color;
 
     return output;
     
@@ -67,9 +68,10 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
     // float4 texColor = texture0.Sample(sampler0, input.uv);
 
     // 만약 텍스처 출력이 안 된다면, 아래와 같이 UV를 출력해서 좌표가 넘어오는지 확인하게.
-  
+    float4 finalColor = texture0.Sample(sampler0, input.uv);
+    finalColor.rgb *= input.color.rgb;
 
-    return texture0.Sample(sampler0, input.uv);
+    return finalColor;
     //return input.color;
      
 }
