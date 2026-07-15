@@ -332,8 +332,6 @@ bool URenderer::CreateShaderResourceView(const wchar_t* szFilePath, ID3D11Shader
 
 }
 
-
-
 void URenderer::SwapBuffer()
 {
 	SwapChain->Present(1, 0); //스왑체인 프레젠트 호출, 1은 수직동기화, 0은 플래그 없음
@@ -373,8 +371,6 @@ void URenderer::PrepareShader()
 			DeviceContext->VSSetConstantBuffers(i, 1, &ConstantBuffers[i]);
 		}
 	}
-
-
 }
 
 void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize, ECBufferType eCBufferType)
