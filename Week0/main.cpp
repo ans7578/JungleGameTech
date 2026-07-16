@@ -73,7 +73,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateConstantBuffer();
 
 	//매니저 세팅
-	CResourceManager::GetInstance().SetupResource(&renderer);
+	CResourceManager::GetInstance().SetupPrimitive(&renderer);
+
+
+	CResourceManager::GetInstance().AddTexture(L"Doro", L"./Resources/Doro.png", &renderer);
+
+
 	CLevelManager::GetInstance().SetupLevels();
 	CInputManager::GetInstance().SetupInput();
 

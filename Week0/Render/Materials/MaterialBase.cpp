@@ -11,14 +11,6 @@ UMaterialBase::UMaterialBase(ID3D11VertexShader* pVS, ID3D11PixelShader* pPS, ID
 	m_pShaderResourceViews = pSRV;
 	m_pSamplerState = pSamplerState;
 	m_pConstantBuffer = pConstantBuffer;
-
-
-
-	m_pVertexShader->AddRef();
-	m_pPixelShader->AddRef();
-	m_pShaderResourceViews->AddRef();
-	m_pConstantBuffer->AddRef();
-	m_pSamplerState->AddRef();
 }
 
 

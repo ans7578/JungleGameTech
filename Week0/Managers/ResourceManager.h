@@ -26,17 +26,24 @@ public:
 	CMesh* GetMesh(EMeshType eMeshType);
 
 	void	ReleaseSingleton();
-	void	SetupResource(URenderer* renderer);
+
+	void	SetupPrimitive(URenderer* renderer);
 
 
-	void	LoadTexture(const wchar_t* szFileName, const wchar_t* szFilePath, URenderer* renderer);
+	bool	AddTexture(const wchar_t* szFileName, const wchar_t* szFilePath, URenderer* renderer);
+
+	ComPtr<ID3D11ShaderResourceView>& LoadTexture(const wchar_t* szFileName);
+
+
+private:
+
 
 private:
 	static CResourceManager* instance;
 	
 	map<EMeshType, CMesh*> m_meshes;
 
-	unordered_map<HASH_KEY, ID3D11ShaderResourceView*> m_textures;
+	unordered_map<HASH_KEY, ComPtr<ID3D11ShaderResourceView>> m_textures;
 
 
 	

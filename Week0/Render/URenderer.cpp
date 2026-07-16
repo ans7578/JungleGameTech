@@ -6,6 +6,7 @@
 #endif
 
 #include<WICTextureLoader.h>
+#include "../Managers/ResourceManager.h"
 
 void URenderer::Create(HWND hWindow)
 {
@@ -19,6 +20,8 @@ void URenderer::Create(HWND hWindow)
 	//래스터라이저 상태 생성
 	CreateRasterizerState();
 
+
+	CreateSamplerState();
 
 	//CreateShaderResourceView(L"Doro.png", &doroSRV, &doroSamplerState);
 
@@ -227,27 +230,27 @@ void URenderer::CreateConstantBuffer()
 
 }
 
-bool URenderer::CreateSamplerState(ID3D11SamplerState** ppOutSamplerState)
+void URenderer::CreateShaderResources(const wchar_t* szFilePath, ID3D11ShaderResourceView** ppOutSRV)
+{
+	ID3D11Resource* texture;
+	
+	HRESULT hr = CreateWICTextureFromFile(
+		Device.Get(),
+		DeviceContext.Get(),
+		szFilePath,
+		&texture,
+		ppOutSRV
+	);
+}
+
+void URenderer::CreateSamplerState()
 {
 
-	//ID3D11Resource* texture;
-	//
-	//HRESULT hr = DirectX::CreateWICTextureFromFile(
-	//	Device,
-	//	DeviceContext,
-	//	szFilePath,
-	//	&texture,
-	//	ppOutSRV
-	//);
-	//
-	//if (FAILED(hr))
-	//{
-	//	return false;
-	//}
+	
 
 	D3D11_SAMPLER_DESC samplerDesc = {};
 
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 
 	// UV좌표가 0~1을 벗어날 경우 텍스처를 타일처럼 반복함.
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -258,14 +261,7 @@ bool URenderer::CreateSamplerState(ID3D11SamplerState** ppOutSamplerState)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	HRESULT hr = Device->CreateSamplerState(&samplerDesc, ppOutSamplerState);
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
-	return true;
-
+	HRESULT hr = Device->CreateSamplerState(&samplerDesc, m_samplerStates[SAMPLERSTATE_LINEAR_WRAP].GetAddressOf());
 }
 
 void URenderer::SwapBuffer()
@@ -293,8 +289,8 @@ void URenderer::PrepareShader()
 	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0); //픽셀 쉐이더 설정
 	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
 
-	//DeviceContext->PSSetShaderResources(0, 1, &doroSRV);
-	//DeviceContext->PSSetSamplers(0, 1, &doroSamplerState);
+	DeviceContext->PSSetShaderResources(0, 1, CResourceManager::GetInstance().LoadTexture(L"Doro").GetAddressOf());
+	DeviceContext->PSSetSamplers(0, 1, m_samplerStates[SAMPLERSTATE_LINEAR_WRAP].GetAddressOf());
 
 
 
@@ -407,7 +403,6 @@ void URenderer::ReleaseRasterizerState()
 }
 void URenderer::ReleaseShader()
 {
-	
 	if (SimpleVertexShader)
 	{
 		SimpleVertexShader->Release();
@@ -434,14 +429,7 @@ void URenderer::ReleaseIndexBuffer(ID3D11Buffer* indexBuffer)
 }
 void URenderer::ReleaseConstantBuffer()
 {
-	for (int i = 0; i < ECBufferType::CBUFFER_END; i++)
-	{
-		if (ConstantBuffers[i])
-		{
-			ConstantBuffers[i]->Release();
-			ConstantBuffers[i] = nullptr;
-		}
-	}
+
 
 }
 //렌더러에 사용된 모든 리소스를 해제하는 함수

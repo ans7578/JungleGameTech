@@ -79,8 +79,10 @@ public:
 
 	void CreateConstantBuffer();
 
+	void CreateShaderResources(const wchar_t* szFilePath, ID3D11ShaderResourceView** ppOutSRV);
 
-	bool CreateSamplerState(ID3D11SamplerState** ppOutSamplerState);
+
+	void CreateSamplerState();
 
 
 	void SwapBuffer();
@@ -115,6 +117,6 @@ public:
 private:
 	ComPtr<ID3D11Buffer> ConstantBuffers[CBUFFER_END];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
 
+	ComPtr<ID3D11SamplerState> m_samplerStates[SAMPLERSTATE_END];
 
-	ID3D11SamplerState* doroSamplerState = nullptr;
 };

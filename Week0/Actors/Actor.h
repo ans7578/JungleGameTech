@@ -8,6 +8,9 @@
 #include <string>
 
 class CMesh;
+class CMaterial;
+
+
 
 class AActor
 {
@@ -39,15 +42,7 @@ public:
 	EActorType		GetActorType() { return m_eActorType; }
 
 
-	void			SetMesh(EMeshType eMeshType);
-
-	//void			SetPosition(FVector fPosition) { m_fPosition = fPosition; }
-	//
-	//void			SetVelocity(FVector fVelocity) { m_fVelocity = fVelocity; }
-	//void			SetVelocity(float fVelocity);
-	//void			SetSize(float scala);
-	//void			SetSize(FVector fSize) { m_fSize = fSize; }
-	
+	void			SetMesh(EMeshType eMeshType);	
 	void			SetColor(float color);
 	void			SetColor(const FColor& color);
 
@@ -68,6 +63,8 @@ protected:
 	UINT m_iIndicesCount = 0;
 
 	CMesh* m_pMesh;
+
+	CMaterial* m_pMaterial;
 
 	std::string m_strName;
 

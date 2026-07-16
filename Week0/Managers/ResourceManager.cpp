@@ -45,9 +45,10 @@ void CResourceManager::ReleaseSingleton()
 	}
 }
 
-void CResourceManager::SetupResource(URenderer* renderer)
+void CResourceManager::SetupPrimitive(URenderer* renderer)
 {
-	//CreateShaderBuffer;
+
+	
 
 
 
@@ -66,7 +67,34 @@ void CResourceManager::SetupResource(URenderer* renderer)
 
 }
 
-void CResourceManager::LoadTexture(const wchar_t* szFileName, const wchar_t* szFilePath, URenderer* renderer)
+bool CResourceManager::AddTexture(const wchar_t* szFileName, const wchar_t* szFilePath, URenderer* renderer)
 {
+	ComPtr<ID3D11ShaderResourceView> texture = nullptr;
 
+	renderer->CreateShaderResources(szFilePath, texture.GetAddressOf());
+
+	if (texture.Get() == nullptr)
+	{
+		return false;
+	}
+
+	m_textures.insert(
+		make_pair(
+			FStringToHash::Hash(szFileName),
+			texture
+		));
+
+	return true;
 }
+
+ComPtr<ID3D11ShaderResourceView>& CResourceManager::LoadTexture(const wchar_t* szFileName)
+{
+	HASH_KEY key = FStringToHash::Hash(szFileName);
+
+	if (m_textures.find(key) != m_textures.end())
+	{
+		return m_textures[key];
+	}
+}
+
+
