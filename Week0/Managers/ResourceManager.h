@@ -4,9 +4,11 @@
 
 class URenderer;
 class CMesh;
-
+class UMaterial;
 
 using namespace std;
+
+typedef unsigned long long HASH_KEY;
 
 class CResourceManager
 {
@@ -20,17 +22,23 @@ public:
 	static CResourceManager& GetInstance();
 
 
+	//버텍스버퍼 정보를 담은 녀석.
 	CMesh* GetMesh(EMeshType eMeshType);
 
 	void	ReleaseSingleton();
 	void	SetupResource(URenderer* renderer);
 
 
-
+	void	LoadTexture(const wchar_t* szFileName, const wchar_t* szFilePath, URenderer* renderer);
 
 private:
 	static CResourceManager* instance;
 	
-	map<EMeshType, CMesh*> m_mapResources;
+	map<EMeshType, CMesh*> m_meshes;
+
+	unordered_map<HASH_KEY, ID3D11ShaderResourceView*> m_textures;
+
+
+	
 };
 

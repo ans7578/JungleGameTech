@@ -3,6 +3,8 @@
 #include "../Meshs/Mesh.h"
 #include "../Meshs/Primitive/Circle.h"
 #include "../Meshs/Primitive/Rect.h"
+#include "../Structs.h"
+
 
 // 1. static 멤버 변수는 반드시 .cpp 파일에서 실체화 및 초기화를 해줘야 한다.
 CResourceManager* CResourceManager::instance = nullptr;
@@ -25,17 +27,17 @@ CResourceManager& CResourceManager::GetInstance()
 
 CMesh* CResourceManager::GetMesh(EMeshType eResourceType)
 {
-	return m_mapResources[eResourceType];
+	return m_meshes[eResourceType];
 }
 
 
 void CResourceManager::ReleaseSingleton()
 {
-	for (std::pair<EMeshType, CMesh*> elem : m_mapResources)
+	for (std::pair<EMeshType, CMesh*> elem : m_meshes)
 	{
 		delete	elem.second;
 	}
-	m_mapResources.clear();
+	m_meshes.clear();
 
 	if (instance != nullptr)
 	{
@@ -45,24 +47,26 @@ void CResourceManager::ReleaseSingleton()
 
 void CResourceManager::SetupResource(URenderer* renderer)
 {
+	//CreateShaderBuffer;
+
+
 
 	//렌더러와 쉐이더 생성 이후 버텍스 버퍼를 생성한다.
 	CirclePrimitive circlePrimitive;
 	
 	RectPrimitive rectPrimitive;
 
-	m_mapResources.insert(make_pair(PRIMITIVE_CIRCLE, new CMesh(renderer, 
+	m_meshes.insert(make_pair(PRIMITIVE_CIRCLE, new CMesh(renderer,
 		circlePrimitive.vertices, circlePrimitive.GetVertexStride(), circlePrimitive.GetVertexCount(),
 		circlePrimitive.indices, circlePrimitive.indexCount)));
 
-
-
-	m_mapResources.insert(make_pair(EMeshType::PRIMITIVE_RECT, new CMesh(renderer,
+	m_meshes.insert(make_pair(EMeshType::PRIMITIVE_RECT, new CMesh(renderer,
 		rectPrimitive.vertices, rectPrimitive.GetVertexStride(), rectPrimitive.GetVertexCount(),
 		rectPrimitive.indices, rectPrimitive.indexCount)));
 
+}
 
-	int a = rectPrimitive.GetVertexStride();
-
+void CResourceManager::LoadTexture(const wchar_t* szFileName, const wchar_t* szFilePath, URenderer* renderer)
+{
 
 }

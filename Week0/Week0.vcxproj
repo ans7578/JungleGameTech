@@ -152,6 +152,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meshs\Mesh.cpp" />
     <ClCompile Include="Managers\ResourceManager.cpp" />
+    <ClCompile Include="Render\Materials\MaterialBase.cpp" />
     <ClCompile Include="Render\URenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +187,7 @@
     <ClInclude Include="Meshs\Primitive\Circle.h" />
     <ClInclude Include="Managers\ResourceManager.h" />
     <ClInclude Include="Meshs\Primitive\Sphere.h" />
+    <ClInclude Include="Render\Materials\MaterialBase.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="Render\URenderer.h" />
     <ClInclude Include="Utils.h" />

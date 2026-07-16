@@ -10,7 +10,10 @@
 #include <unordered_map>
 #include <set>
 #include <list>
+#include <wrl/client.h>
 
+
+using namespace Microsoft::WRL;
 
 //dx
 #pragma comment(lib, "user32")

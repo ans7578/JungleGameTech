@@ -1,6 +1,5 @@
 #pragma once
 
-
 enum EMeshType
 {
 	PRIMITIVE_NONE,

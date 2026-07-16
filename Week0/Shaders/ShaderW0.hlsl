@@ -18,11 +18,17 @@ cbuffer cameraBuffer : register(b0)
     matrix Projection;
 }
 
-cbuffer constBuffer : register(b1)
+cbuffer worldBuffer : register(b1)
 {
     matrix World;
-    float4 Color;
 };
+
+cbuffer materialBuffer : register(b2)
+{
+    float4 diffuse;
+};
+
+
 
 Texture2D   texture0 : register(t0);
 
@@ -56,7 +62,7 @@ PS_INPUT mainVS(VS_INPUT input)
 
     output.uv = input.uv;
 
-    output.color = Color;
+    //output.color = Color;
 
     return output;
     
@@ -69,7 +75,7 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
 
     // 만약 텍스처 출력이 안 된다면, 아래와 같이 UV를 출력해서 좌표가 넘어오는지 확인하게.
     float4 finalColor = texture0.Sample(sampler0, input.uv);
-    finalColor.rgb *= input.color.rgb;
+    //finalColor.rgb *= input.color.rgb;
 
     return finalColor;
     //return input.color;
