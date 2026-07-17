@@ -2,6 +2,8 @@
 #include "../Managers/ResourceManager.h"
 #include "../Render/URenderer.h"
 #include "../Meshs/Mesh.h"
+#include "../Render/Materials/MaterialBase.h"
+
 
 UINT AActor::m_iRefCount = 0;
 
@@ -12,6 +14,18 @@ AActor::AActor()
 	m_eActorType = ACTOR_NONE;
 
 	AddComponent<UTransformComponent>(new UTransformComponent());
+
+	
+	if (m_eActorType != ACTOR_CAMERA)
+	{
+		m_pMaterial = new UMaterialBase();
+
+	}
+
+
+
+
+
 }
 
 AActor::~AActor()
@@ -32,6 +46,17 @@ void AActor::Init()
 	for (const auto& component : m_Components)
 	{
 		component->Init_Component();
+	}
+
+	if (m_eActorType != ACTOR_CAMERA)
+	{
+		m_pMaterial->SetUpMaterial
+		(
+			CResourceManager::GetInstance().LoadShaderProgram(L"DefaultShader"),
+			CResourceManager::GetInstance().LoadTexture(L"Doro").Get()
+		);
+
+		int b = 0;
 	}
 }
 
@@ -68,12 +93,18 @@ void AActor::Render(URenderer* renderer)
 {
 	//DX행렬로 있던걸 수학적 행렬식으로 전치함.
 
+
 	XMMATRIX matSRT = GetTransform()->GetSRTMatrix();
 
 	m_fCBufferData.World = XMMatrixTranspose(matSRT);
-	m_fCBufferData.Color = GetColor();
+	//m_fCBufferData.Color = GetColor();
 
 	renderer->UpdateConstantBuffer(&m_fCBufferData,sizeof(m_fCBufferData),URenderer::ECBufferType::CBUFFER_WORLD);
+
+	if (m_pMaterial)
+	{
+		m_pMaterial->Bind(renderer);
+	}
 
 	renderer->RenderPrimitiveIndexed(GetMesh()->GetVertexBuffer(), GetMesh()->GetIndexBuffer(), GetMesh()->GetVertexStride(), GetMesh()->GetIndexCount());
 

@@ -123,20 +123,22 @@ void URenderer::CreateRasterizerState()
 
 }
 
-void URenderer::CreateShader()
+
+
+void URenderer::CreateShader(const wchar_t* szFilePath, ID3D11VertexShader** ppOutVertexShader, ID3D11PixelShader** ppOutPixelShader, D3D11_INPUT_ELEMENT_DESC* Layout, UINT layoutSize)
 {
-	ID3DBlob* vertexShaderBlob = nullptr;
-	ID3DBlob* pixelShaderBlob = nullptr;
+	ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
+	ComPtr<ID3DBlob> pixelShaderBlob = nullptr;
 
 
 	//정점 쉐이더 컴파일
-	D3DCompileFromFile(L"./Shaders/ShaderW0.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexShaderBlob, nullptr);
-	Device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &SimpleVertexShader);
+	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexShaderBlob, nullptr);
+	Device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, ppOutVertexShader);
 
 
 	//픽셀 쉐이더 컴파일
-	D3DCompileFromFile(L"./Shaders/ShaderW0.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelShaderBlob, nullptr);
-	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &SimplePixelShader);
+	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelShaderBlob, nullptr);
+	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, ppOutPixelShader);
 
 	//D3D11_INPUT_ELEMENT_DESC 구조체를 사용하여 입력 레이아웃 생성
 	//정점 데이터의 형식을 정의하는 구조체 배열
@@ -147,13 +149,30 @@ void URenderer::CreateShader()
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &SimpleInputLayout);
-
-
-
-	//vertexShaderBlob->Release();
-	//pixelShaderBlob->Release();
+	//Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &SimpleInputLayout);
 }
+
+void URenderer::CreateShader(const wchar_t* szFilePath, ID3D11VertexShader** ppOutVertexShader, ID3D11PixelShader** ppOutPixelShader, ID3D11InputLayout** ppOutInputLayout)
+{
+	ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
+	ComPtr<ID3DBlob> pixelShaderBlob = nullptr;
+
+
+	//정점 쉐이더 컴파일
+	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexShaderBlob, nullptr);
+	Device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, ppOutVertexShader);
+
+
+	//픽셀 쉐이더 컴파일
+	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelShaderBlob, nullptr);
+	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, ppOutPixelShader);
+
+	CreateInputLayout(vertexShaderBlob.Get(), ppOutInputLayout);
+
+	int a;
+}
+
+
 
 void URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage, ID3D11Buffer** ppOutVertexBuffer)
 {
@@ -175,7 +194,7 @@ void URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAG
 	D3D11_SUBRESOURCE_DATA vertexBufferData = { pVertexData };
 
 
-	Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &(*ppOutVertexBuffer));
+	Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, ppOutVertexBuffer);
 
 	
 }
@@ -191,7 +210,7 @@ void URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usa
 
 	indexBufferData.pSysMem = indices;
 
-	Device->CreateBuffer(&indexBufferDesc, &indexBufferData, &(*ppOutIndexBuffer));
+	Device->CreateBuffer(&indexBufferDesc, &indexBufferData, ppOutIndexBuffer);
 
 }
 
@@ -226,6 +245,21 @@ void URenderer::CreateConstantBuffer()
 	const char* cameraBufferName = "CbCamera";
 	ConstantBuffers[CBUFFER_CAMERA]->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(cameraBufferName), cameraBufferName);
 #endif
+
+	D3D11_BUFFER_DESC materialBufferDesc = {};
+
+	materialBufferDesc.ByteWidth = sizeof(FMaterialBufferData) + 0xf & 0xfffffff0; // 상수 버퍼의 크기를 16바이트 단위로 맞춤
+	materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 동적 버퍼로 설정, CPU에서 데이터를 업데이트할 수 있음
+	materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
+	materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
+
+	Device->CreateBuffer(&materialBufferDesc, nullptr, &ConstantBuffers[CBUFFER_MATERIAL]); // 상수 버퍼 생성
+
+#if defined(_DEBUG)
+	const char* materialBufferName = "Material";
+	ConstantBuffers[CBUFFER_MATERIAL]->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(materialBufferName), materialBufferName);
+#endif
+
 
 
 }
@@ -285,24 +319,24 @@ void URenderer::Prepare()
 
 void URenderer::PrepareShader()
 {
-	DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0); //정점 쉐이더 설정
-	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0); //픽셀 쉐이더 설정
-	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
-
-	DeviceContext->PSSetShaderResources(0, 1, CResourceManager::GetInstance().LoadTexture(L"Doro").GetAddressOf());
-	DeviceContext->PSSetSamplers(0, 1, m_samplerStates[SAMPLERSTATE_LINEAR_WRAP].GetAddressOf());
-
-
-
-	//버텍스 쉐이더에 상수 버퍼를 설정한다.
-	for (int i = 0; i < ECBufferType::CBUFFER_END; i++)
-	{
-		if (ConstantBuffers[i])
-		{
-			//상수 버퍼를 정점 쉐이더에 바인딩
-			DeviceContext->VSSetConstantBuffers(i, 1, ConstantBuffers[i].GetAddressOf());
-		}
-	}
+	//DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0); //정점 쉐이더 설정
+	//DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0); //픽셀 쉐이더 설정
+	//DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
+	//
+	//DeviceContext->PSSetShaderResources(0, 1, CResourceManager::GetInstance().LoadTexture(L"Doro").GetAddressOf());
+	//DeviceContext->PSSetSamplers(0, 1, m_samplerStates[SAMPLERSTATE_LINEAR_WRAP].GetAddressOf());
+	//
+	//
+	//
+	////버텍스 쉐이더에 상수 버퍼를 설정한다.
+	//for (int i = 0; i < ECBufferType::CBUFFER_END; i++)
+	//{
+	//	if (ConstantBuffers[i])
+	//	{
+	//		//상수 버퍼를 정점 쉐이더에 바인딩
+	//		DeviceContext->VSSetConstantBuffers(i, 1, ConstantBuffers[i].GetAddressOf());
+	//	}
+	//}
 }
 
 void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize, ECBufferType eCBufferType)
@@ -318,6 +352,16 @@ void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize,
 
 		DeviceContext->Unmap(ConstantBuffers[eCBufferType].Get(), 0);
 	}
+}
+
+void URenderer::SetSamplerState(UINT iSamplerSlot, ESamplerStateType eSamplerType)
+{
+	DeviceContext->PSSetSamplers(iSamplerSlot, 1, m_samplerStates[eSamplerType].GetAddressOf());
+}
+
+void URenderer::SetConstantBuffer(ECBufferType eBufferType)
+{
+	DeviceContext->VSSetConstantBuffers(eBufferType, 1, ConstantBuffers[eBufferType].GetAddressOf());
 }
 
 void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT iVertexStride, UINT NumVertices)
@@ -403,21 +447,21 @@ void URenderer::ReleaseRasterizerState()
 }
 void URenderer::ReleaseShader()
 {
-	if (SimpleVertexShader)
-	{
-		SimpleVertexShader->Release();
-		SimpleVertexShader = nullptr;
-	}
-	if (SimplePixelShader)
-	{
-		SimplePixelShader->Release();
-		SimplePixelShader = nullptr;
-	}
-	if (SimpleInputLayout)
-	{
-		SimpleInputLayout->Release();
-		SimpleInputLayout = nullptr;
-	}
+	//if (SimpleVertexShader)
+	//{
+	//	SimpleVertexShader->Release();
+	//	SimpleVertexShader = nullptr;
+	//}
+	//if (SimplePixelShader)
+	//{
+	//	SimplePixelShader->Release();
+	//	SimplePixelShader = nullptr;
+	//}
+	//if (SimpleInputLayout)
+	//{
+	//	SimpleInputLayout->Release();
+	//	SimpleInputLayout = nullptr;
+	//}
 }
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
 {
@@ -447,3 +491,107 @@ void URenderer::Release()
 
 
 }
+
+void URenderer::CreateInputLayout(ID3DBlob* pVertexBlob, ID3D11InputLayout** ppOutInputLayout)
+{
+	if (pVertexBlob == nullptr)
+		return;
+
+
+	ComPtr<ID3D11ShaderReflection> pVeretexShaderReflection;
+
+	//쉐이더의 구성정보를 가져온다
+	HRESULT hr = D3DReflect
+	(
+		pVertexBlob->GetBufferPointer(),
+		pVertexBlob->GetBufferSize(),
+		IID_ID3D11ShaderReflection, //타입을 식별하기 위한 ID
+		(void**)pVeretexShaderReflection.GetAddressOf());
+
+	if (FAILED(hr))
+		return;
+
+	//쉐이더 정보를 담는 구조체
+	D3D11_SHADER_DESC	shaderDesc;
+
+	pVeretexShaderReflection->GetDesc(&shaderDesc);
+
+	//쉐이더를 읽어 다시 입력 구조체 데이터를 만든다.
+	vector<D3D11_INPUT_ELEMENT_DESC>inputElementDesc;
+
+
+
+	//InputParameters : VS구조체에 들어간 변수의 개수. 개수만큼의 변수 정보를 만들어야한다.
+	/*
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+	*/
+	//파라미터개수만큼공간확보
+	inputElementDesc.reserve(shaderDesc.InputParameters);
+
+	//입력된 파라미터만큼 순회
+	for (int i = 0; i < shaderDesc.InputParameters; i++)
+	{
+		//변수 하나의 정보를 가진 구조체 생성
+		D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
+
+		pVeretexShaderReflection->GetInputParameterDesc(i, &paramDesc);
+
+		D3D11_INPUT_ELEMENT_DESC elementDesc = {};
+
+		elementDesc.SemanticName = paramDesc.SemanticName;
+		elementDesc.SemanticIndex = paramDesc.SemanticIndex;
+		elementDesc.InputSlot = 0;
+		elementDesc.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; //GPU가 자동으로 오프셋을 게산함.
+		elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		elementDesc.InstanceDataStepRate = 0;
+		
+		/*
+			비트연산으로 자료형의 성분을 찾는다
+			float = 1 -> 1
+			float2 11 - >3
+			float3 111 - >7
+		*/
+
+		if (paramDesc.Mask == 1) //X
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32_UINT;
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32_SINT;
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		}
+		else if (paramDesc.Mask == 3) //X, Y
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32_UINT;
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32_SINT;
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
+		}
+		else if (paramDesc.Mask == 7) //X, Y ,Z
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_UINT;
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_SINT;
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		}
+		else if (paramDesc.Mask == 15) //X, Y ,Z
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_UINT;
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		}
+		inputElementDesc.push_back(elementDesc);
+	}
+
+	//합성이 끝난 inputElementDesc를 다시 레이아웃으로 만든다.
+	
+	hr = Device->CreateInputLayout
+	(
+		inputElementDesc.data(),
+		inputElementDesc.size(),
+		pVertexBlob->GetBufferPointer(),
+		pVertexBlob->GetBufferSize(),
+		ppOutInputLayout
+	);
+}
+	

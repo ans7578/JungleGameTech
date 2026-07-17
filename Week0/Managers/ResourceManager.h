@@ -1,5 +1,6 @@
 #pragma once
 #include "../Headers.h"
+#include "../Structs.h"
 #include "../Enums.h"
 
 class URenderer;
@@ -29,8 +30,14 @@ public:
 
 	void	SetupPrimitive(URenderer* renderer);
 
+	
+	HRESULT	AddShaderPrograms(const wchar_t* szShaderName, const wchar_t* szShaderPath, URenderer* pRenderer);
+
+
 
 	bool	AddTexture(const wchar_t* szFileName, const wchar_t* szFilePath, URenderer* renderer);
+
+	const weak_ptr<FShaderProgram>& LoadShaderProgram(const wchar_t* szFileName);
 
 	ComPtr<ID3D11ShaderResourceView>& LoadTexture(const wchar_t* szFileName);
 
@@ -45,6 +52,7 @@ private:
 
 	unordered_map<HASH_KEY, ComPtr<ID3D11ShaderResourceView>> m_textures;
 
+	unordered_map<HASH_KEY, shared_ptr<FShaderProgram>> m_ShaderPrograms;
 
 	
 };

@@ -1,12 +1,6 @@
 #pragma once
 
 
-enum ESamplerState
-{
-	SAMPLERSTATE_LINEAR_WRAP = 0,
-	SAMPLERSTATE_END
-};
-
 enum EMeshType
 {
 	PRIMITIVE_NONE,

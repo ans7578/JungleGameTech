@@ -69,16 +69,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	URenderer renderer;
 
 	renderer.Create(hwnd);
-	renderer.CreateShader();
+	//renderer.CreateShader();
 	renderer.CreateConstantBuffer();
 
 	//매니저 세팅
 	CResourceManager::GetInstance().SetupPrimitive(&renderer);
 
 
+	CResourceManager::GetInstance().AddShaderPrograms(L"DefaultShader", L"./Shaders/ShaderW0.hlsl", &renderer);
+
+
 	CResourceManager::GetInstance().AddTexture(L"Doro", L"./Resources/Doro.png", &renderer);
+	CResourceManager::GetInstance().AddTexture(L"Phoebe", L"./Resources/phoebe.png", &renderer);
 
-
+	
 	CLevelManager::GetInstance().SetupLevels();
 	CInputManager::GetInstance().SetupInput();
 

@@ -8,7 +8,7 @@
 #include <string>
 
 class CMesh;
-class CMaterial;
+class UMaterialBase;
 
 
 
@@ -63,13 +63,15 @@ protected:
 	UINT m_iIndicesCount = 0;
 
 	CMesh* m_pMesh;
+	UMaterialBase* m_pMaterial;
 
-	CMaterial* m_pMaterial;
 
 	std::string m_strName;
 
 	EActorType	m_eActorType;
 private:
+
+
 	URenderer::FWorldBufferData m_fCBufferData;
 	std::list<UComponentBase*> m_Components;
 

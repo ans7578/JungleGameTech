@@ -7,6 +7,10 @@ class AActor;
 class CLevel_MovementActor :
     public CLevelBase
 {
+public:
+    CLevel_MovementActor();
+    ~CLevel_MovementActor();
+
     // CLevelBase을(를) 통해 상속됨
     virtual void Init_Level() override;
     virtual void Update_Level() override;

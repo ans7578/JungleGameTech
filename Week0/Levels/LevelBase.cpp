@@ -15,7 +15,10 @@ CLevelBase::~CLevelBase()
 
 void CLevelBase::Init_Level()
 {
-
+	for (auto actor : m_vecActors)
+	{
+		actor->Init();
+	}
 }
 
 void CLevelBase::LateUpdate_Level()

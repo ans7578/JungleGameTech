@@ -1,4 +1,5 @@
 #pragma once
+#include "../../Structs.h"
 #include "../../Headers.h"
 
 class URenderer;
@@ -6,9 +7,11 @@ class URenderer;
 class UMaterialBase
 {
 public:
-	UMaterialBase(ID3D11VertexShader* pVS, ID3D11PixelShader* pPS, ID3D11ShaderResourceView* pSRV,
-		ID3D11SamplerState* pSamplerState, ID3D11Buffer* pConstantBuffer);
+	UMaterialBase() = default;
+
 	virtual ~UMaterialBase();
+	
+	virtual void SetUpMaterial(weak_ptr<FShaderProgram> pShaderProgram, ID3D11ShaderResourceView* pSRV);
 
 	virtual void UpdateMaterialConstantBuffer(URenderer* render, const void* pCBuffer, UINT iBufferDataSize);
 
@@ -18,13 +21,12 @@ public:
 
 	virtual void ReleaseMaterial();
 
+protected:
+	FMaterialBufferData					m_fBufferData;
 private:
-	ComPtr<ID3D11VertexShader>			m_pVertexShader = nullptr;
-	ComPtr<ID3D11PixelShader>			m_pPixelShader = nullptr;
+	weak_ptr<FShaderProgram>			m_pShaderProgram;
+
 
 	ComPtr<ID3D11ShaderResourceView>	m_pShaderResourceViews = nullptr;
-	ComPtr<ID3D11SamplerState>			m_pSamplerState = nullptr;
-
-	ComPtr<ID3D11Buffer>				m_pConstantBuffer = nullptr ;
 };
 

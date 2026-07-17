@@ -1,5 +1,9 @@
 #pragma once
 #define _CRTDBG_MAP_ALLOC
+
+
+
+
 #include <Windows.h>
 
 #include "Structs.h"
@@ -12,7 +16,7 @@
 #include <list>
 #include <wrl/client.h>
 
-
+using namespace std;
 using namespace Microsoft::WRL;
 
 //dx

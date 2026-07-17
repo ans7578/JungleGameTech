@@ -48,9 +48,6 @@ void CResourceManager::ReleaseSingleton()
 void CResourceManager::SetupPrimitive(URenderer* renderer)
 {
 
-	
-
-
 
 	//렌더러와 쉐이더 생성 이후 버텍스 버퍼를 생성한다.
 	CirclePrimitive circlePrimitive;
@@ -65,6 +62,31 @@ void CResourceManager::SetupPrimitive(URenderer* renderer)
 		rectPrimitive.vertices, rectPrimitive.GetVertexStride(), rectPrimitive.GetVertexCount(),
 		rectPrimitive.indices, rectPrimitive.indexCount)));
 
+}
+
+
+HRESULT CResourceManager::AddShaderPrograms(const wchar_t* szShaderName, const wchar_t* szShaderPath, URenderer* pRenderer)
+{
+
+	FShaderProgram* pShaderProgram = new FShaderProgram();
+
+
+	pRenderer->CreateShader(szShaderPath,
+		pShaderProgram->pVertexShader.GetAddressOf(),
+		pShaderProgram->pPixelShader.GetAddressOf(),
+		pShaderProgram->pInputLayout.GetAddressOf());
+
+
+	m_ShaderPrograms.insert
+	(
+		make_pair
+		(
+			FStringToHash::Hash(szShaderName), pShaderProgram
+		)
+	);
+
+
+	return S_OK;
 }
 
 bool CResourceManager::AddTexture(const wchar_t* szFileName, const wchar_t* szFilePath, URenderer* renderer)
@@ -85,6 +107,16 @@ bool CResourceManager::AddTexture(const wchar_t* szFileName, const wchar_t* szFi
 		));
 
 	return true;
+}
+
+const weak_ptr<FShaderProgram>& CResourceManager::LoadShaderProgram(const wchar_t* szFileName)
+{
+	HASH_KEY key = FStringToHash::Hash(szFileName);
+
+	if (m_ShaderPrograms.find(key) != m_ShaderPrograms.end())
+	{
+		return m_ShaderPrograms[key];
+	}
 }
 
 ComPtr<ID3D11ShaderResourceView>& CResourceManager::LoadTexture(const wchar_t* szFileName)

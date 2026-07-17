@@ -26,9 +26,8 @@ public:
 	struct FWorldBufferData
 	{
 		XMMATRIX World;
-
-		FColor	Color;
 	};
+
 
 	struct FCameraBufferData
 	{
@@ -53,11 +52,6 @@ public:
 	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear)할 때 사용할 색상 (RGBA)
 	D3D11_VIEWPORT ViewportInfo;  //렌더링 영역을 정의하는 뷰포트 정보
 
-
-	ID3D11VertexShader* SimpleVertexShader = nullptr; // 정점 쉐이더
-	ID3D11PixelShader* SimplePixelShader = nullptr; // 픽셀 쉐이더
-	ID3D11InputLayout* SimpleInputLayout = nullptr; // 정점 데이터의 형식을 정의하는 입력 레이아웃
-
 	//unsigned int Stride; // 정점 데이터의 한 정점당 바이트 수 (3개의 float로 구성된 정점)
 
 public:
@@ -70,7 +64,9 @@ public:
 
 	void CreateRasterizerState();
 
-	void CreateShader();
+	void CreateShader(const wchar_t* szFilePath, ID3D11VertexShader** ppOutVertexShader, ID3D11PixelShader** ppOutPixelShader, D3D11_INPUT_ELEMENT_DESC* Layout, UINT layoutSize);
+
+	void CreateShader(const wchar_t* szFilePath, ID3D11VertexShader** ppOutVertexShader, ID3D11PixelShader** ppOutPixelShader, ID3D11InputLayout** ppOutInputLayout);
 
 	void CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage, ID3D11Buffer** ppOutVertexBuffer);
 
@@ -94,6 +90,12 @@ public:
 	//주의! 카메라는 액터보다 항상 먼저 업데이트 되어야한다.(카메라의 영향을 받는 객체들보다 늦게 갱신되면X)
 	void UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize, ECBufferType eCBufferType);
 
+
+
+	void SetSamplerState(UINT iSamplerSlot,  ESamplerStateType eSamplerType);
+
+	void SetConstantBuffer(ECBufferType eBufferType);
+
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT iVertexStride, UINT NumVertices);
 
 	void RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer , ID3D11Buffer* pIndexBuffer, UINT iVertexStride, UINT NumIndices);
@@ -113,6 +115,9 @@ public:
 
 	void Release();
 		
+
+private:
+	void		CreateInputLayout(ID3DBlob* pVertexBlob, ID3D11InputLayout** ppOutInputLayout);
 
 private:
 	ComPtr<ID3D11Buffer> ConstantBuffers[CBUFFER_END];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼

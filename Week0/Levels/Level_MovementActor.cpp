@@ -4,12 +4,22 @@
 #include "../Enums.h"
 #include "../Actors/MovementActor.h"
 
-void CLevel_MovementActor::Init_Level()
+CLevel_MovementActor::CLevel_MovementActor()
 {
 	AActor* actor = new AMovementActor();
 	actor->SetMesh(EMeshType::PRIMITIVE_RECT);
 
 	m_vecActors.push_back(actor);
+}
+
+CLevel_MovementActor::~CLevel_MovementActor()
+{
+
+}
+
+void CLevel_MovementActor::Init_Level()
+{
+	__super::Init_Level();
 }
 
 void CLevel_MovementActor::Update_Level()
