@@ -68,5 +68,5 @@ void ACameraActor::Render(URenderer* renderer)
     m_fCameraBufferData.Projection = XMMatrixTranspose(projectionMatrix);
 
     renderer->UpdateConstantBuffer(&m_fCameraBufferData, sizeof(m_fCameraBufferData), URenderer::CBUFFER_CAMERA);
-
+    renderer->SetConstantBuffer(URenderer::CBUFFER_CAMERA);
 }

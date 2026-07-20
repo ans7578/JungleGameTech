@@ -85,6 +85,18 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
 	*/
 	ViewportInfo = { 0.f, 0.f, (float)swapChainDesc.BufferDesc.Width, (float)swapChainDesc.BufferDesc.Height, 0.f, 1.f };
 
+
+#if defined(DEBUG) || defined(_DEBUG)
+	// 디버그 레이어가 정상 활성화되었다면, 정보 큐를 제어할 수 있네.
+	Microsoft::WRL::ComPtr<ID3D11InfoQueue> pInfoQueue;
+	if (SUCCEEDED(Device.As(&pInfoQueue)))
+	{
+		// 시스템을 즉각 중단시킬 치명적 에러 조건을 필터링하네.
+		pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+		pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+	}
+#endif
+
 }
 
 void URenderer::CreateFrameBuffer()
@@ -132,12 +144,12 @@ void URenderer::CreateShader(const wchar_t* szFilePath, ID3D11VertexShader** ppO
 
 
 	//정점 쉐이더 컴파일
-	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexShaderBlob, nullptr);
+	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, vertexShaderBlob.GetAddressOf(), nullptr);
 	Device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, ppOutVertexShader);
 
 
 	//픽셀 쉐이더 컴파일
-	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelShaderBlob, nullptr);
+	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, pixelShaderBlob.GetAddressOf(), nullptr);
 	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, ppOutPixelShader);
 
 	//D3D11_INPUT_ELEMENT_DESC 구조체를 사용하여 입력 레이아웃 생성
@@ -159,17 +171,25 @@ void URenderer::CreateShader(const wchar_t* szFilePath, ID3D11VertexShader** ppO
 
 
 	//정점 쉐이더 컴파일
-	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexShaderBlob, nullptr);
+	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, vertexShaderBlob.GetAddressOf(), nullptr);
 	Device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, ppOutVertexShader);
 
 
 	//픽셀 쉐이더 컴파일
-	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelShaderBlob, nullptr);
+	D3DCompileFromFile(szFilePath, nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, pixelShaderBlob.GetAddressOf(), nullptr);
 	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, ppOutPixelShader);
 
-	CreateInputLayout(vertexShaderBlob.Get(), ppOutInputLayout);
 
-	int a;
+	D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+
+	Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), ppOutInputLayout);
+
+
+	//CreateInputLayout(vertexShaderBlob.Get(), ppOutInputLayout);
 }
 
 
@@ -225,7 +245,7 @@ void URenderer::CreateConstantBuffer()
 	worldBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
 	worldBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
 
-	Device->CreateBuffer(&worldBufferDesc, nullptr, &ConstantBuffers[CBUFFER_WORLD]); // 상수 버퍼 생성
+	Device->CreateBuffer(&worldBufferDesc, nullptr, ConstantBuffers[CBUFFER_WORLD].GetAddressOf()); // 상수 버퍼 생성
 
 #if defined(_DEBUG)
 	const char* worldBufferName = "CBWorld";
@@ -239,7 +259,7 @@ void URenderer::CreateConstantBuffer()
 	cameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
 	cameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
 
-	Device->CreateBuffer(&cameraBufferDesc, nullptr, &ConstantBuffers[CBUFFER_CAMERA]); // 상수 버퍼 생성
+	Device->CreateBuffer(&cameraBufferDesc, nullptr, ConstantBuffers[CBUFFER_CAMERA].GetAddressOf()); // 상수 버퍼 생성
 
 #if defined(_DEBUG)
 	const char* cameraBufferName = "CbCamera";
@@ -253,7 +273,7 @@ void URenderer::CreateConstantBuffer()
 	materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU에서 쓰기 가능
 	materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 상수 버퍼로 사용됨
 
-	Device->CreateBuffer(&materialBufferDesc, nullptr, &ConstantBuffers[CBUFFER_MATERIAL]); // 상수 버퍼 생성
+	Device->CreateBuffer(&materialBufferDesc, nullptr, ConstantBuffers[CBUFFER_MATERIAL].GetAddressOf()); // 상수 버퍼 생성
 
 #if defined(_DEBUG)
 	const char* materialBufferName = "Material";
@@ -347,6 +367,8 @@ void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize,
 
 		DeviceContext->Map(ConstantBuffers[eCBufferType].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &constantBufferMSR);
 
+		//constantBufferMSR.pData = &pCBuffer;
+
 		memcpy(constantBufferMSR.pData, pCBuffer, iBufferDataSize);
 	
 
@@ -354,13 +376,17 @@ void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize,
 	}
 }
 
-void URenderer::SetSamplerState(UINT iSamplerSlot, ESamplerStateType eSamplerType)
+void URenderer::SetSamplerState(UINT iSamplerSlot, ESamplerStateType eSamplerType)	
 {
 	DeviceContext->PSSetSamplers(iSamplerSlot, 1, m_samplerStates[eSamplerType].GetAddressOf());
 }
 
 void URenderer::SetConstantBuffer(ECBufferType eBufferType)
 {
+	if (eBufferType == ECBufferType::CBUFFER_MATERIAL)
+	{
+		DeviceContext->PSSetConstantBuffers(eBufferType, 1, ConstantBuffers[eBufferType].GetAddressOf());
+	}
 	DeviceContext->VSSetConstantBuffers(eBufferType, 1, ConstantBuffers[eBufferType].GetAddressOf());
 }
 

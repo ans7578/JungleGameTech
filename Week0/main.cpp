@@ -158,7 +158,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		//렌더 준비 작업
 		renderer.Prepare();
-		renderer.PrepareShader();
+		//renderer.PrepareShader();
 		
 		//생성한 버텍스버러를 넘겨 실제 렌더링 호출
 		

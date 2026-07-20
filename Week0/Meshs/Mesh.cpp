@@ -16,3 +16,13 @@ CMesh::~CMesh()
 {
 
 }
+
+ID3D11Buffer* CMesh::GetVertexBuffer()
+{
+	return m_pVertexBuffer.Get();
+}
+
+ID3D11Buffer* CMesh::GetIndexBuffer()
+{
+	return m_pIndexBuffer.Get();
+}

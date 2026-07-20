@@ -54,7 +54,9 @@ PS_INPUT mainVS(VS_INPUT input)
     PS_INPUT output;
     
     float4 position = float4(input.position, 1.f);
-
+   
+    //output.position = position;
+    
     output.position = mul(position, World);
     output.position = mul(output.position, View);
     output.position = mul(output.position, Projection);
@@ -77,6 +79,9 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
     float4 finalColor = texture0.Sample(sampler0, input.uv);
     //finalColor.rgb *= input.color.rgb;
 
+    finalColor += diffuse;
+    
+    //return float4(1.f, 1.f, 1.f, 1.f);  
     return finalColor;
     //return input.color;
      

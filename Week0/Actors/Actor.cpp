@@ -15,17 +15,11 @@ AActor::AActor()
 
 	AddComponent<UTransformComponent>(new UTransformComponent());
 
-	
 	if (m_eActorType != ACTOR_CAMERA)
 	{
 		m_pMaterial = new UMaterialBase();
 
 	}
-
-
-
-
-
 }
 
 AActor::~AActor()
@@ -39,6 +33,11 @@ AActor::~AActor()
 		delete component;
 	}
 	m_Components.clear();
+
+	m_pMaterial->ReleaseMaterial();
+
+	delete m_pMaterial;
+
 }
 
 void AActor::Init()
@@ -100,11 +99,14 @@ void AActor::Render(URenderer* renderer)
 	//m_fCBufferData.Color = GetColor();
 
 	renderer->UpdateConstantBuffer(&m_fCBufferData,sizeof(m_fCBufferData),URenderer::ECBufferType::CBUFFER_WORLD);
+	renderer->SetConstantBuffer(URenderer::ECBufferType::CBUFFER_WORLD);
+
 
 	if (m_pMaterial)
 	{
 		m_pMaterial->Bind(renderer);
 	}
+
 
 	renderer->RenderPrimitiveIndexed(GetMesh()->GetVertexBuffer(), GetMesh()->GetIndexBuffer(), GetMesh()->GetVertexStride(), GetMesh()->GetIndexCount());
 
@@ -114,6 +116,7 @@ void AActor::Render(URenderer* renderer)
 void AActor::SetMesh(EMeshType eMeshType)
 {
 	m_pMesh = CResourceManager::GetInstance().GetMesh(eMeshType);
+	int a = 10;
 }
 
 void AActor::SetColor(float color)

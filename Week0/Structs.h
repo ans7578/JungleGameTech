@@ -78,10 +78,6 @@ struct FVertexUV
 	float u,v;
 };
 
-struct FMaterialBufferData
-{
-	FColor Diffuse;
-};
 
 struct FShaderProgram
 {
@@ -104,4 +100,9 @@ struct FStringToHash
 		//재귀를 돌면서 각 문자에 대해 해시를 계산하고, 문자열의 끝에 도달하면 최종 해시 값을 반환
 		return (*str == L'\0') ? hash : Hash(str + 1, (hash ^ static_cast<uint64_t>(*str)) * Prime);
 	}
+};
+
+struct FMaterialBufferData
+{
+	FColor	Diffuse;
 };

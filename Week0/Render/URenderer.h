@@ -35,6 +35,8 @@ public:
 		XMMATRIX Projection;
 	};
 
+	
+
 
 public:
 	//Direct3D 11장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인트

@@ -17,9 +17,9 @@ private:
 		
 
 public:
-	ID3D11Buffer*	GetVertexBuffer() { return m_pVertexBuffer.Get(); }
+	ID3D11Buffer* GetVertexBuffer();
 	
-	ID3D11Buffer*	GetIndexBuffer() { return m_pIndexBuffer.Get(); }
+	ID3D11Buffer* GetIndexBuffer();
 	
 	UINT			GetVertexStride() { return m_iVertexStride; }
 
