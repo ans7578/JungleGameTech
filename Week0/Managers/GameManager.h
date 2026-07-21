@@ -26,13 +26,9 @@ public:
 
 	bool	GetKeyUp(WPARAM wParam);
 
-
 	void	SetupInput();
-
 
 private:
 	static CGameManager* instance;
-
-
 };
 

@@ -150,10 +150,12 @@
     <ClCompile Include="Managers\InputManager.cpp" />
     <ClCompile Include="Managers\LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Materials\Material_Unlit_Standard.cpp" />
     <ClCompile Include="Meshs\Mesh.cpp" />
     <ClCompile Include="Managers\ResourceManager.cpp" />
-    <ClCompile Include="Render\Materials\MaterialBase.cpp" />
+    <ClCompile Include="Materials\MaterialBase.cpp" />
     <ClCompile Include="Render\URenderer.cpp" />
+    <ClCompile Include="Components\StaticMeshRendererComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors\Actor.h" />
@@ -162,6 +164,7 @@
     <ClInclude Include="Actors\Camera\CameraActor.h" />
     <ClInclude Include="Actors\MovementActor.h" />
     <ClInclude Include="Components\ComponentBase.h" />
+    <ClInclude Include="Components\StaticMeshRendererComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Levels\Level_BoundBall.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="Levels\Level_Platformer.h" />
     <ClInclude Include="Managers\GameManager.h" />
     <ClInclude Include="Managers\InputManager.h" />
+    <ClInclude Include="Materials\Material_Unlit_Standard.h" />
     <ClInclude Include="Meshs\Primitive\Cube.h" />
     <ClInclude Include="Headers.h" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -187,14 +191,14 @@
     <ClInclude Include="Meshs\Primitive\Circle.h" />
     <ClInclude Include="Managers\ResourceManager.h" />
     <ClInclude Include="Meshs\Primitive\Sphere.h" />
-    <ClInclude Include="Render\Materials\MaterialBase.h" />
+    <ClInclude Include="Materials\MaterialBase.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="Render\URenderer.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Shaders\ShaderW0.hlsl">
+    <None Include="Shaders\Unlit_Standard.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>

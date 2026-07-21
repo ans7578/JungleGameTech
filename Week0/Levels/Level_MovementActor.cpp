@@ -9,7 +9,7 @@
 CLevel_MovementActor::CLevel_MovementActor()
 {
 	AActor* actor = new AMovementActor();
-	actor->SetMesh(EMeshType::PRIMITIVE_RECT);
+	//actor->SetMesh(L"Primitive_Rect");
 
 	m_vecActors.push_back(actor);
 }

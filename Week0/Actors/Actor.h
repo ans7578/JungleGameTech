@@ -34,25 +34,37 @@ public:
 
 	virtual void Render(URenderer* renderer);
 
-	
-	CMesh*			GetMesh() { return m_pMesh; }
-
 	FColor			GetColor() { return m_fColor; }
 
 	EActorType		GetActorType() { return m_eActorType; }
 
 
-	void			SetMesh(EMeshType eMeshType);	
 	void			SetColor(float color);
 	void			SetColor(const FColor& color);
 
 	UTransformComponent* const	GetTransform();
 
 	template<typename T>
-	T* GetComponent();
+	T* GetComponent()
+	{
+		for (UComponentBase* component : m_Components)
+		{
+			T* targetComponent = dynamic_cast<T*>(component);
+
+			if (targetComponent != nullptr)
+			{
+				return targetComponent;
+			}
+		}
+
+		return nullptr;
+	}
 
 	template<typename T>
-	void AddComponent(T* pComponent);
+	void AddComponent(T* pComponent)
+	{
+		m_Components.push_back(pComponent);
+	}
 
 	
 protected:
@@ -62,16 +74,10 @@ protected:
 
 	UINT m_iIndicesCount = 0;
 
-	CMesh* m_pMesh;
-	UMaterialBase* m_pMaterial;
-
-
 	std::string m_strName;
 
 	EActorType	m_eActorType;
 private:
-
-
 	URenderer::FWorldBufferData m_fCBufferData;
 	std::list<UComponentBase*> m_Components;
 

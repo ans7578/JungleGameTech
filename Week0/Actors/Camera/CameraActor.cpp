@@ -24,22 +24,22 @@ void ACameraActor::Update()
 {
     __super::Update();
 
-    if (CInputManager::GetInstance().GetKey('A'))
-    {
-        GetTransform()->Translation(XMFLOAT3(-m_moveSpeed, 0.f, 0.f));
-    }
-    if (CInputManager::GetInstance().GetKey('D'))
-    {
-        GetTransform()->Translation(XMFLOAT3(m_moveSpeed, 0.f, 0.f));
-    }
-    if (CInputManager::GetInstance().GetKey('W'))
-    {
-        GetTransform()->Translation(XMFLOAT3(0.f, m_moveSpeed, 0.f));
-    }
-    if (CInputManager::GetInstance().GetKey('S'))
-    {
-        GetTransform()->Translation(XMFLOAT3(0, -m_moveSpeed, 0.f));
-    }
+   // if (CInputManager::GetInstance().GetKey('A'))
+   // {
+   //     GetTransform()->Translation(XMFLOAT3(-m_moveSpeed, 0.f, 0.f));
+   // }
+   // if (CInputManager::GetInstance().GetKey('D'))
+   // {
+   //     GetTransform()->Translation(XMFLOAT3(m_moveSpeed, 0.f, 0.f));
+   // }
+   // if (CInputManager::GetInstance().GetKey('W'))
+   // {
+   //     GetTransform()->Translation(XMFLOAT3(0.f, m_moveSpeed, 0.f));
+   // }
+   // if (CInputManager::GetInstance().GetKey('S'))
+   // {
+   //     GetTransform()->Translation(XMFLOAT3(0, -m_moveSpeed, 0.f));
+   // }
 }
 
 void ACameraActor::LateUpdate()

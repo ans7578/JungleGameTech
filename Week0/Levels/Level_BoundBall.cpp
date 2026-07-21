@@ -92,11 +92,11 @@ void CLevel_BoundBall::RenderDebug_Level()
 			if (m_vecActors.size() > 0)
 			{
 				//하얀색 공 생성
-				m_vecActors.back()->SetMesh(EMeshType::PRIMITIVE_CIRCLE);
+				//m_vecActors.back()->SetMesh(L"Primitive_Circle");
 				m_vecActors.back()->SetColor(FColor(1.f, 1.f, 1.f, 1.f));
 			}
 			AActor* actor = new ABoundActor();
-			actor->SetMesh(EMeshType::PRIMITIVE_CIRCLE);
+			//actor->SetMesh(L"Primitive_Circle");
 
 			actor->SetColor(FColor(1.f, 0.f, 0.f, 1.f));
 			

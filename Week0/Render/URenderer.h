@@ -100,7 +100,7 @@ public:
 
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT iVertexStride, UINT NumVertices);
 
-	void RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer , ID3D11Buffer* pIndexBuffer, UINT iVertexStride, UINT NumIndices);
+	void RenderPrimitiveIndexed(UINT NumIndices);
 
 
 	void ReleaseDeviceAndSwapChain();

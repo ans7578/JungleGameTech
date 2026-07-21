@@ -1,8 +1,6 @@
 #include "ResourceManager.h"
 #include "../Render/URenderer.h"
 #include "../Meshs/Mesh.h"
-#include "../Meshs/Primitive/Circle.h"
-#include "../Meshs/Primitive/Rect.h"
 #include "../Structs.h"
 
 
@@ -24,18 +22,13 @@ CResourceManager& CResourceManager::GetInstance()
 	return *instance;
 }
 
-
-CMesh* CResourceManager::GetMesh(EMeshType eResourceType)
-{
-	return m_meshes[eResourceType];
-}
-
-
 void CResourceManager::ReleaseSingleton()
 {
-	for (std::pair<EMeshType, CMesh*> elem : m_meshes)
+	
+
+	for (std::pair<HASH_KEY, weak_ptr<CMesh>> elem : m_meshes)
 	{
-		delete	elem.second;
+		elem.second.reset();
 	}
 	m_meshes.clear();
 
@@ -45,23 +38,28 @@ void CResourceManager::ReleaseSingleton()
 	}
 }
 
-void CResourceManager::SetupPrimitive(URenderer* renderer)
+void CResourceManager::AddMesh(const wchar_t* szMeshName, shared_ptr<CMesh> pMesh)
 {
+	//외부에서 생성한 메쉬의 소유권을 이전받는다
+	shared_ptr<CMesh> mesh = std::move(pMesh);
 
+	m_meshes.insert(make_pair
+	(
+		FStringToHash::Hash(szMeshName),
+		mesh
+	));
+}
 
-	//렌더러와 쉐이더 생성 이후 버텍스 버퍼를 생성한다.
-	CirclePrimitive circlePrimitive;
-	
-	RectPrimitive rectPrimitive;
+void CResourceManager::AddMaterials(const wchar_t* szMaterialName, shared_ptr<UMaterialBase> pMesh)
+{
+	//외부에서 생성한 메쉬의 소유권을 이전받는다
+	shared_ptr<UMaterialBase> mesh = std::move(pMesh);
 
-	m_meshes.insert(make_pair(PRIMITIVE_CIRCLE, new CMesh(renderer,
-		circlePrimitive.vertices, circlePrimitive.GetVertexStride(), circlePrimitive.GetVertexCount(),
-		circlePrimitive.indices, circlePrimitive.indexCount)));
-
-	m_meshes.insert(make_pair(EMeshType::PRIMITIVE_RECT, new CMesh(renderer,
-		rectPrimitive.vertices, rectPrimitive.GetVertexStride(), rectPrimitive.GetVertexCount(),
-		rectPrimitive.indices, rectPrimitive.indexCount)));
-
+	m_materials.insert(make_pair
+	(
+		FStringToHash::Hash(szMaterialName),
+		mesh
+	));
 }
 
 
@@ -109,7 +107,7 @@ bool CResourceManager::AddTexture(const wchar_t* szFileName, const wchar_t* szFi
 	return true;
 }
 
-const weak_ptr<FShaderProgram>& CResourceManager::LoadShaderProgram(const wchar_t* szFileName)
+weak_ptr<FShaderProgram> CResourceManager::LoadShaderProgram(const wchar_t* szFileName)
 {
 	HASH_KEY key = FStringToHash::Hash(szFileName);
 
@@ -119,7 +117,7 @@ const weak_ptr<FShaderProgram>& CResourceManager::LoadShaderProgram(const wchar_
 	}
 }
 
-ComPtr<ID3D11ShaderResourceView>& CResourceManager::LoadTexture(const wchar_t* szFileName)
+ComPtr<ID3D11ShaderResourceView> CResourceManager::LoadTexture(const wchar_t* szFileName)
 {
 	HASH_KEY key = FStringToHash::Hash(szFileName);
 
@@ -127,6 +125,16 @@ ComPtr<ID3D11ShaderResourceView>& CResourceManager::LoadTexture(const wchar_t* s
 	{
 		return m_textures[key];
 	}
+}
+
+weak_ptr<CMesh> CResourceManager::LoadMesh(const wchar_t* szMeshName)
+{
+	return m_meshes[FStringToHash::Hash(szMeshName)];
+}
+	
+weak_ptr<UMaterialBase> CResourceManager::LoadMaterial(const wchar_t* szMaterialName)
+{
+	return m_materials[FStringToHash::Hash(szMaterialName)];
 }
 
 

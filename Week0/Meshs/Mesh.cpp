@@ -26,3 +26,17 @@ ID3D11Buffer* CMesh::GetIndexBuffer()
 {
 	return m_pIndexBuffer.Get();
 }
+
+HRESULT CMesh::Bind(URenderer* renderer)
+{
+	if (renderer == nullptr)
+	{
+		return E_FAIL;
+	}
+
+	UINT offset = 0; //정점 버퍼의 시작 오프셋
+	renderer->DeviceContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &m_iVertexStride, &offset); //정점 버퍼 설정
+	renderer->DeviceContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼 설정
+
+	return S_OK;
+}

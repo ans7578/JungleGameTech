@@ -6,9 +6,7 @@ class URenderer;
 class CMesh
 {
 
-private:
-	friend class CResourceManager;
-
+public:
 	CMesh(URenderer* renderer, void* pVertexData, UINT iVertexStride, UINT iVertexCount , UINT* pIndexData,  UINT indexCount);
 	~CMesh();
 
@@ -26,6 +24,8 @@ public:
 	UINT			GetVerticesSize() { return m_iVerticesSize; }
 
 	UINT			GetIndexCount() { return m_iIndexCount; }
+
+	HRESULT			Bind(URenderer* renderer);
 
 protected:
 	 

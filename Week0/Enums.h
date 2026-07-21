@@ -1,14 +1,6 @@
 #pragma once
 
 
-enum EMeshType
-{
-	PRIMITIVE_NONE,
-	PRIMITIVE_CIRCLE,
-	PRIMITIVE_RECT
-};
-
-
 enum ELevel
 {
 	LEVEL_NONE,

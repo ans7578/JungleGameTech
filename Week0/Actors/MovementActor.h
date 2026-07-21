@@ -10,10 +10,15 @@ public:
 
 
 public:
+    virtual void Init() override;
+
     virtual void Update() override;
 
 
     virtual void RenderDebug() override;
+
+
+    virtual void Render(URenderer* renderer) override;
 
 private:
     float m_moveAmount = 0.f;

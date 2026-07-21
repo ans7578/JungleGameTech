@@ -15,7 +15,7 @@ void CLevel_Platformer::Init_Level()
 {
 	AActor* actor = new APlatformerActor();
 		
-	actor->SetMesh(EMeshType::PRIMITIVE_RECT);
+	//actor->SetMesh(L"Primitive_Rect");
 
 	m_vecActors.push_back(actor);
 }

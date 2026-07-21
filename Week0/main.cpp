@@ -9,6 +9,13 @@
 #include "./Managers/ResourceManager.h"
 #include "./Managers/InputManager.h"
 
+#include "./Meshs/Primitive/Circle.h"
+#include "./Meshs/Primitive/Rect.h"
+
+
+#include "./Materials/Material_Unlit_Standard.h"
+
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WndProc(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -73,16 +80,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateConstantBuffer();
 
 	//매니저 세팅
-	CResourceManager::GetInstance().SetupPrimitive(&renderer);
+	//CResourceManager::GetInstance().SetupPrimitive(&renderer);
 
 
-	CResourceManager::GetInstance().AddShaderPrograms(L"DefaultShader", L"./Shaders/ShaderW0.hlsl", &renderer);
 
+	//렌더러와 쉐이더 생성 이후 버텍스 버퍼를 생성한다.
+	CirclePrimitive circlePrimitive;
+	RectPrimitive rectPrimitive;
+
+	shared_ptr<CMesh> meshCircle = make_shared<CMesh>(&renderer, circlePrimitive.vertices,
+		circlePrimitive.GetVertexStride(), circlePrimitive.GetVertexCount(), circlePrimitive.indices, circlePrimitive.indexCount);
+
+	shared_ptr<CMesh> meshRect = make_shared<CMesh>(&renderer, rectPrimitive.vertices,
+		rectPrimitive.GetVertexStride(), rectPrimitive.GetVertexCount(), rectPrimitive.indices, rectPrimitive.indexCount);
+
+
+	CResourceManager::GetInstance().AddMesh(L"Circle", meshCircle);
+	CResourceManager::GetInstance().AddMesh(L"Rect", meshRect);
+
+
+	CResourceManager::GetInstance().AddShaderPrograms(L"Unlit_Standard", L"./Shaders/Unlit_Standard.hlsl", &renderer);
 
 	CResourceManager::GetInstance().AddTexture(L"Doro", L"./Resources/Doro.png", &renderer);
 	CResourceManager::GetInstance().AddTexture(L"Phoebe", L"./Resources/phoebe.png", &renderer);
 
+
+	shared_ptr<UMaterial_Unlit_Standard> mat_Unlit_Standard = make_shared<UMaterial_Unlit_Standard>();
 	
+	mat_Unlit_Standard->Init();
+
+	CResourceManager::GetInstance().AddMaterials(L"Unlit_Standard", mat_Unlit_Standard);
+
 	CLevelManager::GetInstance().SetupLevels();
 	CInputManager::GetInstance().SetupInput();
 

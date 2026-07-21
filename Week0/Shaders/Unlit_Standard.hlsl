@@ -1,17 +1,4 @@
-//ShaderW0.hlsl
 
-/*
-cbuffer constBuffer : register(b0)
-{
-    float3  Offset; //정점 위치를 이동시키기 위한 오프셋 값
-    float   Pad;
-    
-    float3  Size;
-    float   Pad2;
-    
-    float4  Color;
-};
-*/
 cbuffer cameraBuffer : register(b0) 
 {
     matrix View;

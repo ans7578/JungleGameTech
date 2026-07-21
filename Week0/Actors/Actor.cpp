@@ -2,7 +2,7 @@
 #include "../Managers/ResourceManager.h"
 #include "../Render/URenderer.h"
 #include "../Meshs/Mesh.h"
-#include "../Render/Materials/MaterialBase.h"
+#include "../Materials/MaterialBase.h"
 
 
 UINT AActor::m_iRefCount = 0;
@@ -14,12 +14,6 @@ AActor::AActor()
 	m_eActorType = ACTOR_NONE;
 
 	AddComponent<UTransformComponent>(new UTransformComponent());
-
-	if (m_eActorType != ACTOR_CAMERA)
-	{
-		m_pMaterial = new UMaterialBase();
-
-	}
 }
 
 AActor::~AActor()
@@ -34,9 +28,6 @@ AActor::~AActor()
 	}
 	m_Components.clear();
 
-	m_pMaterial->ReleaseMaterial();
-
-	delete m_pMaterial;
 
 }
 
@@ -45,17 +36,6 @@ void AActor::Init()
 	for (const auto& component : m_Components)
 	{
 		component->Init_Component();
-	}
-
-	if (m_eActorType != ACTOR_CAMERA)
-	{
-		m_pMaterial->SetUpMaterial
-		(
-			CResourceManager::GetInstance().LoadShaderProgram(L"DefaultShader"),
-			CResourceManager::GetInstance().LoadTexture(L"Doro").Get()
-		);
-
-		int b = 0;
 	}
 }
 
@@ -101,23 +81,9 @@ void AActor::Render(URenderer* renderer)
 	renderer->UpdateConstantBuffer(&m_fCBufferData,sizeof(m_fCBufferData),URenderer::ECBufferType::CBUFFER_WORLD);
 	renderer->SetConstantBuffer(URenderer::ECBufferType::CBUFFER_WORLD);
 
-
-	if (m_pMaterial)
-	{
-		m_pMaterial->Bind(renderer);
-	}
-
-
-	renderer->RenderPrimitiveIndexed(GetMesh()->GetVertexBuffer(), GetMesh()->GetIndexBuffer(), GetMesh()->GetVertexStride(), GetMesh()->GetIndexCount());
-
-
+	//renderer->RenderPrimitiveIndexed(GetMesh()->GetVertexBuffer(), GetMesh()->GetIndexBuffer(), GetMesh()->GetVertexStride(), GetMesh()->GetIndexCount());
 }
 
-void AActor::SetMesh(EMeshType eMeshType)
-{
-	m_pMesh = CResourceManager::GetInstance().GetMesh(eMeshType);
-	int a = 10;
-}
 
 void AActor::SetColor(float color)
 {
@@ -134,26 +100,5 @@ UTransformComponent* const AActor::GetTransform()
 	return GetComponent<UTransformComponent>();
 }
 
-template<typename T>
-T* AActor::GetComponent()
-{
-	for (UComponentBase* component : m_Components)
-	{
-		T* targetComponent = dynamic_cast<T*>(component);
-
-		if (targetComponent != nullptr)
-		{
-			return targetComponent;
-		}
-	}
-
-	return nullptr;
-}
-
-template<typename T>
-void AActor::AddComponent(T* pComponent)
-{
-	m_Components.push_back(pComponent);
-}
 
 

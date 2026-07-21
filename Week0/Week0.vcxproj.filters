@@ -105,7 +105,13 @@
     <ClCompile Include="Managers\GameManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Render\Materials\MaterialBase.cpp">
+    <ClCompile Include="Materials\MaterialBase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\StaticMeshRendererComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Materials\Material_Unlit_Standard.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -212,12 +218,18 @@
     <ClInclude Include="Managers\GameManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Render\Materials\MaterialBase.h">
+    <ClInclude Include="Materials\MaterialBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\StaticMeshRendererComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Materials\Material_Unlit_Standard.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\ShaderW0.hlsl">
+    <None Include="Shaders\Unlit_Standard.hlsl">
       <Filter>Shaders</Filter>
     </None>
     <None Include="packages.config" />
