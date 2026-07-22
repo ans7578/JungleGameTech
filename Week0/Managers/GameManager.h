@@ -6,33 +6,24 @@ class CGameManager
 {
 
 private:
-	CGameManager();
+	CGameManager() = default;
 	CGameManager(const CGameManager& ref) {};
 	CGameManager& operator=(const CGameManager& ref) {};
-	~CGameManager() {};
+	~CGameManager() = default;
 
 
 public:
 	static CGameManager& GetInstance();
 
-	void	ReleaseSingleton();
+	void	ReleaseSingleton() { delete instance; }
 
-	void	Update();
+	void	SetDeltatTime(float deltaTime) { m_DeltaTime = deltaTime; }
 
-	void	UpdateInput(MSG& msg);
-
-	bool	GetKeyDown(WPARAM wParam);
-	bool	GetKey(WPARAM wParam);
-
-	bool	GetKeyUp(WPARAM wParam);
-
-
-	void	SetupInput();
-
+	float	GetDeltaTime() { return m_DeltaTime; }
 
 private:
 	static CGameManager* instance;
-
+	float				m_DeltaTime = 0.f;
 
 };
 

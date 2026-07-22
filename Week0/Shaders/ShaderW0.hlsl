@@ -20,8 +20,10 @@ cbuffer cameraBuffer : register(b0)
 
 cbuffer constBuffer : register(b1)
 {
-    matrix World;
-    float4 Color;
+    matrix  World;
+    float4  Color;
+    float   Time;
+    float3  Padding;
 };
 
 Texture2D   texture0 : register(t0);
@@ -31,7 +33,7 @@ SamplerState sampler0 : register(s0);
 struct VS_INPUT
 {
     float3 position : POSITION; //버텍스 버퍼로부터 정점 위치를 받아온다
-    float2 uv : TEXCOORD0;
+    float2 uv : TEXCOORD;
 };
 
 // 정점 셰이더에서 픽셀 셰이더로 전달할 구조체
@@ -56,6 +58,9 @@ PS_INPUT mainVS(VS_INPUT input)
     //output.color = float4(input.uv, 0, 1.f);
 
     output.uv = input.uv;
+    
+    output.uv.x += Time;
+    
 
     return output;
     

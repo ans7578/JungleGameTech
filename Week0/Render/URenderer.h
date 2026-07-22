@@ -26,8 +26,11 @@ public:
 	struct FWorldBufferData
 	{
 		XMMATRIX World;
-
 		FColor	Color;
+
+		float	Time;
+
+		XMFLOAT3 padding;
 	};
 
 	struct FCameraBufferData
@@ -82,7 +85,8 @@ public:
 
 	void CreateConstantBuffer();
 
-	bool CreateShaderResourceView(const wchar_t* szFilePath, ID3D11ShaderResourceView** ppOutSRV, ID3D11SamplerState** ppOutSamplerState);
+	bool CreateShaderResourceView(const wchar_t* szFilePath, ID3D11ShaderResourceView ** ppOutSRV, 
+		ID3D11SamplerState** ppOutSamplerState);
 
 
 	void SwapBuffer();
@@ -115,7 +119,7 @@ public:
 
 
 private:
-	ID3D11Buffer* ConstantBuffers[CBUFFER_END];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
+	ID3D11Buffer* ConstantBuffers[CBUFFER_END];
 	ID3D11ShaderResourceView* doroSRV = nullptr;
 	ID3D11SamplerState* doroSamplerState = nullptr;
 };

@@ -2,6 +2,8 @@
 #include "../Managers/ResourceManager.h"
 #include "../Render/URenderer.h"
 #include "../Meshs/Mesh.h"
+#include "../Managers/GameManager.h"
+
 
 UINT AActor::m_iRefCount = 0;
 
@@ -72,6 +74,8 @@ void AActor::Render(URenderer* renderer)
 
 	m_fCBufferData.World = XMMatrixTranspose(matSRT);
 	m_fCBufferData.Color = GetColor();
+
+	m_fCBufferData.Time += CGameManager::GetInstance().GetDeltaTime();
 
 	renderer->UpdateConstantBuffer(&m_fCBufferData,sizeof(m_fCBufferData),URenderer::ECBufferType::CBUFFER_WORLD);
 

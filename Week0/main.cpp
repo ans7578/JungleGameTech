@@ -8,6 +8,8 @@
 #include "./Managers/LevelManager.h"
 #include "./Managers/ResourceManager.h"
 #include "./Managers/InputManager.h"
+#include "./Managers/GameManager.h"
+
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -104,7 +106,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0f;
 
-	
+	LARGE_INTEGER prevTime;
+
+	float deltaTime = 0.f;
+
+	QueryPerformanceCounter(&prevTime);
+
+
 	CLevelManager::GetInstance().Init_Level();
 	
 	//키입력을 처리받는 루프
@@ -143,7 +151,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		*/
 		////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
+		
+		//
+
 	
+
 		CLevelManager::GetInstance().Update_Level();
 		CLevelManager::GetInstance().LateUpdate_Level();
 
@@ -186,6 +198,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			elapsedTime = (endTime.QuadPart - startTime.QuadPart) * 1000.0 / frequency.QuadPart;
 		} while (elapsedTime < targetFrameTime);
 		/////////////////////////////////////
+
+
+		if (endTime.QuadPart - prevTime.QuadPart < 0)
+		{
+			deltaTime = 0.1f;
+		}
+		else
+		{
+			deltaTime = (float)((endTime.QuadPart - prevTime.QuadPart) / frequency.QuadPart) / (float)targetFPS;
+		}
+		CGameManager::GetInstance().SetDeltatTime(deltaTime);
+		prevTime = endTime;
+
 	}
 	//소멸하는 코드를 여기에 추가합니다.
 
@@ -201,7 +226,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	CResourceManager::GetInstance().ReleaseSingleton();
 	CLevelManager::GetInstance().ReleaseSingleton();
 	CInputManager::GetInstance().ReleaseSingleton();
-
+	CGameManager::GetInstance().ReleaseSingleton();
 
 	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();

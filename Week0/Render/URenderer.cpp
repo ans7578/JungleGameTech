@@ -20,7 +20,7 @@ void URenderer::Create(HWND hWindow)
 	CreateRasterizerState();
 
 
-	CreateShaderResourceView(L"Doro.png", &doroSRV, &doroSamplerState);
+	CreateShaderResourceView(L"./Resources/Doro.png", &doroSRV, &doroSamplerState);
 
 }
 
@@ -225,6 +225,7 @@ ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_
 
 	Device->CreateBuffer(&indexBufferDesc, &indexBufferData, &indexBuffer);
 
+
 	return indexBuffer;
 }
 
@@ -288,6 +289,7 @@ bool URenderer::CreateShaderResourceView(const wchar_t* szFilePath, ID3D11Shader
 {
 
 	ID3D11Resource* texture;
+
 
 	HRESULT hr = DirectX::CreateWICTextureFromFile(
 		Device,
