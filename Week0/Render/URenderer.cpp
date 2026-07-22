@@ -6,9 +6,9 @@
 #endif
 
 
-
 void URenderer::Create(HWND hWindow)
 {
+	
 	//Direct3D 장치 및 스왑 체인 생성
 	CreateDeviceAndSwapChain(hWindow);
 	
@@ -56,10 +56,10 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
 		ARRAYSIZE(featurelevels), //기능 레벨 배열 크기
 		D3D11_SDK_VERSION, //Direct3D SDK 버전
 		&swapChainDesc, //스왑체인 구조체 포인터
-		&SwapChain, //생성된 스왑체인 포인터 반환
-		&Device, //생성된 장치 포인터 반환
+		SwapChain.GetAddressOf(), //생성된 스왑체인 포인터 반환
+		Device.GetAddressOf(), //생성된 장치 포인터 반환
 		nullptr, //선택한 기능 레벨 반환하지 않음
-		&DeviceContext //생성된 장치 컨텍스트 포인터 반환
+		DeviceContext.GetAddressOf()//생성된 장치 컨텍스트 포인터 반환
 	);
 
 	SwapChain->GetDesc(&swapChainDesc); //스왑체인 구조체 정보 가져오기;
@@ -83,7 +83,7 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
 void URenderer::CreateFrameBuffer()
 {
 	//스왑 체인으로부터 백 버퍼 텍스처 가져오기
-	SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&FrameBuffer);
+	SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)FrameBuffer.GetAddressOf());
 
 	//D3D11_RENDER_TARGET_VIEW_DESC 구조체를 사용하여 렌더 타겟 뷰 생성
 
@@ -92,7 +92,7 @@ void URenderer::CreateFrameBuffer()
 	frameBufferRTVDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 	frameBufferRTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D; //렌더 타겟 뷰의 차원을 설정함
 
-	Device->CreateRenderTargetView(FrameBuffer, &frameBufferRTVDesc, &FrameBufferRTV); //렌더 타겟 뷰 생성
+	Device->CreateRenderTargetView(FrameBuffer.Get(), &frameBufferRTVDesc, FrameBufferRTV.GetAddressOf()); //렌더 타겟 뷰 생성
 
 #if defined(_DEBUG)
 	const char* frameBufferName = "FrameBuffer";
@@ -112,7 +112,7 @@ void URenderer::CreateRasterizerState()
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID; //채우기 모드, 솔리드로 설정
 	rasterizerDesc.CullMode = D3D11_CULL_BACK; //컬링 모드, 뒷면 컬링
 
-	Device->CreateRasterizerState(&rasterizerDesc, &RasterizerState); //래스터라이저 상태 생성
+	Device->CreateRasterizerState(&rasterizerDesc, RasterizerState.GetAddressOf()); //래스터라이저 상태 생성
 
 }
 
@@ -124,12 +124,12 @@ void URenderer::CreateShader()
 
 	//정점 쉐이더 컴파일
 	D3DCompileFromFile(L"./Shaders/ShaderW0.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexShaderBlob, nullptr);
-	Device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &SimpleVertexShader);
+	Device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, SimpleVertexShader.GetAddressOf());
 
 
 	//픽셀 쉐이더 컴파일
 	D3DCompileFromFile(L"./Shaders/ShaderW0.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelShaderBlob, nullptr);
-	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &SimplePixelShader);
+	Device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, SimplePixelShader.GetAddressOf());
 
 	//D3D11_INPUT_ELEMENT_DESC 구조체를 사용하여 입력 레이아웃 생성
 	//정점 데이터의 형식을 정의하는 구조체 배열
@@ -139,7 +139,7 @@ void URenderer::CreateShader()
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &SimpleInputLayout);
+	Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), SimpleInputLayout.GetAddressOf());
 
 
 
@@ -147,7 +147,7 @@ void URenderer::CreateShader()
 	pixelShaderBlob->Release();
 }
 
-ID3D11Buffer* URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage)
+ComPtr<ID3D11Buffer> URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage)
 {
 
 	//버텍스 버퍼 생성
@@ -174,7 +174,7 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D
 	return vertexBuffer;
 }
 
-ID3D11Buffer* URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage, const char* bufferName)
+ComPtr<ID3D11Buffer> URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage, const char* bufferName)
 {
 	//버텍스 버퍼 생성
 	/* D3D11_USAGE
@@ -204,8 +204,7 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(void* pVertexData, UINT byteWidth, D
 
 	return vertexBuffer;
 }
-
-ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage)
+ComPtr<ID3D11Buffer> URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage)
 {
 	D3D11_BUFFER_DESC indexBufferDesc = {};
 	indexBufferDesc.Usage = usage; //기본으로
@@ -223,7 +222,7 @@ ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_
 	return indexBuffer;
 }
 
-ID3D11Buffer* URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage, const char* bufferName)
+ComPtr<ID3D11Buffer> URenderer::CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage, const char* bufferName)
 {
 	D3D11_BUFFER_DESC indexBufferDesc = {};
 	indexBufferDesc.Usage = usage; //기본으로
@@ -287,22 +286,22 @@ void URenderer::SwapBuffer()
 //렌더링 준비 함수, 렌더링 전에 호출해야 함
 void URenderer::Prepare()
 {
-	DeviceContext->ClearRenderTargetView(FrameBufferRTV, ClearColor); //렌더 타겟 뷰를 초기화(clear)함
+	DeviceContext->ClearRenderTargetView(FrameBufferRTV.Get(), ClearColor); //렌더 타겟 뷰를 초기화(clear)함
 
 	DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); //정점 데이터를 삼각형 리스트로 해석하도록 설정
 
 	DeviceContext->RSSetViewports(1, &ViewportInfo); //뷰포트 설정
-	DeviceContext->RSSetState(RasterizerState); //래스터라이저 상태 설정
+	DeviceContext->RSSetState(RasterizerState.Get()); //래스터라이저 상태 설정
 
-	DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr); //렌더 타겟 뷰 설정, 깊이 스텐실 뷰는 사용하지 않음
+	DeviceContext->OMSetRenderTargets(1, FrameBufferRTV.GetAddressOf(), nullptr); //렌더 타겟 뷰 설정, 깊이 스텐실 뷰는 사용하지 않음
 	DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff); //블렌드 상태 설정, 블렌딩 사용하지 않음
 }
 
 void URenderer::PrepareShader()
 {
-	DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0); //정점 쉐이더 설정
-	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0); //픽셀 쉐이더 설정
-	DeviceContext->IASetInputLayout(SimpleInputLayout); //입력 레이아웃 설정
+	DeviceContext->VSSetShader(SimpleVertexShader.Get(), nullptr, 0); //정점 쉐이더 설정
+	DeviceContext->PSSetShader(SimplePixelShader.Get(), nullptr, 0); //픽셀 쉐이더 설정
+	DeviceContext->IASetInputLayout(SimpleInputLayout.Get()); //입력 레이아웃 설정
 
 	//버텍스 쉐이더에 상수 버퍼를 설정한다.
 	for (int i = 0; i < ECBufferType::CBUFFER_END; i++)
@@ -323,31 +322,24 @@ void URenderer::UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize,
 	{
 		D3D11_MAPPED_SUBRESOURCE constantBufferMSR;
 
-		DeviceContext->Map(ConstantBuffers[eCBufferType], 0, D3D11_MAP_WRITE_DISCARD, 0, &constantBufferMSR);
+		DeviceContext->Map(ConstantBuffers[eCBufferType].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &constantBufferMSR);
 
 		memcpy(constantBufferMSR.pData, pCBuffer, iBufferDataSize);
 	
-		DeviceContext->Unmap(ConstantBuffers[eCBufferType], 0);
+		DeviceContext->Unmap(ConstantBuffers[eCBufferType].Get(), 0);
 	}
 }
 
-void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT iVertexStride, UINT NumVertices)
+void URenderer::RenderPrimitiveIndexed(ComPtr<ID3D11Buffer> pVertexBuffer, ComPtr<ID3D11Buffer> pIndexBuffer, UINT iVertexStride, UINT NumIndices)
 {
 	UINT offset = 0; //정점 버퍼의 시작 오프셋
-	DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &iVertexStride, &offset); //정점 버퍼 설정
+	DeviceContext->IASetVertexBuffers(0, 1, pVertexBuffer.GetAddressOf(), &iVertexStride, &offset); //정점 버퍼 설정
 
-	DeviceContext->Draw(NumVertices, 0); //정점 버퍼를 사용하여 그리기 호출
-}
-
-void URenderer::RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer, ID3D11Buffer* pIndexBuffer, UINT iVertexStride, UINT NumIndices)
-{
-	UINT offset = 0; //정점 버퍼의 시작 오프셋
-	DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &iVertexStride, &offset); //정점 버퍼 설정
-
-	DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼 설정
+	DeviceContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼 설정
 
 	DeviceContext->DrawIndexed(NumIndices, 0, 0); //인덱스 버퍼를 사용하여 그리기 호출
 }
+
 
 
 //다렉 장치 및 스왑 체인을 해제하는 함수
@@ -454,14 +446,14 @@ void URenderer::ReleaseConstantBuffer()
 //렌더러에 사용된 모든 리소스를 해제하는 함수
 void URenderer::Release()
 {
-	RasterizerState->Release();
-
-	//렌더 타겟을 초기화
-	DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);	
-
-	ReleaseFrameBuffer();
-
-	ReleaseDeviceAndSwapChain();
+	//RasterizerState->Release();
+	//
+	////렌더 타겟을 초기화
+	//DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);	
+	//
+	//ReleaseFrameBuffer();
+	//
+	//ReleaseDeviceAndSwapChain();
 
 
 

@@ -19,8 +19,11 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <wrl/client.h>
 
 using namespace DirectX;
+
+using namespace Microsoft::WRL;
 
 //ImGui
 #include "ImGui/imgui.h"

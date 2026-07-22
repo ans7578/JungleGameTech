@@ -5,6 +5,12 @@
 ACameraActor::ACameraActor()
 {
     m_moveSpeed = 0.05f;
+
+    m_fCameraBufferData.Projection = XMMatrixOrthographicLH
+    (
+        1024, 1024, 1.f, 100.f
+    );
+
 }
 
 ACameraActor::~ACameraActor()

@@ -82,7 +82,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplWin32_Init((void*)hwnd);
-	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
+	ImGui_ImplDX11_Init(renderer.Device.Get(), renderer.DeviceContext.Get());
 
 
 	bool bIsExit = false;
@@ -203,10 +203,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	CInputManager::GetInstance().ReleaseSingleton();
 
 
-	renderer.ReleaseConstantBuffer();
-	renderer.ReleaseShader();
-
-	renderer.Release();
+	//renderer.ReleaseConstantBuffer();
+	//renderer.ReleaseShader();
+	//renderer.Release();
 
 	
 	return 0;

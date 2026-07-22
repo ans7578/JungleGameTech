@@ -7,6 +7,9 @@ AMovementActor::AMovementActor()
 	m_moveAmount = 0.1f;
 
 	GetTransform()->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
+
+	
+
 }
 
 AMovementActor::~AMovementActor()

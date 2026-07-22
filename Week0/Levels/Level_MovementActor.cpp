@@ -22,26 +22,26 @@ void CLevel_MovementActor::Update_Level()
 	XMFLOAT3 pos;
 	for (auto actor : m_vecActors)
 	{
-		pos = actor->GetTransform()->GetPosition();
-		float radius = actor->GetTransform()->GetScale().x;
+		//pos = actor->GetTransform()->GetPosition();
+		//float radius = actor->GetTransform()->GetScale().x;
 
-		if (pos.x < m_LeftBorder + radius)
-		{
-			pos.x = m_LeftBorder + radius;
-		}
-		if (pos.x > m_RightBorder - radius)
-		{
-			pos.x = m_RightBorder - radius;
-		}
-		if (pos.y > m_TopBorder - radius)
-		{
-			pos.y = m_TopBorder - radius;
-		}
-		if (pos.y < m_BottomBorder + radius)
-		{
-			pos.y = m_BottomBorder + radius;
-		}
-		actor->GetTransform()->SetPosition(pos);
+		//if (pos.x < m_LeftBorder + radius)
+		//{
+		//	pos.x = m_LeftBorder + radius;
+		//}
+		//if (pos.x > m_RightBorder - radius)
+		//{
+		//	pos.x = m_RightBorder - radius;
+		//}
+		//if (pos.y > m_TopBorder - radius)
+		//{
+		//	pos.y = m_TopBorder - radius;
+		//}
+		//if (pos.y < m_BottomBorder + radius)
+		//{
+		//	pos.y = m_BottomBorder + radius;
+		//}
+		//actor->GetTransform()->SetPosition(pos);
 	}
 }
 

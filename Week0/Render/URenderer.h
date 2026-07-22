@@ -1,15 +1,6 @@
 #pragma once
 
-//dx
-#pragma comment(lib, "user32")
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "d3dcompiler")
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
-
-using namespace DirectX;
-
+#include "../Headers.h"
 #include "../Structs.h"
 
 
@@ -33,30 +24,30 @@ public:
 	struct FCameraBufferData
 	{
 		XMMATRIX World;
-		//XMMATRIX Projection;
+		XMMATRIX Projection;
 	};
 
 
 public:
 	//Direct3D 11장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인트
-	ID3D11Device* Device = nullptr; // GPU와 통신하기 위한 Direct3D장치
-	ID3D11DeviceContext* DeviceContext = nullptr; // GPU명령 실행을 담당하는 컨텍스트
-	IDXGISwapChain * SwapChain = nullptr; // 프레임 버퍼를 교체하는데 사용되는 스왑체인
+	ComPtr<ID3D11Device> Device = nullptr; // GPU와 통신하기 위한 Direct3D장치
+	ComPtr<ID3D11DeviceContext> DeviceContext = nullptr; // GPU명령 실행을 담당하는 컨텍스트
+	ComPtr<IDXGISwapChain> SwapChain = nullptr; // 프레임 버퍼를 교체하는데 사용되는 스왑체인
 
 	//렌더링에 필요한 리소스 및 상태를 관리하기 위한 변수들
 
-	ID3D11Texture2D* FrameBuffer = nullptr; // 화면출력용텍스처
-	ID3D11RenderTargetView* FrameBufferRTV = nullptr; // 텍스처를 렌더타겟으로 사용하는 뷰
-	ID3D11RasterizerState* RasterizerState = nullptr; //래스터라이저 상태(컬링, 채우기 모드 등 정의)
+	ComPtr<ID3D11Texture2D> FrameBuffer = nullptr; // 화면출력용텍스처
+	ComPtr<ID3D11RenderTargetView> FrameBufferRTV = nullptr; // 텍스처를 렌더타겟으로 사용하는 뷰
+	ComPtr<ID3D11RasterizerState> RasterizerState = nullptr; //래스터라이저 상태(컬링, 채우기 모드 등 정의)
 
 
 	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear)할 때 사용할 색상 (RGBA)
 	D3D11_VIEWPORT ViewportInfo;  //렌더링 영역을 정의하는 뷰포트 정보
 
 
-	ID3D11VertexShader* SimpleVertexShader = nullptr; // 정점 쉐이더
-	ID3D11PixelShader* SimplePixelShader = nullptr; // 픽셀 쉐이더
-	ID3D11InputLayout* SimpleInputLayout = nullptr; // 정점 데이터의 형식을 정의하는 입력 레이아웃
+	ComPtr<ID3D11VertexShader> SimpleVertexShader = nullptr; // 정점 쉐이더
+	ComPtr<ID3D11PixelShader> SimplePixelShader = nullptr; // 픽셀 쉐이더
+	ComPtr<ID3D11InputLayout> SimpleInputLayout = nullptr; // 정점 데이터의 형식을 정의하는 입력 레이아웃
 
 
 
@@ -74,12 +65,11 @@ public:
 
 	void CreateShader();
 
-	ID3D11Buffer*	CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage);
-	ID3D11Buffer*	CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage, const char* bufferName);
-
-
-	ID3D11Buffer* CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage);
-	ID3D11Buffer* CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage, const char* bufferName);
+	ComPtr<ID3D11Buffer>	CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage);
+	ComPtr<ID3D11Buffer>	CreateVertexBuffer(void* pVertexData, UINT byteWidth, D3D11_USAGE usage, const char* bufferName);
+	
+	ComPtr<ID3D11Buffer> CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage);
+	ComPtr<ID3D11Buffer> CreateIndexBuffer(UINT* indices, UINT byteWidth, D3D11_USAGE usage, const char* bufferName);
 
 
 	void CreateConstantBuffer();
@@ -93,9 +83,8 @@ public:
 	//주의! 카메라는 액터보다 항상 먼저 업데이트 되어야한다.(카메라의 영향을 받는 객체들보다 늦게 갱신되면X)
 	void UpdateConstantBuffer(const void* pCBuffer, UINT iBufferDataSize, ECBufferType eCBufferType);
 
-	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT iVertexStride, UINT NumVertices);
 
-	void RenderPrimitiveIndexed(ID3D11Buffer* pVertexBuffer , ID3D11Buffer* pIndexBuffer, UINT iVertexStride, UINT NumIndices);
+	void RenderPrimitiveIndexed(ComPtr<ID3D11Buffer> pVertexBuffer , ComPtr<ID3D11Buffer> pIndexBuffer, UINT iVertexStride, UINT NumIndices);
 
 
 	void ReleaseDeviceAndSwapChain();
@@ -114,6 +103,6 @@ public:
 
 
 private:
-	ID3D11Buffer* ConstantBuffers[CBUFFER_END];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
+	ComPtr<ID3D11Buffer> ConstantBuffers[CBUFFER_END];// 쉐이더에 데이터를 전달하기 위한 상수 버퍼
 
 };

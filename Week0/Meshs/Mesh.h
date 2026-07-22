@@ -17,9 +17,9 @@ private:
 		
 
 public:
-	ID3D11Buffer*	GetVertexBuffer() { return m_pVertexBuffer; }
+	ID3D11Buffer*	GetVertexBuffer() { return m_pVertexBuffer.Get(); }
 	
-	ID3D11Buffer*	GetIndexBuffer() { return m_pIndexBuffer; }
+	ID3D11Buffer*	GetIndexBuffer() { return m_pIndexBuffer.Get(); }
 	
 	UINT			GetVertexStride() { return m_iVertexStride; }
 
@@ -28,8 +28,8 @@ public:
 	UINT			GetIndexCount() { return m_iIndexCount; }
 
 protected:
-	ID3D11Buffer*	m_pVertexBuffer;
-	ID3D11Buffer*	m_pIndexBuffer;
+	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
+	ComPtr<ID3D11Buffer>	m_pIndexBuffer;
 
 	UINT			m_iVertexStride; // 객체 하나의 사이즈
 
